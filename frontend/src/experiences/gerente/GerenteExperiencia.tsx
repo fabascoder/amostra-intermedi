@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { agendarSolicitacao, useAvisosPedidos, usePedidos } from "../../demoServices/orderService";
 import { useAviso } from "../../demoServices/notificationService";
+import { usePaciente } from "../../demoServices/patientService";
 import { concluirOnboarding, marcarVisita } from "../../session/session";
 import { useProgresso } from "../../session/hooks";
 import { ContadorSessao, TrocarExperiencia } from "../../shared/Sessao";
@@ -23,6 +24,7 @@ import Dashboard from "./pages/Dashboard";
 import Remedios from "./pages/Remedios";
 import Pedidos from "./pages/Pedidos";
 import Funcionarios from "./pages/Funcionarios";
+import Operacao from "./pages/Operacao";
 import { DetalheRemedio } from "./pages/DetalheRemedio";
 import { PedirARede } from "./pages/PedirARede";
 
@@ -40,7 +42,12 @@ import "./styles/motion.css";
 import "./styles/demo.css";
 
 export default function GerenteExperiencia({ experiencia }: { experiencia: ExperienciaGerente }) {
-  const config = CONFIGS[experiencia];
+  // O gerente é o próprio visitante: o nome informado nas boas-vindas.
+  const nomeVisitante = usePaciente((p) => p.nome);
+  const config = useMemo(
+    () => ({ ...CONFIGS[experiencia], gerente: nomeVisitante || CONFIGS[experiencia].gerente }),
+    [experiencia, nomeVisitante],
+  );
   const { pathname } = useLocation();
   const onboardingConcluido = useProgresso((p) =>
     experiencia === "solicitante" ? p.onboardingSolicitanteConcluido : p.onboardingFornecedoraConcluido,
@@ -125,6 +132,7 @@ export default function GerenteExperiencia({ experiencia }: { experiencia: Exper
                 <Route path="remedios" element={<Remedios />} />
                 <Route path="pedidos" element={<Pedidos />} />
                 <Route path="funcionarios" element={<Funcionarios />} />
+                <Route path="operacao" element={<Operacao />} />
                 <Route path="*" element={<Navigate to={config.basePath} replace />} />
               </Routes>
             </main>

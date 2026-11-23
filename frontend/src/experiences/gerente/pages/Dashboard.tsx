@@ -35,13 +35,13 @@ export default function Dashboard() {
       { onClick: () => pedirARede(), icone: "truck", titulo: "Pedir à rede", descricao: "Um remédio de outra farmácia" },
       { to: `${config.basePath}/pedidos?aba=enviados`, icone: "clipboard", titulo: "Pedidos da rede", descricao: "Acompanhe o que você pediu", contador: emCurso.length },
       { to: `${config.basePath}/remedios`, icone: "pill", titulo: "Consultar estoque", descricao: "Remédios da unidade e da rede" },
-      { icone: "box", titulo: "Adicionar ao estoque", bloqueado: true },
+      { to: `${config.basePath}/operacao`, icone: "cube", titulo: "Operação 3D", descricao: "A farmácia em uma visão espacial" },
     ]
     : [
       { to: `${config.basePath}/pedidos`, icone: "truck", titulo: "Pedidos da rede", descricao: "Outras farmácias pedindo a você", contador: pendentes.length },
       { to: `${config.basePath}/remedios`, icone: "pill", titulo: "Consultar estoque", descricao: "Remédios da unidade e da rede" },
       { to: `${config.basePath}/funcionarios`, icone: "people", titulo: "Sua equipe", descricao: "Quem prepara os envios" },
-      { icone: "box", titulo: "Adicionar ao estoque", bloqueado: true },
+      { to: `${config.basePath}/operacao`, icone: "cube", titulo: "Operação 3D", descricao: "A farmácia em uma visão espacial" },
     ];
 
   return (

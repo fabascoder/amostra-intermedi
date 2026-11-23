@@ -33,3 +33,4 @@ export function primeiroNome(nomeCompleto, padrao = "") {
   const minusculo = primeiro.toLocaleLowerCase("pt-BR");
   return minusculo.charAt(0).toLocaleUpperCase("pt-BR") + minusculo.slice(1);
 }
+export const numero = (valor) => Number(valor ?? 0).toLocaleString("pt-BR");

@@ -18,6 +18,7 @@ const LINKS = [
   { path: "remedios", label: "Remédios", icon: "pill" },
   { path: "pedidos", label: "Pedidos da rede", icon: "truck" },
   { path: "funcionarios", label: "Funcionários", icon: "team" },
+  { path: "operacao", label: "Operação 3D", icon: "cube" },
 ];
 
 export const CONFIGS: Record<ExperienciaGerente, ConfigGerente> = {

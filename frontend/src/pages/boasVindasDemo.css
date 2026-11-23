@@ -1,0 +1,361 @@
+/* =====================================================================
+   Boas-vindas da amostra grátis (antes da Central).
+   Movimento: cada passo entra em camadas (desfoque + subida, em sequência),
+   o fundo respira devagar e a saída abre para a Central.
+   ===================================================================== */
+.bvd {
+  --bvd-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: safe center;
+  gap: 32px;
+  padding: max(24px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  overflow-x: hidden;
+  overflow-y: auto;
+  animation: bvd-entra 0.5s ease both;
+}
+.bvd.is-saindo {
+  animation: bvd-sai 0.65s var(--bvd-ease) forwards;
+  pointer-events: none;
+}
+
+/* ---------- Fundo ---------- */
+.bvd-fundo {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+.bvd-orbe {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.55;
+}
+.bvd-orbe.um {
+  width: min(70vw, 620px);
+  aspect-ratio: 1;
+  top: -18%;
+  left: -12%;
+  background: radial-gradient(circle, #bfe8cf 0%, transparent 70%);
+  animation: bvd-deriva 14s ease-in-out infinite alternate;
+}
+.bvd-orbe.dois {
+  width: min(60vw, 520px);
+  aspect-ratio: 1;
+  bottom: -20%;
+  right: -10%;
+  background: radial-gradient(circle, #cfe0f7 0%, transparent 70%);
+  animation: bvd-deriva 18s ease-in-out infinite alternate-reverse;
+}
+.bvd-grade {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgb(0 0 0 / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(0 0 0 / 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at center, #000 10%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 10%, transparent 70%);
+}
+
+/* ---------- Passos ---------- */
+.bvd-palco {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+}
+.bvd-passo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+}
+.bvd-passo > *,
+.bvd-form > * {
+  animation: bvd-camada 0.9s var(--bvd-ease) both;
+}
+.bvd-passo > :nth-child(2),
+.bvd-form > :nth-child(2) { animation-delay: 0.12s; }
+.bvd-passo > :nth-child(3),
+.bvd-form > :nth-child(3) { animation-delay: 0.24s; }
+.bvd-passo > :nth-child(4),
+.bvd-form > :nth-child(4) { animation-delay: 0.36s; }
+
+.bvd-marca {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.bvd-marca img {
+  width: min(260px, 64vw);
+  height: auto;
+  animation: bvd-logo 1.2s var(--bvd-ease) both;
+}
+.bvd-auvox {
+  margin-top: -6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: lowercase;
+  color: var(--color-text-muted);
+  animation: bvd-espaca 1.4s var(--bvd-ease) 0.35s both;
+}
+
+.bvd-titulo {
+  display: block;
+  margin: 0;
+  font-size: clamp(32px, 7vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  font-weight: 700;
+  text-wrap: balance;
+}
+.bvd-titulo strong {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+.bvd-passo-marca .bvd-titulo span {
+  display: inline-block;
+}
+.bvd-texto {
+  max-width: 420px;
+  margin: 0;
+  font-size: var(--text-body-lg);
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+.bvd-botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 0 26px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-text-primary);
+  color: #fff;
+  font: inherit;
+  font-size: var(--text-body-lg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.25s var(--bvd-ease), background 0.2s ease, box-shadow 0.25s ease;
+}
+.bvd-botao svg {
+  transition: transform 0.3s var(--bvd-ease);
+}
+.bvd-botao:hover {
+  background: #000;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.18);
+}
+.bvd-botao:hover svg {
+  transform: translateX(3px);
+}
+.bvd-botao:active {
+  transform: scale(0.97);
+}
+.bvd-botao:focus-visible {
+  outline: 3px solid var(--color-primary-ring);
+  outline-offset: 3px;
+}
+.bvd-botao:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* ---------- Relógio (passo 2) ---------- */
+.bvd-relogio {
+  position: relative;
+  width: 132px;
+  height: 132px;
+}
+.bvd-relogio svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.bvd-relogio circle {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+.bvd-relogio-trilho {
+  stroke: var(--color-border-subtle);
+}
+.bvd-relogio-arco {
+  stroke: var(--color-brand);
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: bvd-arco 1.4s var(--bvd-ease) 0.25s forwards;
+}
+.bvd-relogio-numero {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.bvd-relogio-numero small {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+/* ---------- Nome (passo 3) ---------- */
+.bvd-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+.bvd-campo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  max-width: 460px;
+  padding: 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.06);
+  transition: border-color 0.2s ease, box-shadow 0.3s ease;
+}
+.bvd-campo:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px var(--color-primary-ring), 0 12px 40px rgb(0 0 0 / 0.06);
+}
+.bvd-campo.is-erro {
+  border-color: var(--color-danger);
+  animation: bvd-treme 0.4s ease;
+}
+.bvd-campo input {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  padding: 0 16px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 18px;
+  color: var(--color-text-primary);
+  outline: none;
+}
+.bvd-campo .bvd-botao {
+  flex-shrink: 0;
+  min-height: 48px;
+  padding: 0 20px;
+}
+.bvd-erro {
+  margin: -8px 0 0;
+  font-size: var(--text-body);
+  color: var(--color-danger);
+}
+
+/* ---------- Pontos de progresso ---------- */
+.bvd-pontos {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  gap: 8px;
+}
+.bvd-pontos span {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--color-border);
+  transition: width 0.5s var(--bvd-ease), background 0.3s ease;
+}
+.bvd-pontos .is-feito {
+  background: var(--color-text-muted);
+}
+.bvd-pontos .is-atual {
+  width: 28px;
+  background: var(--color-text-primary);
+}
+
+/* Celular deitado: tudo menor para caber na altura */
+@media (max-height: 520px) {
+  .bvd { gap: 16px; }
+  .bvd-passo, .bvd-form { gap: 12px; }
+  .bvd-marca img { width: 170px; }
+  .bvd-titulo { font-size: 30px; }
+  .bvd-texto { font-size: 15px; }
+  .bvd-relogio { width: 92px; height: 92px; }
+  .bvd-relogio-numero { font-size: 26px; }
+  .bvd-botao { min-height: 46px; }
+}
+
+@media (max-width: 480px) {
+  .bvd-campo {
+    flex-direction: column;
+    padding: 8px;
+    border-radius: 24px;
+  }
+  .bvd-campo input {
+    width: 100%;
+    text-align: center;
+  }
+  .bvd-campo .bvd-botao {
+    width: 100%;
+  }
+}
+
+/* ---------- Animações ---------- */
+@keyframes bvd-entra {
+  from { opacity: 0; }
+}
+@keyframes bvd-sai {
+  to { opacity: 0; transform: scale(1.04); filter: blur(6px); }
+}
+@keyframes bvd-camada {
+  from { opacity: 0; transform: translateY(18px); filter: blur(8px); }
+}
+@keyframes bvd-logo {
+  from { opacity: 0; transform: scale(0.86); filter: blur(12px); }
+}
+@keyframes bvd-espaca {
+  from { opacity: 0; letter-spacing: 0.9em; }
+}
+@keyframes bvd-arco {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes bvd-deriva {
+  to { transform: translate(8%, 10%) scale(1.12); }
+}
+@keyframes bvd-treme {
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bvd,
+  .bvd *,
+  .bvd.is-saindo {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    transition: none !important;
+  }
+  .bvd-relogio-arco {
+    stroke-dashoffset: 0;
+  }
+}

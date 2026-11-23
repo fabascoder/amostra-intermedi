@@ -31,6 +31,12 @@ function SidebarIcon({ name }) {
         <path d="M10 21v-5h4v5M12 6v6m-3-3h6" />
       </>
     ),
+    cube: (
+      <>
+        <path d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3Z" />
+        <path d="M4 7.5 12 12l8-4.5M12 12v9" />
+      </>
+    ),
     truck: (
       <>
         <path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z" />

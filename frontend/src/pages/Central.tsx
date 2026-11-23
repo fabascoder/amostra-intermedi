@@ -4,15 +4,15 @@ import logo from "../assets/brand/logo-intermedi.webp";
 import { useEstadoPedidos, useAgoraDosPedidos } from "../demoServices/orderService";
 import { usePaciente } from "../demoServices/patientService";
 import { useAvaliacoes } from "../demoServices/feedbackService";
-import { iniciarSessao, verificarSessao } from "../session/session";
+import { verificarSessao } from "../session/session";
 import { formatarRestante, useAgora, useExpiraEm, useProgresso, useSituacaoSessao } from "../session/hooks";
 import { etapaRecebida, etapaSolicitado, ETAPAS_SOLICITANTE } from "../simulators/pedidos";
 import { AvaliacaoDialogo } from "../shared/Avaliacao";
-import { AvisoDemo } from "../shared/AvisoDemo";
 import { ContadorSessao } from "../shared/Sessao";
 import { ManagerIcon, PersonaIcon } from "../shared/icons";
 import { MascoteAvatar } from "../shared/Mascote";
 import type { ExperienciaId } from "../types";
+import { BoasVindasDemo } from "./BoasVindasDemo";
 import "./central.css";
 
 const EXPERIENCIAS: { id: ExperienciaId; rota: string; titulo: string; onde: string; papel: string }[] = [
@@ -114,8 +114,12 @@ export default function Central() {
   const avaliacoes = useAvaliacoes();
   const agoraDe = useSituacaoExperiencias();
   const pedido = (location.state as { pedir?: ExperienciaId } | null)?.pedir;
-  const [destino, setDestino] = useState<ExperienciaId | null>(pedido ?? null);
   const [avaliando, setAvaliando] = useState(false);
+  const nome = usePaciente((p) => p.nome);
+  // Boas-vindas (marca, tempo e nome) antes de mostrar as três experiências.
+  const precisaBoasVindas = situacao === "nenhuma" || (situacao === "ativa" && !nome);
+  // Fica aberta até a animação de saída terminar (a sessão e o nome mudam antes disso).
+  const [emBoasVindas, setEmBoasVindas] = useState(precisaBoasVindas);
 
   useEffect(() => {
     document.title = "Intermedi Demo";
@@ -123,20 +127,19 @@ export default function Central() {
   }, []);
 
   function escolher(id: ExperienciaId) {
-    const rota = EXPERIENCIAS.find((e) => e.id === id)!.rota;
-    if (situacao === "ativa" && verificarSessao()) {
-      navigate(rota);
-      return;
-    }
-    setDestino(id);
+    if (!verificarSessao()) return;
+    navigate(EXPERIENCIAS.find((e) => e.id === id)!.rota);
   }
 
-  function comecar() {
-    if (!destino) return;
-    iniciarSessao();
-    const rota = EXPERIENCIAS.find((e) => e.id === destino)!.rota;
-    setDestino(null);
-    navigate(rota, { replace: false });
+  // Quem tentou abrir uma experiência direto pelo endereço vai para ela depois das boas-vindas.
+  function concluirBoasVindas() {
+    setEmBoasVindas(false);
+    window.scrollTo({ top: 0 });
+    if (pedido) escolher(pedido);
+  }
+
+  if (precisaBoasVindas || emBoasVindas) {
+    return <BoasVindasDemo jaIniciada={situacao === "ativa"} onConcluir={concluirBoasVindas} />;
   }
 
   return (
@@ -157,6 +160,7 @@ export default function Central() {
       <main className="central-corpo" id="conteudo">
         <div className="central-principal">
           <div className="central-titulo">
+            {nome && <p className="central-ola">Olá, {nome}</p>}
             <h1>Como deseja explorar o Intermedi?</h1>
             <p>
               Escolha uma experiência. Dá para alternar quando quiser.
@@ -234,10 +238,12 @@ export default function Central() {
         <p>
           <strong>Intermedi</strong> Conectando farmácias. Aproximando o cuidado.
         </p>
-        <p>Versão demonstrativa · Um produto Auvox</p>
+        <p>
+          Versão demonstrativa · Um produto{" "}
+          <a href="https://auvox.vercel.app" target="_blank" rel="noopener noreferrer">Auvox</a>
+        </p>
       </footer>
 
-      {destino && <AvisoDemo onComecar={comecar} onFechar={() => setDestino(null)} />}
       {avaliando && <AvaliacaoDialogo onFechar={() => setAvaliando(false)} />}
     </div>
   );
