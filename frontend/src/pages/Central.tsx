@@ -4,7 +4,8 @@ import logo from "../assets/brand/logo-intermedi.webp";
 import { useEstadoPedidos, useAgoraDosPedidos } from "../demoServices/orderService";
 import { usePaciente } from "../demoServices/patientService";
 import { useAvaliacoes } from "../demoServices/feedbackService";
-import { verificarSessao } from "../session/session";
+import { marcarAgradecimentoVisto, verificarSessao } from "../session/session";
+import { Agradecimento } from "../shared/Agradecimento";
 import { formatarRestante, useAgora, useExpiraEm, useProgresso, useSituacaoSessao } from "../session/hooks";
 import { etapaRecebida, etapaSolicitado, ETAPAS_SOLICITANTE } from "../simulators/pedidos";
 import { AvaliacaoDialogo } from "../shared/Avaliacao";
@@ -121,6 +122,9 @@ export default function Central() {
   const precisaBoasVindas = situacao === "nenhuma" || (situacao === "ativa" && !nome);
   // Fica aberta até a animação de saída terminar (a sessão e o nome mudam antes disso).
   const [emBoasVindas, setEmBoasVindas] = useState(precisaBoasVindas);
+  // Depois das três experiências: agradecimento, uma única vez por sessão.
+  const agradecimentoVisto = useProgresso((p) => p.agradecimentoVisto);
+  const mostrarAgradecimento = situacao === "ativa" && totalVisitadas === EXPERIENCIAS.length && !agradecimentoVisto && !avaliando;
 
   useEffect(() => {
     document.title = "Intermedi Demo";
@@ -252,6 +256,16 @@ export default function Central() {
         </p>
       </footer>
 
+      {mostrarAgradecimento && (
+        <Agradecimento
+          nome={nome}
+          onAvaliar={() => {
+            marcarAgradecimentoVisto();
+            setAvaliando(true);
+          }}
+          onVoltar={marcarAgradecimentoVisto}
+        />
+      )}
       {avaliando && <AvaliacaoDialogo onFechar={() => setAvaliando(false)} />}
     </div>
   );

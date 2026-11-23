@@ -24,6 +24,7 @@ const PROGRESSO_INICIAL: Progresso = {
   onboardingFornecedoraConcluido: false,
   simulacoesConcluidas: {},
   conviteAvaliacaoDispensado: false,
+  agradecimentoVisto: false,
 };
 
 const ehSessao = (valor: unknown): valor is Sessao => {
@@ -138,6 +139,11 @@ export function concluirOnboarding(experiencia: "solicitante" | "fornecedora"): 
 export function marcarSimulacaoConcluida(experiencia: "solicitante" | "fornecedora"): void {
   if (progressoStore.get().simulacoesConcluidas[experiencia]) return;
   atualizarProgresso((p) => ({ ...p, simulacoesConcluidas: { ...p.simulacoesConcluidas, [experiencia]: Date.now() } }));
+}
+
+export function marcarAgradecimentoVisto(): void {
+  if (progressoStore.get().agradecimentoVisto) return;
+  atualizarProgresso((p) => ({ ...p, agradecimentoVisto: true }));
 }
 
 export function dispensarConviteAvaliacao(): void {

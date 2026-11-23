@@ -115,6 +115,8 @@ export type Progresso = {
   onboardingFornecedoraConcluido: boolean;
   simulacoesConcluidas: Partial<Record<"solicitante" | "fornecedora", number>>;
   conviteAvaliacaoDispensado: boolean;
+  /** Agradecimento mostrado depois das três experiências. */
+  agradecimentoVisto: boolean;
 };
 
 export type AlvoAvaliacao = "geral" | "paciente" | "solicitante" | "fornecedora";
