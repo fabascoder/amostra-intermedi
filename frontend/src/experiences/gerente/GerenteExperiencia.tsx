@@ -11,6 +11,7 @@ import { usePaciente } from "../../demoServices/patientService";
 import { concluirOnboarding, marcarVisita } from "../../session/session";
 import { useProgresso } from "../../session/hooks";
 import { ContadorSessao, TrocarExperiencia } from "../../shared/Sessao";
+import { VideoPlataforma } from "../../shared/VideoPlataforma";
 import BoasVindas from "./components/BoasVindas";
 import Notificacoes from "./components/Notificacoes";
 import PersonaAvatar from "./components/PersonaAvatar";
@@ -127,6 +128,13 @@ export default function GerenteExperiencia({ experiencia }: { experiencia: Exper
               </div>
             </div>
             <main id="conteudo" tabIndex={-1} className={`mgr-main${naRaiz ? "" : " directory-layout"}`}>
+              <aside className="demo-beta-faixa" aria-label="Sobre esta versão">
+                <span className="demo-beta-selo">Beta</span>
+                <p>
+                  Esta é uma amostra em versão beta: ainda faltam funcionalidades que a plataforma completa do Intermedi tem.
+                </p>
+                <VideoPlataforma className="demo-beta-video" />
+              </aside>
               <Routes>
                 <Route index element={<Dashboard />} />
                 <Route path="remedios" element={<Remedios />} />

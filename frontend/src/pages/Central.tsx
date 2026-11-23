@@ -13,6 +13,7 @@ import { ManagerIcon, PersonaIcon } from "../shared/icons";
 import { MascoteAvatar } from "../shared/Mascote";
 import type { ExperienciaId } from "../types";
 import { BoasVindasDemo } from "./BoasVindasDemo";
+import { VideoPlataforma } from "../shared/VideoPlataforma";
 import "./central.css";
 
 const EXPERIENCIAS: { id: ExperienciaId; rota: string; titulo: string; onde: string; papel: string }[] = [
@@ -165,6 +166,13 @@ export default function Central() {
             <p>
               Escolha uma experiência. Dá para alternar quando quiser.
             </p>
+            <div className="central-beta">
+              <p>
+                <strong>Amostra em versão beta.</strong> Aqui você vê só uma parte do Intermedi: a plataforma completa
+                tem mais funcionalidades.
+              </p>
+              <VideoPlataforma />
+            </div>
           </div>
 
           <ul className="central-opcoes" aria-label="Experiências">

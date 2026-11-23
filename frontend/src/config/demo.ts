@@ -47,3 +47,9 @@ export const CONTACT: { email: string; phone: string; site: string } = {
   phone: "",
   site: "",
 };
+
+/**
+ * Vídeo da plataforma completa (como o Intermedi realmente é). Enquanto estiver
+ * vazio, o botão "Ver vídeo da plataforma" avisa que o vídeo chega em breve.
+ */
+export const VIDEO_PLATAFORMA_URL = "";

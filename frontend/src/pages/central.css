@@ -88,6 +88,33 @@
   animation: central-sobe var(--t-reveal) var(--ease-expo) 80ms backwards;
 }
 
+.central-titulo .central-beta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-4);
+  max-width: 760px;
+  margin-top: var(--space-6);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid #f1deb2;
+  border-radius: var(--radius-lg);
+  background: #fdf4e3;
+  animation: central-sobe var(--t-reveal) var(--ease-expo) 120ms backwards;
+}
+.central-titulo .central-beta p {
+  flex: 1 1 280px;
+  max-width: none;
+  margin: 0;
+  font-size: var(--text-body);
+  line-height: 1.5;
+  color: #6b4204;
+  animation: none;
+}
+.central-titulo .central-beta strong {
+  color: #9a5b06;
+}
+
 /* ---------- As três opções ---------- */
 .central-opcoes {
   display: grid;

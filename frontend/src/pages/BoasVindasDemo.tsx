@@ -8,6 +8,8 @@ import logo from "../assets/brand/logo-intermedi.webp";
 import { definirNome, limparNome } from "../demoServices/patientService";
 import { sessionDurationMs } from "../config/demo";
 import { iniciarSessao, verificarSessao } from "../session/session";
+import { AssinaturaAuvox } from "../shared/AssinaturaAuvox";
+import { VideoPlataforma } from "../shared/VideoPlataforma";
 import "./boasVindasDemo.css";
 
 type Passo = 0 | 1 | 2;
@@ -55,20 +57,26 @@ export function BoasVindasDemo({ jaIniciada, onConcluir }: { jaIniciada: boolean
         <span className="bvd-grade" />
       </div>
 
+      <div className="bvd-meio">
       <div className="bvd-palco">
         {passo === 0 && (
           <section key="p0" className="bvd-passo bvd-passo-marca">
             <div className="bvd-marca">
               <img src={logo} alt="Intermedi" width="1920" height="1080" />
-              <span className="bvd-auvox">auvox</span>
             </div>
+            <span className="bvd-beta">Amostra · Versão beta</span>
             <h1 id={`${uid}-titulo-0`} className="bvd-titulo">
               <span>Boas-vindas à</span> <span>amostra grátis</span>
             </h1>
-            <p className="bvd-texto">Conheça o Intermedi por dentro, do pedido entre farmácias ao aplicativo do paciente.</p>
-            <button type="button" className="bvd-botao" onClick={() => setPasso(1)}>
-              Continuar <Seta />
-            </button>
+            <p className="bvd-texto">
+              Esta é só uma parte do Intermedi, em versão beta. A plataforma completa tem muito mais funcionalidades.
+            </p>
+            <div className="bvd-acoes">
+              <button type="button" className="bvd-botao" onClick={() => setPasso(1)}>
+                Continuar <Seta />
+              </button>
+              <VideoPlataforma />
+            </div>
           </section>
         )}
 
@@ -126,6 +134,9 @@ export function BoasVindasDemo({ jaIniciada, onConcluir }: { jaIniciada: boolean
           ))}
         </div>
       )}
+      </div>
+
+      <AssinaturaAuvox className="bvd-assinatura" />
     </div>
   );
 }

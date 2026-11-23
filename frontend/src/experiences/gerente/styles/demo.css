@@ -416,3 +416,48 @@ button.mgr-ferramenta {
 .demo-equipe {
   padding: var(--space-5);
 }
+
+/* ---------- Aviso de versão beta (todas as telas do gerente) ---------- */
+.demo-beta-faixa {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 0 0 20px;
+  padding: 10px 12px 10px 14px;
+  border: 1px solid #f1deb2;
+  border-radius: 14px;
+  background: #fdf4e3;
+  color: #6b4204;
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+.demo-beta-faixa p {
+  flex: 1 1 260px;
+  margin: 0;
+}
+.demo-beta-selo {
+  flex-shrink: 0;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #9a5b06;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.demo-beta-faixa .video-plat-grupo {
+  align-items: flex-end;
+}
+.demo-beta-faixa .video-plat {
+  min-height: 36px;
+  font-size: 13px;
+}
+.demo-beta-faixa .video-plat-icone {
+  width: 24px;
+  height: 24px;
+}
+@media (max-width: 640px) {
+  .demo-beta-faixa .video-plat-grupo { align-items: flex-start; }
+}
