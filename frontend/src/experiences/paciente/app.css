@@ -13,6 +13,9 @@
   --a-primary-bright: #1e9e6a;
   --a-primary-light: #8fe0b5;
   --a-header: #0e6b50;
+  /* verde fixo de "tem estoque"/"tomado": não muda com o mascote */
+  --a-ok: #0e6b50;
+  --a-ok-soft: #e3f4ea;
   --a-bg: #f5f7f6;
   --a-surface: #ffffff;
   --a-surface-muted: #f0f3f1;
@@ -43,6 +46,34 @@
   color: var(--a-text);
   font-family: var(--a-font);
 }
+/* Cor do mascote escolhido: cabeçalhos, abas, botões e destaques seguem ele */
+.app-paciente[data-mascote="lume"] {
+  --a-primary: #c2501c;
+  --a-primary-dark: #b2481a;
+  --a-primary-darker: #8f3812;
+  --a-primary-soft: #fdebe2;
+  --a-primary-border: #f8d2bd;
+  --a-primary-bright: #e2662b;
+  --a-primary-light: #f5b08a;
+  --a-header: #c2501c;
+}
+.app-paciente[data-mascote="luar"] {
+  --a-primary: #3d52c4;
+  --a-primary-dark: #3346ae;
+  --a-primary-darker: #283a92;
+  --a-primary-soft: #ecebfb;
+  --a-primary-border: #cdd6f7;
+  --a-primary-bright: #5b6ce0;
+  --a-primary-light: #aeb9f5;
+  --a-header: #3d52c4;
+}
+.app-paciente,
+.app-paciente .a-cab,
+.app-paciente .a-botao,
+.app-paciente .a-aba {
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
 .app-paciente *,
 .a-folha-modal * {
   box-sizing: border-box;
@@ -261,7 +292,7 @@
   transform: scale(0.985);
 }
 
-.tom-green { --tom-bg: var(--a-primary-soft); --tom-fg: var(--a-primary-dark); }
+.tom-green { --tom-bg: var(--a-ok-soft); --tom-fg: var(--a-ok); }
 .tom-orange { --tom-bg: var(--a-orange-soft); --tom-fg: var(--a-orange); }
 .tom-blue { --tom-bg: var(--a-blue-soft); --tom-fg: var(--a-blue); }
 .tom-purple { --tom-bg: var(--a-purple-soft); --tom-fg: var(--a-purple); }
@@ -387,7 +418,7 @@
 .b-solid:hover:not(:disabled) { background: var(--a-primary-darker); }
 .b-outline { background: var(--a-surface); color: var(--a-text); box-shadow: inset 0 0 0 1.5px var(--a-border); }
 .b-ghost { background: transparent; color: var(--a-primary-dark); min-height: 44px; }
-.b-solidLight { background: #fff; color: #0e6b50; }
+.b-solidLight { background: #fff; color: var(--a-primary); }
 .b-outlineLight { background: transparent; color: #fff; box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / 0.6); }
 .b-danger { background: var(--a-danger-soft); color: var(--a-danger); }
 .b-soft { background: var(--a-primary-soft); color: var(--a-primary-dark); }
@@ -530,7 +561,7 @@
   width: 10px;
   height: 10px;
   border-radius: 5px;
-  border: 1.5px solid #0e6b50;
+  border: 1.5px solid var(--a-primary);
   background: var(--a-warning);
 }
 .a-ola {
@@ -628,6 +659,198 @@
 .a-corpo-sobe { margin-top: -44px; padding-top: 0; gap: 16px; }
 .a-corpo-sobe-mais { margin-top: -50px; padding-top: 0; gap: 16px; }
 .a-corpo-sobe-muito { margin-top: -56px; padding-top: 0; }
+
+/* ---------- Balão do mascote (tela inicial) ---------- */
+.a-balao-mascote {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+.a-balao-mascote-avatar {
+  flex-shrink: 0;
+  filter: drop-shadow(0 6px 12px rgb(13 35 28 / 0.12));
+  animation: a-balao-avatar 4s ease-in-out infinite;
+}
+@keyframes a-balao-avatar {
+  50% { transform: translateY(-3px) rotate(-2deg); }
+}
+.a-balao-mascote-fala {
+  --a-tempo: var(--a-primary);
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 22px 22px 22px 6px;
+  background: var(--a-surface);
+  box-shadow: var(--a-sombra);
+}
+.a-balao-mascote-fala::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  bottom: 10px;
+  width: 16px;
+  height: 16px;
+  background: var(--a-surface);
+  clip-path: polygon(100% 0, 0 100%, 100% 100%);
+}
+.a-balao-mascote-texto {
+  margin: 0;
+  font-size: 15px;
+  line-height: 22px;
+  animation: a-tela-entra 0.45s var(--a-ease) both;
+}
+.a-cronometro {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 4px 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--a-tempo) 10%, #fff);
+  transition: background-color 1s linear;
+}
+.a-cronometro-rotulo {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--a-text-2) !important;
+}
+.a-cronometro-valor {
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--a-tempo);
+  transition: color 1s linear;
+}
+.a-cronometro-trilho {
+  grid-column: 1 / -1;
+  height: 6px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--a-tempo) 18%, #fff);
+  overflow: hidden;
+}
+.a-cronometro-trilho i {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--a-tempo);
+  transition: width 1s linear, background-color 1s linear;
+}
+.a-balao-mascote.is-atrasada .a-cronometro {
+  animation: a-pulso-atraso 1.6s ease-in-out infinite;
+}
+@keyframes a-pulso-atraso {
+  50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--a-tempo) 22%, transparent); }
+}
+.a-balao-mascote-acoes {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ---------- Remédios por categoria (fileiras) ---------- */
+.a-secoes {
+  display: grid;
+  gap: 10px;
+}
+.a-secao-cat {
+  border-radius: 20px;
+  background: var(--a-surface);
+  box-shadow: var(--a-sombra);
+  overflow: hidden;
+}
+.a-secao-cat-cab {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+}
+.a-secao-cat-acao {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--a-primary-soft);
+  color: var(--a-primary-dark);
+  font-size: 13px;
+  font-weight: 600;
+}
+.a-secao-cat-acao .ion {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s var(--a-ease);
+}
+.a-secao-cat.is-aberta .a-secao-cat-acao .ion {
+  transform: rotate(180deg);
+}
+.a-secao-cat:not(.is-aberta) .a-secao-cat-acao {
+  background: var(--a-primary);
+  color: #fff;
+}
+.a-secao-cat-corpo {
+  padding: 0 0 14px;
+}
+.a-fileira {
+  display: flex;
+  gap: 10px;
+  padding: 2px 14px 4px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: 14px;
+  scrollbar-width: none;
+}
+.a-fileira::-webkit-scrollbar { display: none; }
+.a-fileira-card {
+  flex: 0 0 132px;
+  display: grid;
+  justify-items: start;
+  gap: 2px;
+  padding: 10px;
+  border: 1px solid var(--a-border);
+  border-radius: 18px;
+  background: var(--a-surface);
+  color: inherit;
+  text-align: left;
+  scroll-snap-align: start;
+  animation: a-tela-entra 0.45s var(--a-ease) both;
+  animation-delay: calc(var(--i) * 50ms);
+}
+.a-fileira-card .a-foto-remedio {
+  margin-bottom: 6px;
+}
+.a-fileira-card .t-bodyBold {
+  width: 100%;
+  font-size: 14px;
+  line-height: 20px;
+}
+.a-fileira-estoque {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--a-ok);
+}
+.a-fileira-estoque i {
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background: currentColor;
+}
+.a-fileira-estoque.is-falta {
+  color: var(--a-muted);
+}
 
 .a-lembrete {
   display: flex;
@@ -777,6 +1000,33 @@
   gap: 14px;
   border-radius: 24px;
 }
+.a-cartao-farmacia {
+  overflow: hidden;
+}
+.a-cartao-farmacia-foto {
+  display: block;
+  margin: calc(-1 * var(--a-card-pad, 16px)) calc(-1 * var(--a-card-pad, 16px)) 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+/* Fotos (ilustrações) */
+.a-farmacia-fachada {
+  border-radius: 22px;
+  box-shadow: var(--a-sombra);
+}
+.a-foto-remedio {
+  display: inline-flex;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.a-foto-remedio svg { display: block; }
+.a-foto-farmacia {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+}
+.a-foto-farmacia svg { display: block; }
 .a-cartao-farmacia-topo {
   display: flex;
   align-items: flex-start;
@@ -1095,12 +1345,12 @@
   font: 600 14px "Poppins", sans-serif;
 }
 .a-horarios button.is-ativo {
-  background: #0e6b50;
+  background: var(--a-primary);
   color: #fff;
 }
 .a-folha-modal .a-botao { font-family: "Poppins", sans-serif; }
-.a-folha-modal .b-solid { background: #0e6b50; color: #fff; }
-.a-folha-modal .b-ghost { background: transparent; color: #0e6b50; }
+.a-folha-modal .b-solid { background: var(--a-primary, #0e6b50); color: #fff; }
+.a-folha-modal .b-ghost { background: transparent; color: var(--a-primary, #0e6b50); }
 
 /* ---------- Estoque da farmácia ---------- */
 .a-item-estoque {
@@ -1437,7 +1687,7 @@
   height: 18px;
   border-radius: 5px;
   background: #fff;
-  color: #0e6b50;
+  color: var(--a-primary);
   font-size: 11px;
   letter-spacing: 0;
 }
@@ -1805,3 +2055,264 @@
     animation: none !important;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .a-balao-mascote-avatar,
+  .a-balao-mascote-texto,
+  .a-fileira-card,
+  .a-balao-mascote.is-atrasada .a-cronometro { animation: none; }
+}
+
+/* ---------- Busca geral: só o fundo e o campo ---------- */
+.a-buscar {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding: calc(14px + env(safe-area-inset-top)) 20px 32px;
+  background:
+    radial-gradient(120% 60% at 50% 0%, var(--a-primary-soft) 0%, transparent 70%),
+    var(--a-bg);
+}
+.a-buscar-topo {
+  display: flex;
+}
+.a-buscar-campo-area {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+  margin-top: 28vh;
+  transition: margin-top 0.5s var(--a-ease);
+}
+.a-buscar.tem-busca .a-buscar-campo-area {
+  margin-top: 16px;
+}
+.a-buscar-convite {
+  text-align: center;
+  animation: a-tela-entra 0.5s var(--a-ease) both;
+}
+.a-buscar-campo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 60px;
+  padding: 0 16px 0 18px;
+  border-radius: 30px;
+  background: var(--a-surface);
+  box-shadow: 0 12px 34px rgb(13 35 28 / 0.1);
+  transition: box-shadow 0.25s ease;
+}
+.a-buscar-campo:focus-within {
+  box-shadow: 0 0 0 3px var(--a-primary-light), 0 12px 34px rgb(13 35 28 / 0.1);
+}
+.a-buscar-campo input {
+  flex: 1;
+  min-width: 0;
+  height: 56px;
+  border: 0;
+  background: transparent;
+  font: 400 17px var(--a-font);
+  color: var(--a-text);
+  outline: none;
+}
+.a-buscar-campo input::-webkit-search-cancel-button { display: none; }
+.a-buscar-campo input:focus-visible { outline: none; }
+.a-buscar-resultados {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+.a-buscar-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px;
+  border: 0;
+  border-radius: 20px;
+  background: var(--a-surface);
+  box-shadow: var(--a-sombra);
+  color: inherit;
+  text-align: left;
+  animation: a-buscar-card 0.45s var(--a-ease) both;
+  animation-delay: calc(min(var(--i), 8) * 45ms);
+}
+@keyframes a-buscar-card {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+}
+.a-buscar-tipo {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--a-primary-dark) !important;
+}
+.a-buscar-fachada {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  overflow: hidden;
+}
+.a-buscar-nada {
+  text-align: center;
+  padding: 24px 8px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .a-buscar-card, .a-buscar-convite { animation: none; }
+  .a-buscar-campo-area { transition: none; }
+}
+
+/* ---------- Filtro dos remédios ---------- */
+.a-busca-com-filtro {
+  display: flex;
+  gap: 10px;
+}
+.a-busca-com-filtro .a-busca-campo {
+  flex: 1;
+  min-width: 0;
+}
+.a-filtro-botao {
+  position: relative;
+  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+  width: 58px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--a-surface);
+  color: var(--a-primary-dark);
+}
+.a-filtro-botao.is-ligado {
+  background: var(--a-primary-soft);
+  box-shadow: inset 0 0 0 2px #fff;
+}
+.a-filtro-contador {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background: var(--a-heart);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+}
+.a-resultado-linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.a-limpar-filtros {
+  padding: 6px 0;
+  border: 0;
+  background: none;
+  color: var(--a-primary-dark, #0e6b50);
+  font: 600 14px var(--a-font, "Poppins", sans-serif);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.a-folha-filtros {
+  max-height: 88svh;
+}
+.a-folha-filtros .a-folha-modal-corpo {
+  gap: 18px;
+  overflow-y: auto;
+  max-height: 88svh;
+}
+.a-filtros-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.a-filtro-grupo {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.a-filtro-grupo legend {
+  padding: 0;
+  margin-bottom: 10px;
+  color: #0d231c;
+}
+.a-filtro-opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.a-filtro-opcao {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1.5px solid #e3e8e5;
+  border-radius: 999px;
+  background: #fff;
+  color: #0d231c;
+  font: 500 14px "Poppins", sans-serif;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.a-filtro-opcao.is-ativa {
+  border-color: var(--a-primary, #0e6b50);
+  background: var(--a-primary-soft, #e3f4ea);
+  color: var(--a-primary-dark, #0e6b50);
+  font-weight: 600;
+}
+.a-filtro-interruptor {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 16px;
+  background: #f5f7f6;
+  cursor: pointer;
+}
+.a-filtro-interruptor input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.a-filtro-interruptor i {
+  position: relative;
+  flex-shrink: 0;
+  width: 50px;
+  height: 30px;
+  border-radius: 15px;
+  background: #cfd6d2;
+  transition: background-color 0.2s ease;
+}
+.a-filtro-interruptor i::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
+  transition: transform 0.25s var(--a-ease, ease);
+}
+.a-filtro-interruptor input:checked + i {
+  background: var(--a-primary, #0e6b50);
+}
+.a-filtro-interruptor input:checked + i::after {
+  transform: translateX(20px);
+}
+.a-filtro-interruptor input:focus-visible + i {
+  outline: 3px solid var(--a-primary-light, #8fe0b5);
+  outline-offset: 2px;
+}
+
+/* o anel fica no campo inteiro (.a-entrada:focus-within), não no input */
+.a-entrada input:focus-visible { outline: none; }
+.a-busca-campo input:focus-visible { outline: none; }

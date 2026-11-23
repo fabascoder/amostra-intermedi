@@ -11,6 +11,7 @@ import { MASCOTES } from "../../shared/Mascote";
 import { ContadorSessao, TrocarExperiencia } from "../../shared/Sessao";
 import { Ionicon } from "./components/Ionicon";
 import Broto from "./telas/Broto";
+import Buscar from "./telas/Buscar";
 import Comprimidos from "./telas/Comprimidos";
 import Entrada from "./telas/Entrada";
 import Farmacia from "./telas/Farmacia";
@@ -61,7 +62,7 @@ function BarraAbas() {
   );
 }
 
-const TELAS_SEM_ABAS = /\/aplicativo\/(medicamento|farmacia|notificacoes|comprimidos|mascote)\b/;
+const TELAS_SEM_ABAS = /\/aplicativo\/(medicamento|farmacia|notificacoes|comprimidos|mascote|buscar)\b/;
 
 function Telefone() {
   const { pathname } = useLocation();
@@ -78,6 +79,7 @@ function Telefone() {
         <Routes>
           <Route index element={<Inicio />} />
           <Route path="remedios" element={<Remedios />} />
+          <Route path="buscar" element={<Buscar />} />
           <Route path="farmacias" element={<Farmacias />} />
           <Route path="broto" element={<Broto />} />
           <Route path="favoritos" element={<Favoritos />} />
@@ -100,7 +102,7 @@ function Apresentacao() {
   const navigate = useNavigate();
   const nome = usePaciente((p) => p.nome);
   const atalhos = [
-    { titulo: "Buscar um remédio", texto: "Veja onde tem estoque perto de você.", destino: "/aplicativo/remedios?buscar=1", icone: "search-outline" },
+    { titulo: "Buscar um remédio", texto: "Veja onde tem estoque perto de você.", destino: "/aplicativo/buscar", icone: "search-outline" },
     { titulo: "Ver as farmácias", texto: "Horários e o estoque de cada unidade.", destino: "/aplicativo/farmacias", icone: "add-circle-outline" },
     { titulo: "Montar sua rotina", texto: "Adicione um remédio e confirme as doses.", destino: "/aplicativo/comprimidos", icone: "alarm-outline" },
     { titulo: "Perguntar ao mascote", texto: "Respostas sobre remédios e o app.", destino: "/aplicativo/broto", icone: "chatbubble-ellipses-outline" },
@@ -137,6 +139,7 @@ function Apresentacao() {
 
 export default function PacienteApp() {
   const nome = usePaciente((p) => p.nome);
+  const mascote = usePaciente((p) => p.mascote);
   useEffect(() => {
     marcarVisita("paciente");
     document.title = "Aplicativo do paciente | Intermedi Demo";
@@ -145,7 +148,7 @@ export default function PacienteApp() {
     };
   }, []);
   return (
-    <div className="app-paciente">
+    <div className="app-paciente" data-mascote={mascote}>
       <div className="a-palco">
         <Apresentacao />
         <div className="a-moldura">{nome ? <Telefone /> : <div className="a-telefone"><Entrada /></div>}</div>
