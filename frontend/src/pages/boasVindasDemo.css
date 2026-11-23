@@ -99,27 +99,6 @@
   height: auto;
   animation: bvd-logo 1.2s var(--bvd-ease) both;
 }
-.bvd-beta {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border: 1px solid #f1deb2;
-  border-radius: 999px;
-  background: #fdf4e3;
-  color: #9a5b06;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.bvd-acoes {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 12px;
-}
 /* Miolo (passo + pontos) no centro; a assinatura da Auvox fica no pé da tela */
 .bvd-meio {
   display: flex;
@@ -149,6 +128,10 @@
 }
 .bvd-passo-marca .bvd-titulo span {
   display: inline-block;
+}
+.bvd-texto strong {
+  color: #9a5b06;
+  font-weight: 700;
 }
 .bvd-texto {
   max-width: 420px;
@@ -328,7 +311,6 @@
   .bvd-marca img { width: min(190px, 50vw); }
   .bvd-titulo { font-size: clamp(30px, 6.4vw, 44px); }
   .bvd-texto { font-size: 16px; }
-  .bvd-acoes { gap: 10px; }
 }
 
 /* Celular deitado: tudo menor para caber na altura */

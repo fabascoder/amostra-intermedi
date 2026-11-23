@@ -107,6 +107,93 @@ function PainelSessao({ visitadas }: { visitadas: number }) {
   );
 }
 
+/** Os três aparelhos da rede: cada experiência da amostra é um deles. */
+const APARELHOS: { id: string; aparelho: "computador" | "celular"; titulo: string; onde: string; texto: string }[] = [
+  {
+    id: "solicitante",
+    aparelho: "computador",
+    titulo: "Farmácia que pede",
+    onde: "Computador da farmácia solicitante",
+    texto: "O gerente vê que falta um remédio e pede para outras farmácias da rede.",
+  },
+  {
+    id: "fornecedora",
+    aparelho: "computador",
+    titulo: "Farmácia que atende",
+    onde: "Outro computador, em outra farmácia",
+    texto: "O gerente recebe o pedido, aceita e a equipe prepara o envio.",
+  },
+  {
+    id: "paciente",
+    aparelho: "celular",
+    titulo: "Aplicativo do paciente",
+    onde: "Celular de qualquer pessoa",
+    texto: "O público procura o remédio, vê em qual farmácia tem e cuida das doses.",
+  },
+];
+
+function IconeAparelho({ tipo }: { tipo: "computador" | "celular" }) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {tipo === "computador" ? (
+        <>
+          <rect x="3" y="4" width="18" height="12" rx="2" />
+          <path d="M9 20h6M12 16v4" />
+        </>
+      ) : (
+        <>
+          <rect x="7" y="2.5" width="10" height="19" rx="2.5" />
+          <path d="M11 18.5h2" />
+        </>
+      )}
+    </svg>
+  );
+}
+
+/** Aviso de versão beta e, em "Ler mais", o que é esta amostra: três plataformas juntas. */
+function SobreAmostra() {
+  const [aberto, setAberto] = useState(false);
+  return (
+    <div className={`central-beta${aberto ? " is-aberto" : ""}`}>
+      <div className="central-beta-topo">
+        <p>
+          <strong>Amostra em versão beta.</strong> Aqui você vê só uma parte do Intermedi: a plataforma completa tem
+          mais funcionalidades.{" "}
+          <button type="button" className="central-beta-mais" aria-expanded={aberto} aria-controls="central-beta-detalhe" onClick={() => setAberto((a) => !a)}>
+            {aberto ? "Ler menos" : "Ler mais"}
+          </button>
+        </p>
+        <VideoPlataforma />
+      </div>
+      {aberto && (
+        <div id="central-beta-detalhe" className="central-beta-detalhe">
+          <p>
+            Na vida real, o Intermedi são <strong>três plataformas diferentes</strong>, cada uma no seu aparelho:
+          </p>
+          <ol className="central-aparelhos">
+            {APARELHOS.map((a, i) => (
+              <li key={a.id} style={{ "--i": i } as React.CSSProperties}>
+                <span className={`central-aparelho-icone is-${a.aparelho}`}>
+                  <IconeAparelho tipo={a.aparelho} />
+                </span>
+                <span>
+                  <strong>{a.titulo}</strong>
+                  <small>{a.onde}</small>
+                  {a.texto}
+                </span>
+              </li>
+            ))}
+          </ol>
+          <p>
+            Esta amostra é a <strong>exposição das três juntas</strong>, num lugar só, para você conhecer cada lado da rede
+            sem precisar de três aparelhos.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Central() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -170,13 +257,7 @@ export default function Central() {
             <p>
               Escolha uma experiência. Dá para alternar quando quiser.
             </p>
-            <div className="central-beta">
-              <p>
-                <strong>Amostra em versão beta.</strong> Aqui você vê só uma parte do Intermedi: a plataforma completa
-                tem mais funcionalidades.
-              </p>
-              <VideoPlataforma />
-            </div>
+            <SobreAmostra />
           </div>
 
           <ul className="central-opcoes" aria-label="Experiências">
