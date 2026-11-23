@@ -15,12 +15,11 @@ import { MascoteAvatar } from "../shared/Mascote";
 import type { ExperienciaId } from "../types";
 import "./central.css";
 
-const EXPERIENCIAS: { id: ExperienciaId; rota: string; titulo: string; descricao: string; onde: string; papel: string }[] = [
+const EXPERIENCIAS: { id: ExperienciaId; rota: string; titulo: string; onde: string; papel: string }[] = [
   {
     id: "solicitante",
     rota: "/solicitante",
     titulo: "Quero solicitar medicamentos",
-    descricao: "Experimente o sistema como gerente de uma farmácia solicitante.",
     onde: "Farmácia Central · Guaianases",
     papel: "Gerente",
   },
@@ -28,7 +27,6 @@ const EXPERIENCIAS: { id: ExperienciaId; rota: string; titulo: string; descricao
     id: "fornecedora",
     rota: "/fornecedora",
     titulo: "Quero atender solicitações",
-    descricao: "Experimente o sistema como gerente de uma farmácia fornecedora.",
     onde: "Farmácia Jardim · Jardim Soares",
     papel: "Gerente",
   },
@@ -36,7 +34,6 @@ const EXPERIENCIAS: { id: ExperienciaId; rota: string; titulo: string; descricao
     id: "paciente",
     rota: "/aplicativo",
     titulo: "Quero conhecer o aplicativo",
-    descricao: "Explore a experiência do paciente no aplicativo Intermedi.",
     onde: "Aplicativo do paciente",
     papel: "Paciente",
   },
@@ -93,7 +90,7 @@ function PainelSessao({ visitadas }: { visitadas: number }) {
       ) : (
         <>
           <p className="central-relogio is-parado" aria-hidden="true">3:00:00</p>
-          <p className="central-relogio-legenda">O acesso de três horas começa na primeira experiência.</p>
+          <p className="central-relogio-legenda">Começa na primeira experiência.</p>
         </>
       )}
       <div className="central-progresso">
@@ -162,8 +159,7 @@ export default function Central() {
           <div className="central-titulo">
             <h1>Como deseja explorar o Intermedi?</h1>
             <p>
-              Escolha um lado da rede. As três experiências usam a mesma sessão de três horas, e você pode alternar entre
-              elas quando quiser.
+              Escolha uma experiência. Dá para alternar quando quiser.
             </p>
           </div>
 
@@ -186,7 +182,6 @@ export default function Central() {
                     </span>
                     <span className="central-opcao-texto">
                       <span className="central-opcao-titulo">{exp.titulo}</span>
-                      <span className="central-opcao-descricao">{exp.descricao}</span>
                       <span className="central-opcao-meta">
                         <span>{exp.papel} · {exp.onde}</span>
                         {visitada && (
@@ -214,30 +209,24 @@ export default function Central() {
           <section className="central-sobre" aria-labelledby="central-sobre-titulo">
             <h2 id="central-sobre-titulo">Sobre esta demonstração</h2>
             <ul>
-              <li>As farmácias, pessoas, remédios e pedidos são fictícios.</li>
-              <li>Solicitações, preparo e entregas são simulados no seu aparelho, em segundos.</li>
-              <li>Nada altera dados reais nem é enviado a um servidor.</li>
-              <li>Cada visitante tem a própria demonstração, independente das outras.</li>
+              <li>Todos os dados são fictícios.</li>
+              <li>Tudo é simulado no seu aparelho.</li>
             </ul>
           </section>
 
-          <section className="central-avaliacao" aria-labelledby="central-avaliacao-titulo">
-            <h2 id="central-avaliacao-titulo">O que achou do Intermedi?</h2>
-            {situacao === "ativa" ? (
-              <>
-                <p>
-                  {avaliacoes.length
-                    ? `Você registrou ${avaliacoes.length} ${avaliacoes.length === 1 ? "avaliação" : "avaliações"} nesta demonstração.`
-                    : "Dê uma nota de 1 a 5 e conte o que poderíamos melhorar."}
-                </p>
-                <button type="button" className="demo-botao" onClick={() => setAvaliando(true)}>
-                  {avaliacoes.length ? "Avaliar outro item" : "Avaliar o Intermedi"}
-                </button>
-              </>
-            ) : (
-              <p>A avaliação fica disponível depois que você conhecer uma das experiências.</p>
-            )}
-          </section>
+          {situacao === "ativa" && (
+            <section className="central-avaliacao" aria-labelledby="central-avaliacao-titulo">
+              <h2 id="central-avaliacao-titulo">O que achou do Intermedi?</h2>
+              <p>
+                {avaliacoes.length
+                  ? `Você registrou ${avaliacoes.length} ${avaliacoes.length === 1 ? "avaliação" : "avaliações"} nesta demonstração.`
+                  : "Dê uma nota de 1 a 5."}
+              </p>
+              <button type="button" className="demo-botao" onClick={() => setAvaliando(true)}>
+                {avaliacoes.length ? "Avaliar outro item" : "Avaliar o Intermedi"}
+              </button>
+            </section>
+          )}
         </aside>
       </main>
 
