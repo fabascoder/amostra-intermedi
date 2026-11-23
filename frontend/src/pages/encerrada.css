@@ -1,0 +1,137 @@
+/* Tela de fim de acesso: o campo verde do aplicativo (boas-vindas do
+   intermedi-app), a marca em branco e o mascote se despedindo. */
+.fim {
+  position: relative;
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-10);
+  min-height: 100svh;
+  padding: clamp(32px, 7vw, 96px) clamp(20px, 7vw, 112px);
+  background: #0e6b50;
+  color: #fff;
+  overflow: hidden;
+}
+.fim-fundo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.fim-fundo i {
+  position: absolute;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.06);
+}
+.fim-fundo i:first-child {
+  width: 620px;
+  height: 620px;
+  right: -200px;
+  top: -260px;
+}
+.fim-fundo i:last-child {
+  width: 380px;
+  height: 380px;
+  left: -220px;
+  bottom: -160px;
+}
+.fim-conteudo {
+  position: relative;
+  max-width: 640px;
+  display: grid;
+  gap: var(--space-4);
+  animation: fim-sobe 900ms var(--ease-expo) backwards;
+}
+.fim-marca {
+  width: 150px;
+  height: auto;
+  margin-bottom: var(--space-6);
+}
+.fim h1 {
+  margin: 0 0 var(--space-2);
+  font-size: clamp(34px, 5.4vw, 68px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  font-weight: var(--weight-bold);
+  max-width: 12ch;
+}
+.fim p {
+  font-size: clamp(17px, 1.5vw, 20px);
+  line-height: 1.5;
+  color: rgb(255 255 255 / 0.88);
+}
+.fim .fim-obrigado {
+  font-size: clamp(20px, 2vw, 26px);
+  font-weight: var(--weight-semibold);
+  color: #fff;
+}
+.fim-contato {
+  margin-top: var(--space-4);
+  padding: var(--space-5) var(--space-6);
+  border-radius: var(--radius-lg);
+  background: #fff;
+  color: #0d231c;
+}
+.fim .fim-presencial {
+  color: #0d231c;
+  font-weight: var(--weight-semibold);
+}
+.fim-contato ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.fim-contato a {
+  color: #0e6b50;
+  font-weight: var(--weight-semibold);
+}
+.fim .fim-prazer {
+  margin-top: var(--space-4);
+  color: #8fe0b5;
+  font-weight: var(--weight-medium);
+}
+.fim-mascote {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.1);
+  animation: fim-sobe 1100ms var(--ease-expo) 160ms backwards;
+}
+.fim-mascote svg {
+  animation: fim-flutua 4.5s ease-in-out infinite;
+}
+@keyframes fim-sobe {
+  from { opacity: 0; transform: translateY(24px); }
+}
+@keyframes fim-flutua {
+  50% { transform: translateY(-8px); }
+}
+@media (max-width: 860px) {
+  .fim {
+    grid-template-columns: 1fr;
+    align-content: center;
+  }
+  .fim-mascote {
+    order: -1;
+    width: 160px;
+    height: 160px;
+  }
+  .fim-mascote svg {
+    width: 76px;
+    height: 132px;
+  }
+  .fim-marca {
+    margin-bottom: var(--space-2);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fim-mascote svg {
+    animation: none;
+  }
+}

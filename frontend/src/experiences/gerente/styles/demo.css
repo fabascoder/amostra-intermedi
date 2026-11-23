@@ -1,0 +1,418 @@
+/* =====================================================================
+   Acréscimos da demonstração à área do gerente. Tudo usa os tokens do
+   intermedi-frontend; nada aqui muda o visual original das peças.
+   ===================================================================== */
+
+/* Desempenho em celulares básicos: as entradas usam só transform e opacity
+   (sem o desfoque animado do motion.css original). */
+.persona-accessibility {
+  --motion-blur: 0px;
+}
+
+/* ---------- Barra superior ---------- */
+.demo-topbar-sessao {
+  display: inline-flex;
+}
+.mgr-account-button.is-estatico {
+  cursor: default;
+}
+.mgr-account-button.is-estatico:hover {
+  background: transparent;
+}
+.mgr-account .demo-trocar-topo {
+  min-height: var(--control-sm);
+  margin-left: var(--space-2);
+  padding: 0 var(--space-3);
+  font-size: var(--text-small);
+}
+
+/* ---------- Menu lateral: unidade + Trocar experiência ---------- */
+@media (min-width: 761px) {
+  .manager-sidebar-bottom {
+    display: grid;
+    gap: var(--space-3);
+  }
+}
+.demo-trocar-lateral {
+  width: 100%;
+  justify-content: flex-start;
+  min-height: 40px;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-secondary);
+  padding: 0 var(--space-3);
+}
+.demo-trocar-lateral:hover {
+  background: var(--color-fill);
+  color: var(--color-text-primary);
+}
+/* No menu lateral o atalho fica no rodapé; na barra superior ele some no desktop
+   para não repetir. No celular o rodapé do menu some e a barra superior assume. */
+@media (min-width: 761px) {
+  .mgr-account .demo-trocar-topo {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  .demo-topbar-sessao {
+    order: 10;
+    width: 100%;
+  }
+  .demo-topbar-sessao .demo-chip {
+    width: 100%;
+    justify-content: center;
+  }
+  .mgr-account .demo-trocar-topo {
+    margin-left: 0;
+  }
+}
+
+/* ---------- Ferramentas bloqueadas no Modo Demo ---------- */
+.mgr-ferramenta.is-bloqueada {
+  cursor: not-allowed;
+  background: var(--color-surface-muted);
+}
+.mgr-ferramenta.is-bloqueada:hover {
+  box-shadow: none;
+  transform: none;
+}
+.mgr-ferramenta.is-bloqueada .mgr-ferramenta-icone {
+  background: var(--color-neutral-soft);
+  color: var(--color-text-disabled);
+}
+.mgr-ferramenta.is-bloqueada strong {
+  color: var(--color-text-muted);
+}
+.mgr-ferramenta-cadeado {
+  margin-left: auto;
+  color: var(--color-text-disabled);
+  flex-shrink: 0;
+}
+button.mgr-ferramenta {
+  width: 100%;
+  border: 0;
+  text-align: left;
+  font: inherit;
+}
+
+/* Botão de cadastro desativado no cabeçalho da página, com o motivo */
+.demo-acao-bloqueada {
+  display: grid;
+  justify-items: end;
+  gap: var(--space-1);
+}
+.demo-acao-bloqueada .mgr-primary:disabled {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--color-neutral-soft);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  opacity: 1;
+}
+.demo-acao-bloqueada small {
+  font-size: var(--text-caption);
+  color: var(--color-text-muted);
+}
+@media (max-width: 760px) {
+  .demo-acao-bloqueada {
+    justify-items: start;
+  }
+}
+
+.directory-row-action.demo-acao-destaque {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-ink);
+}
+
+/* ---------- Ações no fim de painéis ---------- */
+.demo-painel-acao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6) var(--space-5);
+}
+.demo-painel-acao p {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body);
+}
+
+/* ---------- Rastreamento ao vivo + Concluir simulação agora ---------- */
+.demo-rastreio-vivo {
+  display: grid;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  scroll-margin-top: 80px;
+}
+.demo-concluir {
+  justify-self: end;
+  min-height: var(--control-sm);
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+  font-weight: var(--weight-medium);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color var(--duration-fast) ease, background-color var(--duration-fast) ease;
+}
+.demo-concluir:hover {
+  color: var(--color-text-primary);
+  background: var(--color-fill);
+}
+.demo-pedido-rastreio {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+.demo-pedido-vivo {
+  scroll-margin-top: 80px;
+}
+.demo-linha-destaque td {
+  background: var(--color-primary-soft);
+}
+.demo-preparos {
+  margin-top: var(--space-4);
+}
+.mgr-main > .demo-preparos {
+  margin: 0 0 var(--space-6);
+}
+.demo-preparo-contexto {
+  font-size: var(--text-caption) !important;
+  font-weight: var(--weight-semibold);
+  color: var(--color-primary-ink) !important;
+}
+.preparo-voce .demo-preparo-contexto {
+  color: var(--color-info) !important;
+}
+
+/* ---------- Catálogo da rede ---------- */
+.demo-catalogo {
+  margin-top: var(--space-6);
+}
+.demo-catalogo-lista {
+  margin: 0;
+  padding: 0 var(--space-2) var(--space-3);
+  list-style: none;
+}
+.demo-catalogo-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) ease;
+}
+.demo-catalogo-item + .demo-catalogo-item {
+  border-top: 1px solid var(--color-border-subtle);
+}
+.demo-catalogo-item:hover {
+  background: var(--color-surface-muted);
+}
+.demo-catalogo-item:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+.demo-catalogo-texto {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.demo-catalogo-texto strong {
+  font-weight: var(--weight-semibold);
+}
+.demo-catalogo-texto small {
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.demo-catalogo-texto .remedio-tarja {
+  justify-self: start;
+}
+@media (max-width: 760px) {
+  .demo-catalogo-item {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .demo-catalogo-item > .mgr-badge,
+  .demo-catalogo-item > .directory-row-action {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+
+/* ---------- Detalhe do remédio, ficha e formulários ---------- */
+.demo-detalhe-remedio {
+  width: 720px;
+}
+.demo-detalhe-topo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+.demo-detalhe-topo > div {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+}
+.demo-detalhe-descricao {
+  font-size: var(--text-body-lg);
+  color: var(--color-text-secondary);
+}
+.demo-detalhe-bloco {
+  margin-top: var(--space-6);
+}
+.demo-detalhe-bloco h3 {
+  margin: 0 0 var(--space-3) !important;
+}
+.demo-detalhe-estoque {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+.demo-detalhe-estoque small {
+  color: var(--color-text-muted);
+}
+.demo-detalhe-rede {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+.demo-detalhe-rede li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+}
+.demo-detalhe-rede li + li {
+  border-top: 1px solid var(--color-border-subtle);
+}
+.demo-detalhe-rede span {
+  display: grid;
+  gap: 2px;
+}
+.demo-detalhe-rede small {
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+}
+.demo-detalhe-qtd {
+  text-align: right;
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+.demo-detalhe-qtd small {
+  font-weight: var(--weight-regular);
+}
+.demo-ficha {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3) var(--space-6);
+  margin: 0;
+}
+.demo-ficha div {
+  min-width: 0;
+}
+.demo-ficha dt {
+  font-size: var(--text-caption);
+  color: var(--color-text-muted);
+}
+.demo-ficha dd {
+  margin: 2px 0 0;
+  font-size: var(--text-body);
+  color: var(--color-text-primary);
+}
+.demo-ficha-nota,
+.demo-modal-texto {
+  margin-top: var(--space-4);
+  font-size: var(--text-body);
+  color: var(--color-text-secondary);
+}
+@media (max-width: 560px) {
+  .demo-ficha {
+    grid-template-columns: 1fr;
+  }
+  .demo-detalhe-topo {
+    align-items: flex-start;
+  }
+}
+
+.demo-pedir-resumo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+.demo-pedir-resumo > div {
+  display: grid;
+  gap: 2px;
+  justify-items: start;
+}
+.demo-pedir-resumo small {
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+}
+.demo-pedir-farmacias {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.demo-pedir-farmacias legend {
+  margin-bottom: var(--space-2);
+  font-size: var(--text-small);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+}
+.demo-pedir-farmacia {
+  position: relative;
+  display: flex !important;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) ease, background-color var(--duration-fast) ease;
+}
+.demo-pedir-farmacia input {
+  width: 18px !important;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--color-primary);
+}
+.demo-pedir-farmacia span {
+  display: grid;
+  gap: 2px;
+}
+.demo-pedir-farmacia strong {
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+}
+.demo-pedir-farmacia small {
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+}
+.demo-pedir-farmacia.is-escolhida {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+.demo-equipe {
+  padding: var(--space-5);
+}

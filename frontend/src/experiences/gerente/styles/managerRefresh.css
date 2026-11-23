@@ -1,0 +1,238 @@
+/* Peças da casca usadas em mais de uma área: modal de perfil da conta,
+   aviso de cadastro, área de exclusão e ações da conta. Base em manager.css. */
+
+/* ── Ações da conta (Sair) ────────────────────────────────── */
+.account-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: var(--control-sm);
+  padding: 0 var(--space-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  font: inherit;
+  font-size: var(--text-small);
+  font-weight: var(--weight-medium);
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+.account-action svg {
+  flex-shrink: 0;
+}
+.account-profile {
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary-border);
+  color: var(--color-primary-ink);
+}
+.account-exit {
+  background: transparent;
+  color: var(--color-text-secondary);
+}
+.account-exit:hover {
+  background: var(--color-fill);
+  color: var(--color-text-primary);
+}
+.account-action:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* ── Modal de perfil da conta ─────────────────────────────── */
+.mgr-profile-modal {
+  position: fixed;
+  inset: 50% auto auto 50%;
+  z-index: var(--z-modal);
+  width: min(720px, 92vw);
+  max-width: 92vw;
+  max-height: min(88vh, 760px);
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  transform: translate(-50%, -50%);
+}
+.mgr-profile-modal .mgr-modal-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  margin: 0;
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+.mgr-profile-modal .mgr-profile-form {
+  display: grid;
+  gap: var(--space-5);
+  padding: var(--space-6);
+}
+.mgr-profile-modal .mgr-profile-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4) var(--space-5);
+}
+.mgr-profile-modal .mgr-profile-row {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.mgr-profile-modal .mgr-profile-label {
+  font-size: var(--text-small);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+}
+.mgr-profile-modal .mgr-profile-value {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.mgr-profile-modal .mgr-profile-readonly {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--control-md);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mgr-profile-modal .mgr-profile-input {
+  flex: 1;
+  min-width: 0;
+}
+.mgr-profile-modal .mgr-profile-edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--control-md);
+  height: var(--control-md);
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-fill);
+  color: var(--color-text-secondary);
+  font-size: 16px;
+}
+.mgr-profile-modal .mgr-profile-edit:hover {
+  background: var(--color-surface-sunken);
+  color: var(--color-text-primary);
+}
+.mgr-profile-modal .mgr-modal-actions {
+  margin-top: 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-subtle);
+}
+.mgr-profile-modal .mgr-empty {
+  padding: var(--space-6);
+}
+@media (max-width: 760px) {
+  .mgr-profile-modal .mgr-profile-fields {
+    grid-template-columns: 1fr;
+  }
+  .mgr-profile-modal .mgr-profile-form {
+    padding: var(--space-4);
+  }
+}
+
+/* ── Aviso de cadastro concluído ──────────────────────────── */
+.mgr-registration-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-6);
+  padding: var(--space-4);
+  border: 1px solid var(--color-success-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-success-soft);
+  color: var(--color-text-primary);
+}
+.mgr-registration-notice > svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--color-success);
+}
+.mgr-registration-notice strong {
+  font-size: var(--text-body);
+  font-weight: var(--weight-semibold);
+}
+.mgr-registration-notice p {
+  margin: var(--space-1) 0 2px;
+  font-size: var(--text-body);
+  overflow-wrap: anywhere;
+}
+.mgr-registration-notice span {
+  font-size: var(--text-small);
+  color: var(--color-text-secondary);
+}
+.mgr-registration-notice b {
+  font-variant-numeric: tabular-nums;
+}
+.mgr-registration-notice button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--control-sm);
+  height: var(--control-sm);
+  margin-left: auto;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 20px;
+}
+.mgr-registration-notice button:hover {
+  background: rgb(0 0 0 / 0.05);
+}
+
+/* ── Área de exclusão ─────────────────────────────────────── */
+.mgr-delete-area {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-subtle);
+}
+.mgr-delete-area p {
+  font-size: var(--text-small);
+  line-height: var(--leading-normal);
+  color: var(--color-text-secondary);
+}
+.mgr-delete-area [role="alert"] {
+  margin-top: var(--space-3);
+  color: var(--color-danger);
+}
+.mgr-delete-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-md);
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+  font: inherit;
+  font-size: var(--text-body);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+}
+.mgr-delete-button:hover:not(:disabled) {
+  background: #fbdcd8;
+}
+.mgr-delete-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.mgr-delete-button:focus-visible {
+  outline: 2px solid var(--color-danger);
+  outline-offset: 2px;
+}
