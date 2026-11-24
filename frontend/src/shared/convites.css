@@ -1,0 +1,171 @@
+/* Convites depois das três experiências: janelas pequenas, cada uma com um
+   único movimento de entrada (estrelas acendendo, letras da Auvox, equipe). */
+.convite {
+  --convite-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  width: min(400px, calc(100vw - 32px));
+}
+.convite-corpo {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-6) var(--space-6);
+  text-align: center;
+}
+.convite.demo-dialogo h2 {
+  max-width: 18ch;
+  font-size: 22px;
+  line-height: 1.18;
+  text-wrap: balance;
+}
+.convite-texto {
+  max-width: 32ch;
+  margin: 0;
+  font-size: var(--text-body);
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+.convite-botoes {
+  display: grid;
+  gap: var(--space-2);
+  width: 100%;
+  margin-top: var(--space-3);
+}
+.convite-botoes > * { width: 100%; }
+.convite-link { text-decoration: none; }
+
+/* ---------- Avaliar: as estrelas acendem uma a uma ---------- */
+.convite-estrelas {
+  display: flex;
+  gap: 6px;
+  margin-bottom: var(--space-2);
+}
+.convite-estrelas svg {
+  width: 34px;
+  height: 34px;
+  fill: #f2b01e;
+  stroke: #d99a0e;
+  stroke-width: 1;
+  stroke-linejoin: round;
+  animation: convite-estrela 0.5s var(--convite-ease) both;
+  animation-delay: calc(0.15s + var(--i) * 0.09s);
+}
+@keyframes convite-estrela {
+  0% { opacity: 0; transform: scale(0.3) rotate(-30deg); fill: var(--color-fill-strong); }
+  60% { transform: scale(1.15) rotate(6deg); }
+}
+
+/* ---------- Auvox: painel escuro, nome em letras e uma onda de voz ---------- */
+.convite-auvox {
+  background: #12161a;
+  color: #f3f5f6;
+}
+.convite-auvox .demo-dialogo-fechar { background: rgb(255 255 255 / 0.1); color: #f3f5f6; }
+.convite-auvox .demo-dialogo-fechar:hover { background: rgb(255 255 255 / 0.18); }
+.convite-auvox .convite-texto { color: rgb(243 245 246 / 0.7); }
+.convite-auvox .demo-botao { background: #f3f5f6; color: #12161a; }
+.convite-auvox .demo-botao:hover { background: #fff; }
+.convite-auvox .demo-botao-sec { background: rgb(255 255 255 / 0.08); color: #f3f5f6; }
+.convite-auvox-marca {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 120px;
+  margin-bottom: var(--space-2);
+}
+.convite-auvox-onda {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  opacity: 0.55;
+}
+.convite-auvox-onda i {
+  width: 5px;
+  height: calc(18px + (4 - (var(--i) - 4) * (var(--i) - 4) / 4) * 18px);
+  border-radius: 5px;
+  background: linear-gradient(#5fd39c, #2f6fd6);
+  transform-origin: center;
+  animation: convite-onda 1.6s ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * -0.18s);
+}
+@keyframes convite-onda {
+  from { transform: scaleY(0.35); }
+  to { transform: scaleY(1); }
+}
+.convite-auvox-nome {
+  position: relative;
+  display: inline-flex;
+  font-size: 54px;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+.convite-auvox-nome b {
+  display: inline-block;
+  font-weight: inherit;
+  animation: convite-letra 0.7s var(--convite-ease) both;
+  animation-delay: calc(0.1s + var(--i) * 0.07s);
+}
+@keyframes convite-letra {
+  from { opacity: 0; transform: translateY(18px); filter: blur(6px); }
+}
+.convite-auvox-marca img {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+
+/* ---------- Instagram ---------- */
+.convite-insta {
+  width: 72px;
+  height: 72px;
+  margin-bottom: var(--space-2);
+  fill: none;
+  stroke: url(#convite-insta-cor);
+  stroke-width: 5;
+}
+.convite-insta rect { stroke-dasharray: 190; animation: convite-traco 0.9s var(--convite-ease) both; }
+.convite-insta circle { stroke-dasharray: 80; animation: convite-traco 0.9s var(--convite-ease) 0.2s both; }
+.convite-insta .ponto { fill: #8a46c9; stroke: none; animation: convite-ponto 0.4s var(--convite-ease) 0.7s both; }
+@keyframes convite-traco { from { stroke-dashoffset: 190; } to { stroke-dashoffset: 0; } }
+@keyframes convite-ponto { from { opacity: 0; transform: scale(0); } }
+.convite-insta .ponto { transform-box: fill-box; transform-origin: center; }
+
+/* ---------- Bastidores: a equipe chega e se junta ---------- */
+.convite-equipe {
+  display: flex;
+  margin-bottom: var(--space-3);
+}
+.convite-equipe span {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--color-surface);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  animation: convite-pessoa 0.6s var(--convite-ease) both;
+  animation-delay: calc(0.12s + var(--i) * 0.08s);
+}
+.convite-equipe span + span { margin-left: -12px; }
+@keyframes convite-pessoa {
+  from { opacity: 0; transform: translateX(calc((var(--i) - 2) * 28px)) scale(0.6); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .convite-estrelas svg,
+  .convite-auvox-onda i,
+  .convite-auvox-nome b,
+  .convite-insta rect,
+  .convite-insta circle,
+  .convite-insta .ponto,
+  .convite-equipe span {
+    animation: none;
+  }
+}

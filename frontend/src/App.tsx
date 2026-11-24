@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-route
 import Central from "./pages/Central";
 import { LimiteDeFalha } from "./shared/Falha";
 import { useSituacaoSessao, useVigiaSessao } from "./session/hooks";
+import { ConvitesPosVisita } from "./shared/Convites";
 import type { ExperienciaId } from "./types";
 
 // Cada experiência é um pedaço separado do bundle: quem abre só o aplicativo
@@ -10,6 +11,7 @@ import type { ExperienciaId } from "./types";
 const GerenteExperiencia = lazy(() => import("./experiences/gerente/GerenteExperiencia"));
 const PacienteApp = lazy(() => import("./experiences/paciente/PacienteApp"));
 const Encerrada = lazy(() => import("./pages/Encerrada"));
+const Bastidores = lazy(() => import("./pages/Bastidores"));
 
 function Carregando() {
   return (
@@ -34,6 +36,7 @@ function Rotas() {
   if (situacao === "expirada" && pathname !== "/encerrada") return <Navigate to="/encerrada" replace />;
   return (
     <Suspense fallback={<Carregando />}>
+      <ConvitesPosVisita />
       <Routes>
         <Route path="/" element={<Central />} />
         <Route
@@ -45,6 +48,7 @@ function Rotas() {
           element={<ExigeSessao experiencia="fornecedora"><GerenteExperiencia key="fornecedora" experiencia="fornecedora" /></ExigeSessao>}
         />
         <Route path="/aplicativo/*" element={<ExigeSessao experiencia="paciente"><PacienteApp /></ExigeSessao>} />
+        <Route path="/bastidores" element={<Bastidores />} />
         <Route path="/encerrada" element={situacao === "expirada" ? <Encerrada /> : <Navigate to="/" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
