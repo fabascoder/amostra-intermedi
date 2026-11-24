@@ -10,9 +10,10 @@ import { notificar } from "../../../demoServices/notificationService";
 import { SOLICITANTE_TIMELINE } from "../../../config/simulation";
 import { ChamadoModal, FotoRemedio, TarjaBadge } from "../components/Remedios";
 import { useGerente } from "../contexto";
+import { GuiaNaJanela, type useGuiaPratico } from "../components/GuiaPratico";
 import { nomeComDosagem, quantidadeReposicao } from "../lib/remedios";
 
-export function PedirARede({ idRemedioInicial, onFechar }: { idRemedioInicial?: number; onFechar: () => void }) {
+export function PedirARede({ idRemedioInicial, onFechar, guia = null }: { idRemedioInicial?: number; onFechar: () => void; guia?: ReturnType<typeof useGuiaPratico> | null }) {
   const uid = useId();
   const navigate = useNavigate();
   const { config, visao } = useGerente();
@@ -74,7 +75,8 @@ export function PedirARede({ idRemedioInicial, onFechar }: { idRemedioInicial?: 
 
   if (criado !== null) {
     return (
-      <ChamadoModal title="Solicitação enviada" onClose={onFechar}>
+      <ChamadoModal title="Solicitação enviada" onClose={onFechar} className="guia-confirmacao">
+        <GuiaNaJanela guia={guia} />
         <div className="chamado-confirmacao" role="status">
           <p>
             <strong>Pedido #{criado} enviado à {oferta?.farmacia.nomeFarmacia}</strong>
@@ -104,6 +106,7 @@ export function PedirARede({ idRemedioInicial, onFechar }: { idRemedioInicial?: 
   const erroId = (campo: string) => `${uid}-${campo}`;
   return (
     <ChamadoModal title="Pedir à rede" onClose={onFechar} className="emp-service-modal">
+      <GuiaNaJanela guia={guia} />
       <form className="mgr-form emp-service-form" onSubmit={enviar} noValidate>
         <label>
           Remédio

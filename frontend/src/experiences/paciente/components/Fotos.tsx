@@ -14,6 +14,7 @@ const COR_TOM: Record<Tom, [string, string]> = {
   red: ["#c8343f", "#fce8ea"],
   amber: ["#d48a12", "#fff1dc"],
   neutral: ["#55625d", "#f0f3f1"],
+  cat: ["#1e9e6a", "#e3f4ea"],
 };
 
 export const corDoRemedio = (r: Remedio) => COR_TOM[tomPrincipal(r)];

@@ -25,6 +25,7 @@ const PROGRESSO_INICIAL: Progresso = {
   simulacoesConcluidas: {},
   conviteAvaliacaoDispensado: false,
   agradecimentoVisto: false,
+  guiasConcluidos: {},
 };
 
 const ehSessao = (valor: unknown): valor is Sessao => {
@@ -152,6 +153,11 @@ export function marcarSimulacaoConcluida(experiencia: "solicitante" | "fornecedo
 export function marcarAgradecimentoVisto(): void {
   if (progressoStore.get().agradecimentoVisto) return;
   atualizarProgresso((p) => ({ ...p, agradecimentoVisto: true }));
+}
+
+export function concluirGuia(experiencia: "solicitante" | "fornecedora"): void {
+  if (progressoStore.get().guiasConcluidos?.[experiencia]) return;
+  atualizarProgresso((p) => ({ ...p, guiasConcluidos: { ...p.guiasConcluidos, [experiencia]: true } }));
 }
 
 export function dispensarConviteAvaliacao(): void {

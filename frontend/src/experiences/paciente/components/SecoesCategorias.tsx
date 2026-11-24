@@ -38,7 +38,7 @@ export function SecoesCategorias() {
         return (
           <section key={categoria} className={`a-secao-cat${aberta ? " is-aberta" : ""}`} aria-labelledby={`${id}-titulo`}>
             <button type="button" className="a-secao-cat-cab" aria-expanded={aberta} aria-controls={id} onClick={() => alternar(categoria)}>
-              <IconTile icone={estilo.icone} tom={estilo.tom} tamanho={42} />
+              <IconTile icone={estilo.icone} tom="cat" tamanho={42} />
               <span className="a-flex">
                 <span id={`${id}-titulo`} className="t-bodyBold">{categoria}</span>
                 <span className="t-caption">{remedios.length} {remedios.length === 1 ? "remédio" : "remédios"}</span>

@@ -3,6 +3,8 @@
 //  2. O tempo de acesso, em minutos (a sessão começa só no passo 3).
 //  3. O nome da pessoa, usado nas três experiências: gerente da farmácia
 //     solicitante, gerente da fornecedora e paciente no aplicativo.
+//  4. "Boas-vindas ao Intermedi, nome", com a marca: entra, fica um instante
+//     e sai abrindo para a Central (tocar na tela adianta).
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import logo from "../assets/brand/logo-intermedi.webp";
 import { definirNome, limparNome } from "../demoServices/patientService";
@@ -11,7 +13,10 @@ import { iniciarSessao, verificarSessao } from "../session/session";
 import { AssinaturaAuvox } from "../shared/AssinaturaAuvox";
 import "./boasVindasDemo.css";
 
-type Passo = 0 | 1 | 2;
+type Passo = 0 | 1 | 2 | 3;
+
+/** Quanto tempo a saudação final fica na tela antes de abrir a Central. */
+const SAUDACAO_MS = 2600;
 
 export function BoasVindasDemo({ jaIniciada, onConcluir }: { jaIniciada: boolean; onConcluir: () => void }) {
   const uid = useId();
@@ -20,6 +25,7 @@ export function BoasVindasDemo({ jaIniciada, onConcluir }: { jaIniciada: boolean
   const [nome, setNome] = useState("");
   const [erro, setErro] = useState("");
   const [saindo, setSaindo] = useState(false);
+  const [saudado, setSaudado] = useState("");
   const campoRef = useRef<HTMLInputElement>(null);
   const minutos = Math.round(sessionDurationMs() / 60000);
 
@@ -43,13 +49,27 @@ export function BoasVindasDemo({ jaIniciada, onConcluir }: { jaIniciada: boolean
       setErro("Não foi possível começar agora. Recarregue a página e tente de novo.");
       return;
     }
+    setSaudado(limpo.charAt(0).toLocaleUpperCase("pt-BR") + limpo.slice(1));
+    setPasso(3);
+  }
+
+  // Saudação final: espera um instante e sai (ou sai já, se a pessoa tocar).
+  function sair() {
+    if (saindo) return;
     setSaindo(true);
     const reduzir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     window.setTimeout(onConcluir, reduzir ? 0 : 650);
   }
+  useEffect(() => {
+    if (passo !== 3) return undefined;
+    const t = window.setTimeout(sair, SAUDACAO_MS);
+    return () => window.clearTimeout(t);
+    // sair só muda quando a saída já começou
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [passo]);
 
   return (
-    <div className={`bvd${saindo ? " is-saindo" : ""}`} role="dialog" aria-modal="true" aria-labelledby={`${uid}-titulo-${passo}`}>
+    <div className={`bvd${saindo ? " is-saindo" : ""}${passo === 3 ? " is-saudacao" : ""}`} onClick={passo === 3 ? sair : undefined} role="dialog" aria-modal="true" aria-labelledby={`${uid}-titulo-${passo}`}>
       <div className="bvd-fundo" aria-hidden="true">
         <span className="bvd-orbe um" />
         <span className="bvd-orbe dois" />
@@ -121,9 +141,23 @@ export function BoasVindasDemo({ jaIniciada, onConcluir }: { jaIniciada: boolean
             </form>
           </section>
         )}
+
+        {passo === 3 && (
+          <section key="p3" className="bvd-passo bvd-passo-saudacao">
+            <div className="bvd-marca bvd-marca-saudacao">
+              <span className="bvd-halo" aria-hidden="true" />
+              <img src={logo} alt="Intermedi" width="1920" height="1080" />
+            </div>
+            <h1 id={`${uid}-titulo-3`} className="bvd-titulo" aria-live="polite">
+              <span className="bvd-saudacao-linha">Boas-vindas ao Intermedi,</span>{" "}
+              <strong className="bvd-saudacao-nome">{saudado}!</strong>
+            </h1>
+            <span className="bvd-saudacao-barra" aria-hidden="true" style={{ "--dur": `${SAUDACAO_MS}ms` } as React.CSSProperties} />
+          </section>
+        )}
       </div>
 
-      {!jaIniciada && (
+      {!jaIniciada && passo < 3 && (
         <div className="bvd-pontos" aria-label={`Passo ${passo + 1} de 3`}>
           {[0, 1, 2].map((i) => (
             <span key={i} className={i === passo ? "is-atual" : i < passo ? "is-feito" : undefined} />
