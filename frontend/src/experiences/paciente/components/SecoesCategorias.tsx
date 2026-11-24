@@ -1,6 +1,6 @@
 // Remédios da tela inicial separados por categoria, em fileiras que rolam para
-// o lado (como as fileiras de filmes por gênero). As duas primeiras começam
-// abertas; as outras ficam fechadas até a pessoa tocar em "Abrir".
+// o lado (como as fileiras de filmes por gênero). Aparecem as cinco maiores, as
+// duas primeiras abertas; "Mostrar mais" traz as outras.
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { REMEDIOS } from "../../../data/remedios";
@@ -10,6 +10,7 @@ import { Ionicon } from "./Ionicon";
 import { IconTile } from "./ui";
 
 const ABERTAS_NO_INICIO = 2;
+const VISIVEIS_NO_INICIO = 5;
 
 function secoes() {
   const porCategoria = new Map<string, typeof REMEDIOS>();
@@ -20,6 +21,9 @@ function secoes() {
 export function SecoesCategorias() {
   const navigate = useNavigate();
   const lista = secoes();
+  const [todas, setTodas] = useState(false);
+  const visiveis = todas ? lista : lista.slice(0, VISIVEIS_NO_INICIO);
+  const escondidas = lista.length - VISIVEIS_NO_INICIO;
   const [abertas, setAbertas] = useState<Set<string>>(() => new Set(lista.slice(0, ABERTAS_NO_INICIO).map(([c]) => c)));
   const alternar = (c: string) =>
     setAbertas((atual) => {
@@ -31,7 +35,7 @@ export function SecoesCategorias() {
 
   return (
     <div className="a-secoes">
-      {lista.map(([categoria, remedios]) => {
+      {visiveis.map(([categoria, remedios]) => {
         const aberta = abertas.has(categoria);
         const estilo = estiloCategoria(categoria);
         const id = `secao-${categoria.normalize("NFD").replace(/[^\w]/g, "")}`;
@@ -77,6 +81,12 @@ export function SecoesCategorias() {
           </section>
         );
       })}
+      {escondidas > 0 && (
+        <button type="button" className="a-mostrar-mais" aria-expanded={todas} onClick={() => setTodas((v) => !v)}>
+          {todas ? "Mostrar menos" : `Mostrar mais ${escondidas} ${escondidas === 1 ? "categoria" : "categorias"}`}
+          <Ionicon name={todas ? "chevron-up" : "chevron-down"} size={16} />
+        </button>
+      )}
     </div>
   );
 }

@@ -50,7 +50,7 @@ export default function Farmacia() {
               ? { rotulo: "Últimas unidades", tom: "amber" as const }
               : { rotulo: "Tem", tom: "green" as const };
           return (
-            <button key={i.idEstoque} type="button" className="a-card a-item-estoque a-pressavel" onClick={() => navigate(`/aplicativo/medicamento/${i.idRemedio}`)} aria-label={`${i.remedio.nomeRemedio}: ${status.rotulo}. Ver detalhes`}>
+            <button key={i.idEstoque} type="button" className="a-card a-item-estoque a-pressavel" onClick={() => navigate(`/aplicativo/medicamento/${i.idRemedio}?farmacia=${f.idFarmacia}`)} aria-label={`${i.remedio.nomeRemedio}: ${status.rotulo}. Ver detalhes`}>
               <FotoRemedio remedio={i.remedio} tamanho={62} />
               <span className="a-flex">
                 <span className="t-bodyBold">{i.remedio.nomeRemedio} {i.remedio.dosagemRemedio}</span>

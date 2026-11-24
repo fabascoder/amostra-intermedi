@@ -4,7 +4,7 @@
 // Sem mapa (sem internet ou WebGL), entra o mapa desenhado no lugar.
 // Depois vêm as farmácias, a ficha simples, os cuidados e "Adicionar à rotina".
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { remedio as buscarRemedio } from "../../../demoServices/medicationService";
 import { adicionarDose, alternarFavoritoRemedio, usePaciente } from "../../../demoServices/patientService";
 import { formatarKm } from "../../../demoServices/pharmacyService";
@@ -30,7 +30,10 @@ export default function Medicamento() {
   const [detalhes, setDetalhes] = useState(false);
   const [rotina, setRotina] = useState(false);
   const [horario, setHorario] = useState("08:00");
-  const [escolhida, setEscolhida] = useState<number | null>(null);
+  // Vindo da página de uma farmácia (?farmacia=ID), o mapa já abre com a rota até ela.
+  const [params] = useSearchParams();
+  const farmaciaDeOrigem = Number(params.get("farmacia")) || null;
+  const [escolhida, setEscolhida] = useState<number | null>(farmaciaDeOrigem);
   const [modo, setModo] = useState<ModoLocomocao>("pedestrian");
   const [mapaFalhou, setMapaFalhou] = useState(false);
   const { estilo: estiloMapa, escolherEstilo } = useEstiloMapa();
@@ -105,6 +108,7 @@ export default function Medicamento() {
             onSelecionar={setEscolhida}
             onErro={aoFalharMapa}
             espacoInferior={70}
+            comecarNaRota={farmaciaDeOrigem !== null && farmaciaDeOrigem === alvo?.farmacia.idFarmacia}
           />
         )}
         <div className="a-capa-barra a-mapa-barra">
@@ -136,7 +140,7 @@ export default function Medicamento() {
           <div className="a-rota-cartao" aria-live="polite">
             <div className="a-rota-cartao-topo">
               <span className="a-flex">
-                <span className="t-caption">{alvo === maisPerto ? "Mais perto de você" : "Farmácia escolhida"}</span>
+                <span className="t-caption">{alvo.farmacia.idFarmacia === farmaciaDeOrigem ? "Farmácia que você abriu" : alvo === maisPerto ? "Mais perto de você" : "Farmácia escolhida"}</span>
                 <span className="t-bodyBold">{alvo.farmacia.nomeFarmacia}</span>
                 <span className="t-label">{[alvo.farmacia.rua && `${alvo.farmacia.rua}, ${alvo.farmacia.numero}`, alvo.farmacia.bairro].filter(Boolean).join(" · ")}</span>
               </span>

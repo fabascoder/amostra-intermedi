@@ -2770,3 +2770,84 @@
 .a-ficha { margin: 0; }
 .a-ficha dd { margin: 0; color: var(--a-text); }
 .a-ficha .a-tags { margin-top: 4px; }
+
+/* ---------- Categorias: "Mostrar mais" ---------- */
+.a-mostrar-mais {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  background: none;
+  color: var(--a-mascote);
+  font: 600 14px var(--a-font);
+}
+
+/* ---------- Novidades nas farmácias ---------- */
+.a-novidades {
+  margin: 0;
+  padding: 0 16px;
+  list-style: none;
+  border-radius: 20px;
+  background: var(--a-surface);
+  box-shadow: var(--a-sombra);
+}
+.a-novidades li + li { border-top: 1px solid var(--a-border); }
+.a-novidade {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  padding: 14px 0;
+  border: 0;
+  background: none;
+  color: var(--a-text);
+  text-align: left;
+}
+.a-novidade-topo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+.a-novidade-quando { flex-shrink: 0; color: var(--a-text-2); }
+.a-novidade-fato {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--a-text-2);
+}
+.a-novidade-fato.is-nova { color: var(--a-ok); font-weight: 600; }
+.a-novidade-estoque {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.a-novidade-estoque .t-caption { color: var(--a-text-2); }
+.a-novidade-estoque strong { color: var(--a-text); }
+.a-novidade-acabando { color: var(--a-warning-text); font-weight: 600; }
+.a-novidade-fotos { display: inline-flex; align-items: center; }
+.a-novidade-fotos .a-foto-remedio {
+  border: 2px solid var(--a-surface);
+  border-radius: 9px !important;
+  box-sizing: content-box;
+}
+.a-novidade-fotos > * + * { margin-left: -6px; }
+.a-novidade-mais {
+  display: inline-grid;
+  place-items: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 4px;
+  border: 2px solid var(--a-surface);
+  border-radius: 9px;
+  background: var(--a-surface-muted);
+  color: var(--a-text-2);
+  font-size: 11px;
+  font-weight: 700;
+}

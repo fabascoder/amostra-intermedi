@@ -23,6 +23,7 @@ export default function MapaReal({
   onErro,
   espacoInferior = 60,
   modelo = "liberty",
+  comecarNaRota = false,
 }: {
   voce: Ponto;
   farmacias: Farmacia[];
@@ -33,6 +34,8 @@ export default function MapaReal({
   espacoInferior?: number;
   /** Trocar o modelo recria o mapa (a tela usa key={modelo}). */
   modelo?: EstiloMapa;
+  /** Abre já enquadrando a rota (veio de uma farmácia), sem a visão de todas. */
+  comecarNaRota?: boolean;
 }) {
   const inclinacao = modelo === "3d" ? 60 : 0;
   const caixa = useRef<HTMLDivElement>(null);
@@ -45,7 +48,7 @@ export default function MapaReal({
   // 0: carregando a biblioteca · 1: mapa criado · 2: estilo carregado
   const [fase, setFase] = useState(0);
   // Primeiro enquadramento mostra todas as farmácias; depois, o trajeto escolhido.
-  const visaoGeral = useRef(true);
+  const visaoGeral = useRef(!comecarNaRota);
 
   useEffect(() => { selecionarRef.current = onSelecionar; }, [onSelecionar]);
   useEffect(() => { erroRef.current = onErro; }, [onErro]);
