@@ -1,7 +1,8 @@
-// components/Remedios.jsx do intermedi-frontend. Sem foto (a demonstração não
-// carrega imagens): o ícone de pílula aparece, como no original quando o
-// remédio não tem foto. As ações de estoque (entrada, ajuste, remoção) não
+// components/Remedios.jsx do intermedi-frontend. As fotos são as reais do
+// projeto (data/fotosRemedios); remédio sem foto mostra o ícone de pílula,
+// como no original. As ações de estoque (entrada, ajuste, remoção) não
 // existem aqui: a demonstração não edita cadastros.
+import { fotoDoRemedio } from "../../../data/fotosRemedios";
 import { useEffect, useRef } from "react";
 import { ManagerIcon } from "../../../shared/icons";
 import NumeroAnimado from "./NumeroAnimado";
@@ -10,6 +11,14 @@ import { propsLinha } from "../lib/util";
 import { statusPedido } from "../lib/chamados";
 
 export function FotoRemedio({ nome, tamanho = "sm" }) {
+  const foto = fotoDoRemedio(nome);
+  if (foto) {
+    return (
+      <span className={`remedio-foto remedio-foto-${tamanho}`}>
+        <img src={foto} alt={`Foto de ${nome}`} loading="lazy" decoding="async" />
+      </span>
+    );
+  }
   return (
     <span className={`remedio-foto remedio-foto-${tamanho}`}>
       <span className="remedio-foto-vazia" role="img" aria-label={`${nome || "Remédio"} sem foto`}>

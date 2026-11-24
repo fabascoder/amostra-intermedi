@@ -2645,3 +2645,16 @@
 .a-opcao-mapa-amostra .agua { width: 24px; height: 70px; right: -5px; transform: rotate(25deg); }
 .a-opcao-mapa-amostra .rua { width: 80px; height: 7px; transform: rotate(-30deg); }
 .a-opcao-mapa-amostra .ion { position: relative; }
+
+/* Foto real do remédio */
+.a-foto-remedio.is-foto {
+  overflow: hidden;
+  background: var(--a-surface-muted);
+  box-shadow: inset 0 0 0 1px rgb(13 35 28 / 0.06);
+}
+.a-foto-remedio.is-foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

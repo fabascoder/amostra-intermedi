@@ -1,10 +1,11 @@
-// "Fotos" da demonstração: ilustrações desenhadas em SVG, já que a amostra
-// não tem imagens reais. A caixa do remédio segue as regras das embalagens
-// brasileiras: faixa amarela com "G" nos genéricos e tarja vermelha ou preta
-// quando o remédio exige receita. A farmácia aparece pela fachada.
+// Fotos dos remédios: as fotos reais do projeto (data/fotosRemedios). Sem foto,
+// entra a ilustração da caixa, que segue as regras das embalagens brasileiras:
+// faixa amarela com "G" nos genéricos e tarja vermelha ou preta quando o
+// remédio exige receita. A farmácia aparece pela fachada desenhada.
 import { useId } from "react";
 import type { Farmacia, Remedio } from "../../../types";
 import { tomPrincipal, type Tom } from "../dados";
+import { fotoDoRemedio } from "../../../data/fotosRemedios";
 
 const COR_TOM: Record<Tom, [string, string]> = {
   green: ["#1e9e6a", "#e3f4ea"],
@@ -21,6 +22,18 @@ export const corDoRemedio = (r: Remedio) => COR_TOM[tomPrincipal(r)];
 
 /** Caixa do remédio em perspectiva, com nome, dosagem, faixa de genérico e tarja. */
 export function FotoRemedio({ remedio, tamanho = 64, fundo = true, className = "" }: { remedio: Remedio; tamanho?: number; fundo?: boolean; className?: string }) {
+  const foto = fotoDoRemedio(remedio.nomeRemedio);
+  if (foto) {
+    return (
+      <span className={`a-foto-remedio is-foto ${className}`} style={{ width: tamanho, height: tamanho, borderRadius: tamanho * 0.28 }}>
+        <img src={foto} alt={`Foto de ${remedio.nomeRemedio}`} width={tamanho} height={tamanho} loading="lazy" decoding="async" />
+      </span>
+    );
+  }
+  return <IlustracaoRemedio remedio={remedio} tamanho={tamanho} fundo={fundo} className={className} />;
+}
+
+function IlustracaoRemedio({ remedio, tamanho, fundo, className }: { remedio: Remedio; tamanho: number; fundo: boolean; className: string }) {
   const [cor, suave] = corDoRemedio(remedio);
   const generico = remedio.tipo === "generico";
   const tarja = remedio.tarjaRemedio === "preta" ? "#1d1d1f" : remedio.tarjaRemedio === "sem_tarja" ? null : "#d32f2f";
