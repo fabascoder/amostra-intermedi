@@ -1,8 +1,11 @@
 // Botão "Ver vídeo da plataforma": leva ao vídeo do Intermedi completo. Sem
 // link configurado (config/demo.ts), avisa que o vídeo estará disponível em breve.
-import { useState } from "react";
+// "compacto" mostra só o play (a faixa de uma linha da Central).
+import { useEffect, useState } from "react";
 import { VIDEO_PLATAFORMA_URL } from "../config/demo";
 import "./videoPlataforma.css";
+
+const ROTULO = "Ver vídeo da plataforma";
 
 function Play() {
   return (
@@ -12,20 +15,35 @@ function Play() {
   );
 }
 
-export function VideoPlataforma({ className = "", tom = "claro" }: { className?: string; tom?: "claro" | "escuro" }) {
+export function VideoPlataforma({ className = "", tom = "claro", compacto = false }: { className?: string; tom?: "claro" | "escuro"; compacto?: boolean }) {
   const [aviso, setAviso] = useState(false);
-  const classes = `video-plat is-${tom} ${className}`.trim();
+  const classes = `video-plat is-${tom}${compacto ? " is-compacto" : ""} ${className}`.trim();
+
+  // No modo compacto o aviso é um balão: some sozinho depois de alguns segundos.
+  useEffect(() => {
+    if (!aviso || !compacto) return undefined;
+    const t = window.setTimeout(() => setAviso(false), 3200);
+    return () => window.clearTimeout(t);
+  }, [aviso, compacto]);
+
   if (VIDEO_PLATAFORMA_URL) {
     return (
-      <a className={classes} href={VIDEO_PLATAFORMA_URL} target="_blank" rel="noopener noreferrer">
-        <Play /> Ver vídeo da plataforma
+      <a className={classes} href={VIDEO_PLATAFORMA_URL} target="_blank" rel="noopener noreferrer" aria-label={compacto ? ROTULO : undefined} title={compacto ? ROTULO : undefined}>
+        <Play /> {!compacto && ROTULO}
       </a>
     );
   }
   return (
-    <span className="video-plat-grupo">
-      <button type="button" className={classes} onClick={() => setAviso(true)} aria-describedby={aviso ? "video-plat-aviso" : undefined}>
-        <Play /> Ver vídeo da plataforma
+    <span className={`video-plat-grupo${compacto ? " is-compacto" : ""}`}>
+      <button
+        type="button"
+        className={classes}
+        onClick={() => setAviso(true)}
+        aria-label={compacto ? ROTULO : undefined}
+        title={compacto ? ROTULO : undefined}
+        aria-describedby={aviso ? "video-plat-aviso" : undefined}
+      >
+        <Play /> {!compacto && ROTULO}
       </button>
       <span id="video-plat-aviso" className={`video-plat-aviso${aviso ? " is-visivel" : ""}`} role="status">
         {aviso ? "O vídeo estará disponível em breve." : ""}

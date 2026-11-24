@@ -53,3 +53,55 @@
 @media (prefers-reduced-motion: reduce) {
   .video-plat-aviso.is-visivel { animation: none; }
 }
+
+/* ---------- Compacto: só o play, aviso em balão ---------- */
+.video-plat-grupo.is-compacto {
+  position: relative;
+  flex-shrink: 0;
+}
+.video-plat.is-compacto {
+  width: 40px;
+  height: 40px;
+  min-height: 0;
+  padding: 0;
+  justify-content: center;
+  border: 0;
+  background: none;
+}
+.video-plat.is-compacto .video-plat-icone {
+  width: 36px;
+  height: 36px;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 18%, transparent);
+  transition: box-shadow 0.25s ease, transform 0.2s ease;
+}
+.video-plat.is-compacto:hover .video-plat-icone {
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-primary) 22%, transparent);
+}
+.video-plat.is-compacto .video-plat-icone svg {
+  width: 14px;
+  height: 14px;
+}
+.video-plat-grupo.is-compacto .video-plat-aviso {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: -4px;
+  z-index: 5;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.video-plat-grupo.is-compacto .video-plat-aviso.is-visivel {
+  background: var(--demo-ink, #1c1c1e);
+  color: #fff;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+}
+.video-plat-grupo.is-compacto .video-plat-aviso.is-visivel::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 18px;
+  width: 10px;
+  height: 10px;
+  background: inherit;
+  transform: rotate(45deg);
+  border-radius: 2px;
+}

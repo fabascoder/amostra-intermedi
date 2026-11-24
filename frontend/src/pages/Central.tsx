@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/brand/logo-intermedi.webp";
 import { useEstadoPedidos, useAgoraDosPedidos } from "../demoServices/orderService";
@@ -73,37 +73,72 @@ function useSituacaoExperiencias(): Record<ExperienciaId, string | null> {
   return { solicitante, fornecedora, paciente: nome ? `Entrando como ${nome}` : null };
 }
 
-function PainelSessao({ visitadas }: { visitadas: number }) {
+const QUINZE_MIN = 15 * 60 * 1000;
+
+/**
+ * Tempo da sessão no topo. A borda de baixo mostra as experiências visitadas;
+ * ao tocar, abre para baixo dizendo até quando a amostra fica disponível.
+ */
+function SessaoTopo({ visitadas }: { visitadas: number }) {
   const expiraEm = useExpiraEm();
   const situacao = useSituacaoSessao();
   const agora = useAgora(situacao === "ativa");
-  const restante = expiraEm ? expiraEm - agora : 0;
+  const [aberto, setAberto] = useState(false);
+  const caixa = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!aberto) return undefined;
+    const fora = (e: PointerEvent) => {
+      if (!caixa.current?.contains(e.target as Node)) setAberto(false);
+    };
+    const esc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setAberto(false);
+    };
+    document.addEventListener("pointerdown", fora);
+    document.addEventListener("keydown", esc);
+    return () => {
+      document.removeEventListener("pointerdown", fora);
+      document.removeEventListener("keydown", esc);
+    };
+  }, [aberto]);
+
+  if (situacao !== "ativa" || !expiraEm) return <ContadorSessao />;
+  const restante = Math.max(0, expiraEm - agora);
+  const hora = new Date(expiraEm).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+  const minutos = Math.ceil(restante / 60000);
   return (
-    <section className="central-sessao" aria-labelledby="central-sessao-titulo">
-      <h2 id="central-sessao-titulo">Sua sessão</h2>
-      {situacao === "ativa" && expiraEm ? (
-        <>
-          <p className="central-relogio" aria-hidden="true">{formatarRestante(restante)}</p>
-          <p className="central-relogio-legenda">
-            restantes de 3 horas · termina às {new Date(expiraEm).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
-          </p>
-          <p className="sr-only">Restam cerca de {Math.ceil(restante / 60000)} minutos de acesso.</p>
-        </>
-      ) : (
-        <>
-          <p className="central-relogio is-parado" aria-hidden="true">3:00:00</p>
-          <p className="central-relogio-legenda">Começa na primeira experiência.</p>
-        </>
-      )}
-      <div className="central-progresso">
-        <p>
-          <strong>{visitadas} de 3</strong> experiências visitadas
-        </p>
-        <span className="central-progresso-trilho" aria-hidden="true">
+    <div ref={caixa} className={`central-tempo${aberto ? " is-aberto" : ""}${restante < QUINZE_MIN ? " is-pouco" : ""}`}>
+      <button
+        type="button"
+        className="central-tempo-botao"
+        aria-expanded={aberto}
+        aria-controls="central-tempo-detalhe"
+        aria-label={`Sessão: ${minutos} ${minutos === 1 ? "minuto restante" : "minutos restantes"}, ${visitadas} de 3 experiências visitadas. ${aberto ? "Fechar" : "Ver"} detalhes`}
+        onClick={() => setAberto((a) => !a)}
+      >
+        <i className="central-tempo-ponto" aria-hidden="true" />
+        <span className="central-tempo-modo" aria-hidden="true">Modo Demo ·</span>
+        <b aria-hidden="true">{formatarRestante(restante)}</b>
+        <span className="central-tempo-sufixo" aria-hidden="true">restantes</span>
+        <svg className="central-tempo-seta" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+        <span className="central-tempo-borda" aria-hidden="true">
           {[0, 1, 2].map((i) => <i key={i} className={i < visitadas ? "is-feito" : undefined} />)}
         </span>
+      </button>
+      <div id="central-tempo-detalhe" className="central-tempo-detalhe" inert={!aberto} aria-hidden={!aberto}>
+        <p className="central-tempo-rotulo">Disponível até</p>
+        <p className="central-tempo-hora">{hora}</p>
+        <p className="central-tempo-legenda">{formatarRestante(restante)} restantes de 3 horas</p>
+        <div className="central-tempo-progresso">
+          <p><strong>{visitadas} de 3</strong> experiências visitadas</p>
+          <span className="central-tempo-trilho" aria-hidden="true">
+            {[0, 1, 2].map((i) => <i key={i} className={i < visitadas ? "is-feito" : undefined} />)}
+          </span>
+        </div>
       </div>
-    </section>
+    </div>
   );
 }
 
@@ -155,18 +190,20 @@ function SobreAmostra() {
   const [aberto, setAberto] = useState(false);
   return (
     <div className={`central-beta${aberto ? " is-aberto" : ""}`}>
-      <div className="central-beta-topo">
+      <div className="central-beta-linha">
+        <VideoPlataforma compacto />
         <p>
-          <strong>Amostra em versão beta.</strong> Aqui você vê só uma parte do Intermedi: a plataforma completa tem
-          mais funcionalidades.{" "}
-          <button type="button" className="central-beta-mais" aria-expanded={aberto} aria-controls="central-beta-detalhe" onClick={() => setAberto((a) => !a)}>
-            {aberto ? "Ler menos" : "Ler mais"}
-          </button>
+          <strong>Amostra beta</strong> do Intermedi
         </p>
-        <VideoPlataforma />
+        <button type="button" className="central-beta-mais" aria-expanded={aberto} aria-controls="central-beta-detalhe" onClick={() => setAberto((a) => !a)}>
+          {aberto ? "Ler menos" : "Ler mais"}
+        </button>
       </div>
       {aberto && (
         <div id="central-beta-detalhe" className="central-beta-detalhe">
+          <p>
+            Aqui você vê só uma parte do Intermedi: a plataforma completa tem mais funcionalidades.
+          </p>
           <p>
             Na vida real, o Intermedi são <strong>três plataformas diferentes</strong>, cada uma no seu aparelho:
           </p>
@@ -239,7 +276,7 @@ export default function Central() {
       <header className="central-topo">
         <img className="central-logo" src={logo} alt="Intermedi" width="1920" height="1080" />
         <div className="central-topo-direita">
-          <ContadorSessao />
+          <SessaoTopo visitadas={totalVisitadas} />
           {situacao === "ativa" && (
             <button type="button" className="central-avaliar" onClick={() => setAvaliando(true)}>
               <ManagerIcon name="star" size={17} />
@@ -254,10 +291,6 @@ export default function Central() {
           <div className="central-titulo">
             {nome && <p className="central-ola">Olá, {nome}</p>}
             <h1>Como deseja explorar o Intermedi?</h1>
-            <p>
-              Escolha uma experiência. Dá para alternar quando quiser.
-            </p>
-            <SobreAmostra />
           </div>
 
           <ul className="central-opcoes" aria-label="Experiências">
@@ -298,10 +331,11 @@ export default function Central() {
               );
             })}
           </ul>
+
+          <SobreAmostra />
         </div>
 
         <aside className="central-lateral">
-          <PainelSessao visitadas={totalVisitadas} />
 
           <section className="central-sobre" aria-labelledby="central-sobre-titulo">
             <h2 id="central-sobre-titulo">Sobre esta demonstração</h2>
