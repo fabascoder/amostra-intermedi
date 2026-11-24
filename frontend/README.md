@@ -170,8 +170,18 @@ a aplicação. Nada de catálogo é gravado — só o que muda.
 ## Limitações (segurança)
 
 Sem backend, **o bloqueio por tempo é só da interface**. Quem apagar o armazenamento do navegador
-ou usar outro navegador consegue uma sessão nova. Não existe — e a demonstração não finge existir —
-autorização remota de reativação. A tela de fim orienta a procurar a equipe.
+ou usar outro navegador consegue uma sessão nova. A tela de fim orienta a procurar a equipe.
+
+### Reativar a amostra (equipe)
+
+Abra o endereço da amostra no aparelho da pessoa com `?reativar=CODIGO` no fim, por exemplo
+`https://SEU-DOMINIO/?reativar=CODIGO`. A sessão daquele navegador é apagada (encerrada ou
+ainda ativa) e a amostra recomeça nas boas-vindas, com três horas novas. O parâmetro some do
+endereço logo em seguida, e um código errado não faz nada.
+
+O código fica em `src/session/reativacao.ts` só como hash (`HASH_DO_CODIGO`). Para trocá-lo,
+gere o hash do novo código (em minúsculas) com `hashCodigo()` desse arquivo e substitua o valor.
+Como não há backend, isso é uma barreira de interface, não uma senha de verdade.
 
 O contato oficial não foi encontrado nos projetos; `CONTACT` em `src/config/demo.ts` está vazio.
 Preencha e-mail, telefone ou site para que apareçam na tela de sessão encerrada.

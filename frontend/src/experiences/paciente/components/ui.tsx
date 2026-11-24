@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { alternarFavoritoFarmacia, alternarFavoritoRemedio, usePaciente } from "../../../demoServices/patientService";
 import { formatarKm } from "../../../demoServices/pharmacyService";
 import type { Farmacia, Remedio } from "../../../types";
-import { exigeReceita, formatoComprimido, itensEmEstoque, ondeTem, tituloRemedio, tomPrincipal, type FormatoComprimido, type Tom } from "../dados";
+import { exigeReceita, itensEmEstoque, ondeTem, tituloRemedio, type FormatoComprimido, type Tom } from "../dados";
+import { FotoFarmacia, FotoRemedio } from "./Fotos";
 import { Ionicon } from "./Ionicon";
 
 export function Texto({ v = "body", cor, className = "", children, as: Tag = "p" }: {
@@ -212,7 +213,7 @@ export function CartaoRemedio({ remedio, onClick, mostrarFavorito = false }: { r
   return (
     <div className="a-card a-cartao-remedio">
       <button type="button" className="a-cartao-abrir a-pressavel" onClick={onClick} aria-label={`Ver detalhes de ${tituloRemedio(remedio)}`}>
-        <MiniaturaRemedio tom={tomPrincipal(remedio)} formato={formatoComprimido(remedio)} tamanho={64} />
+        <FotoRemedio remedio={remedio} tamanho={72} />
         <span className="a-cartao-info">
           <span className="t-bodyBold a-cartao-titulo">{tituloRemedio(remedio)}</span>
           <span className="t-label a-uma-linha">{remedio.categorias.join(" · ")}</span>
@@ -236,14 +237,16 @@ export function CartaoFarmacia({ farmacia, distancia }: { farmacia: Farmacia; di
   const itens = itensEmEstoque(farmacia.idFarmacia);
   return (
     <div className="a-card a-cartao-farmacia">
+      <button type="button" className="a-cartao-farmacia-foto" onClick={() => navigate(`/aplicativo/farmacia/${farmacia.idFarmacia}`)} aria-label={`Abrir ${farmacia.nomeFarmacia}`} tabIndex={-1}>
+        <FotoFarmacia farmacia={farmacia} altura={120} />
+      </button>
       <div className="a-cartao-farmacia-topo">
-        <button type="button" className="a-cartao-abrir a-pressavel" onClick={() => navigate(`/aplicativo/farmacia/${farmacia.idFarmacia}`)} aria-label={`${farmacia.nomeFarmacia}. Ver estoque`}>
-          <IconTile icone="add-circle" tom="green" tamanho={54} tamanhoIcone={30} />
+        <button type="button" className="a-cartao-abrir a-pressavel" onClick={() => navigate(`/aplicativo/farmacia/${farmacia.idFarmacia}`)} aria-label={`${farmacia.nomeFarmacia}. Ver o que tem`}>
           <span className="a-cartao-info">
             <span className="t-h3">{farmacia.nomeFarmacia}</span>
             <span className="t-label">{[`${farmacia.rua}, ${farmacia.numero}`, formatarKm(distancia)].filter(Boolean).join(" · ")}</span>
             <span className="t-label a-negrito" style={{ color: itens > 0 ? "var(--a-primary-dark)" : "var(--a-muted)" }}>
-              {itens > 0 ? `${itens} ${itens === 1 ? "remédio" : "remédios"} em estoque` : "Sem estoque no momento"}
+              {itens > 0 ? `${itens} ${itens === 1 ? "remédio disponível" : "remédios disponíveis"}` : "Sem estoque no momento"}
             </span>
           </span>
         </button>
@@ -254,7 +257,7 @@ export function CartaoFarmacia({ farmacia, distancia }: { farmacia: Farmacia; di
           <Ionicon name="time-outline" size={18} color="var(--a-primary-dark)" />
           <span className="t-label">{farmacia.horario}</span>
         </span>
-        <Botao compacto larguraTotal={false} titulo="Ver estoque" onClick={() => navigate(`/aplicativo/farmacia/${farmacia.idFarmacia}`)} rotulo={`Ver estoque da ${farmacia.nomeFarmacia}`} />
+        <Botao compacto larguraTotal={false} titulo="Ver o que tem" onClick={() => navigate(`/aplicativo/farmacia/${farmacia.idFarmacia}`)} rotulo={`Ver o que tem na ${farmacia.nomeFarmacia}`} />
       </div>
     </div>
   );

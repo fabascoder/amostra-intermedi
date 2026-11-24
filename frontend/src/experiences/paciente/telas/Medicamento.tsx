@@ -7,9 +7,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { remedio as buscarRemedio } from "../../../demoServices/medicationService";
 import { adicionarDose, alternarFavoritoRemedio, usePaciente } from "../../../demoServices/patientService";
 import { formatarKm } from "../../../demoServices/pharmacyService";
-import { POUCAS_UNIDADES, detalhesRemedio, estiloCategoria, exigeReceita, formatoComprimido, ondeTem, tituloRemedio, tomPrincipal } from "../dados";
+import { POUCAS_UNIDADES, cuidadosRemedio, estiloCategoria, exigeReceita, ondeTem, textoReceita, tituloRemedio, tomPrincipal } from "../dados";
+import { FotoRemedio } from "../components/Fotos";
 import { Ionicon } from "../components/Ionicon";
-import { Botao, BotaoFavorito, BotaoVoltar, Comprimido, IconTile, Tag } from "../components/ui";
+import { Botao, BotaoFavorito, BotaoVoltar, IconTile, Tag } from "../components/ui";
 
 const HORARIOS = ["06:00", "07:30", "08:00", "12:00", "14:00", "18:00", "20:00", "22:00"];
 
@@ -36,12 +37,12 @@ export default function Medicamento() {
   const receita = exigeReceita(remedio);
   const perto = ondeTem(remedio.idRemedio);
   const maisPerto = perto[0];
-  const formato = formatoComprimido(remedio);
+  // Só o que ajuda quem vai comprar: o que vem na caixa, receita e se é genérico.
   const quadros: { rotulo: string; valor: string; icone: string; tom: "blue" | "amber" | "purple" | "green" }[] = [
-    { rotulo: "Forma", valor: remedio.formaFarmaceutica, icone: "ellipse-outline", tom: "blue" },
-    { rotulo: "Embalagem", valor: remedio.apresentacaoRemedio, icone: "cube-outline", tom: "amber" },
-    { rotulo: "Fabricante", valor: remedio.fabricanteRemedio, icone: "business-outline", tom: "purple" },
-    { rotulo: "Tipo", valor: { referencia: "Referência", generico: "Genérico", similar: "Similar" }[remedio.tipo], icone: "checkmark", tom: "green" },
+    { rotulo: "Na caixa", valor: remedio.apresentacaoRemedio.replace(/^Caixa com /, "").replace(/^Tubo com /, ""), icone: "cube-outline", tom: "blue" },
+    { rotulo: "Receita", valor: textoReceita(remedio), icone: "document-text-outline", tom: "amber" },
+    { rotulo: "Tipo", valor: { referencia: "De marca", generico: "Genérico", similar: "Similar" }[remedio.tipo], icone: "pricetag-outline", tom: "purple" },
+    { rotulo: "Perto de você", valor: perto.length ? `${perto.length} ${perto.length === 1 ? "farmácia tem" : "farmácias têm"}` : "Em falta", icone: "location-outline", tom: "green" },
   ];
 
   return (
@@ -54,7 +55,7 @@ export default function Medicamento() {
           <BotaoFavorito flutuante selecionado={favorito} rotulo={favorito ? "Remover dos favoritos" : "Salvar nos favoritos"} onClick={() => alternarFavoritoRemedio(remedio.idRemedio)} />
         </div>
         <div className="a-capa-arte">
-          <Comprimido formato={formato} tamanho={140} cores={formato === "capsule" ? ["#EE8F68", "#FFFFFF"] : undefined} />
+          <FotoRemedio remedio={remedio} tamanho={220} fundo={false} />
         </div>
       </div>
 
@@ -65,7 +66,7 @@ export default function Medicamento() {
         </div>
         <div>
           <h1 className="t-h2">{tituloRemedio(remedio)}</h1>
-          <p className="t-body" style={{ color: "var(--a-text-2)" }}>{remedio.principioAtivo}</p>
+          <p className="t-body" style={{ color: "var(--a-text-2)" }}>Para {remedio.indicacoes.charAt(0).toLowerCase() + remedio.indicacoes.slice(1)}</p>
         </div>
         <div className="a-quadros">
           {quadros.map((q) => (
@@ -78,7 +79,6 @@ export default function Medicamento() {
             </div>
           ))}
         </div>
-        <p className="t-body" style={{ color: "var(--a-text-2)" }}>{remedio.descricao}. Indicado para: {remedio.indicacoes.toLowerCase()}.</p>
 
         <h2 className="t-h3">Disponível perto de você</h2>
         {!perto.length && (
@@ -94,38 +94,38 @@ export default function Medicamento() {
               <IconTile icone="location-outline" tom={poucas ? "amber" : "green"} tamanho={46} />
               <span className="a-flex">
                 <span className="t-bodyBold">{farmacia.nomeFarmacia}</span>
-                <span className="t-label">{[formatarKm(distancia), `${quantidade.toLocaleString("pt-BR")} ${quantidade === 1 ? "unidade" : "unidades"}`].filter(Boolean).join(" · ")}</span>
+                <span className="t-label">{[formatarKm(distancia), farmacia.bairro].filter(Boolean).join(" · ")}</span>
               </span>
-              <Tag rotulo={poucas ? "Poucas unid." : "Em estoque"} tom={poucas ? "amber" : "green"} />
+              <Tag rotulo={poucas ? "Últimas unidades" : "Tem"} tom={poucas ? "amber" : "green"} />
             </button>
           );
         })}
 
         <button type="button" className="a-mais" aria-expanded={mais} onClick={() => setMais((v) => !v)}>
-          <span className="t-bodyBold a-flex">Mais informações</span>
+          <span className="t-bodyBold a-flex">Cuidados</span>
           <Ionicon name={mais ? "chevron-up" : "chevron-down"} size={20} color="var(--a-text-2)" />
         </button>
-        {mais && detalhesRemedio(remedio).map((grupo) => (
-          <div key={grupo.titulo} className="a-detalhes">
-            <p className="t-label a-detalhes-titulo">{grupo.titulo}</p>
-            {grupo.campos.map(([rotulo, valor]) => (
+        {mais && (
+          <div className="a-detalhes">
+            {cuidadosRemedio(remedio).map(([rotulo, valor]) => (
               <div key={rotulo} className="a-detalhe">
                 <span className="t-caption">{rotulo}</span>
                 <span className="t-label" style={{ color: "var(--a-text)" }}>{valor}</span>
               </div>
             ))}
+            <p className="t-caption">Na dúvida, fale com o farmacêutico antes de tomar.</p>
           </div>
-        ))}
+        )}
       </div>
 
       <div className="a-acoes-fixas">
         <Botao
           variante="outline"
           larguraTotal={false}
-          titulo="Farmácia"
+          titulo="Mais perto"
           disabled={!maisPerto}
           icone={<Ionicon name="storefront-outline" size={20} />}
-          rotulo={maisPerto ? `Ver estoque da ${maisPerto.farmacia.nomeFarmacia}, a mais perto` : "Nenhuma farmácia com estoque"}
+          rotulo={maisPerto ? `Abrir a ${maisPerto.farmacia.nomeFarmacia}, a mais perto` : "Nenhuma farmácia tem agora"}
           onClick={() => maisPerto && navigate(`/aplicativo/farmacia/${maisPerto.farmacia.idFarmacia}`)}
           className="a-botao-mapa"
         />
@@ -169,7 +169,7 @@ function FolhaRotina({ horario, setHorario, onFechar, onConfirmar }: { horario: 
     >
       <div className="a-folha-modal-corpo">
         <h2 className="t-h3">Que horas você toma?</h2>
-        <p className="t-label">Eu te lembro todo dia nesse horário. A rotina fica salva neste aparelho durante a demonstração.</p>
+        <p className="t-label">Eu te lembro todo dia nesse horário.</p>
         <div className="a-horarios" role="radiogroup" aria-label="Horário">
           {HORARIOS.map((h) => (
             <button key={h} type="button" role="radio" aria-checked={horario === h} className={horario === h ? "is-ativo" : undefined} onClick={() => setHorario(h)}>

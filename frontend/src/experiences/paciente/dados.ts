@@ -45,21 +45,18 @@ export function formatoComprimido(r: Remedio): FormatoComprimido {
   return "oval";
 }
 
-const TARJA_TEXTO: Record<Remedio["tarjaRemedio"], string> = {
-  sem_tarja: "Venda livre",
-  vermelha: "Tarja vermelha",
-  vermelha_retencao: "Tarja vermelha (retém receita)",
-  preta: "Tarja preta",
-};
-const TIPO_TEXTO = { referencia: "Referência", generico: "Genérico", similar: "Similar" } as const;
+/** Receita em palavras simples, para quem vai comprar. */
+export function textoReceita(r: Remedio): string {
+  if (r.tarjaRemedio === "sem_tarja") return "Não precisa";
+  if (r.tarjaRemedio === "vermelha") return "Precisa de receita";
+  return "A farmácia fica com a receita";
+}
 
-/** Campos de "Mais informações", nos grupos da tela do app. */
-export function detalhesRemedio(r: Remedio): { titulo: string; campos: [string, string][] }[] {
+/** "Cuidados" na página do remédio: só o que importa para quem vai tomar. */
+export function cuidadosRemedio(r: Remedio): [string, string][] {
   return [
-    { titulo: "Sobre o medicamento", campos: [["Princípio ativo", r.principioAtivo], ["Categorias", r.categorias.join(", ")], ["Fabricante", r.fabricanteRemedio], ["Tipo", TIPO_TEXTO[r.tipo]]] },
-    { titulo: "Apresentação e administração", campos: [["Apresentação", r.apresentacaoRemedio], ["Forma farmacêutica", r.formaFarmaceutica], ["Via de administração", r.viaAdministracao]] },
-    { titulo: "Receita e classificação", campos: [["Tarja", TARJA_TEXTO[r.tarjaRemedio]], ["Exige receita", exigeReceita(r) ? "Sim" : "Não"], ["Retém receita", r.tarjaRemedio === "vermelha_retencao" || r.tarjaRemedio === "preta" ? "Sim" : "Não"], ["Registro ANVISA (fictício)", r.registroAnvisa]] },
-    { titulo: "Indicações e cuidados", campos: [["Indicações", r.indicacoes], ["Contraindicações", r.contraindicacoes], ["Armazenamento", r.armazenamento]] },
+    ["Quem não deve tomar", r.contraindicacoes],
+    ["Como guardar", r.armazenamento],
   ];
 }
 
