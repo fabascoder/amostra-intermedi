@@ -54,69 +54,43 @@
   60% { transform: scale(1.15) rotate(6deg); }
 }
 
-/* ---------- Auvox: painel escuro, nome em letras e uma onda de voz ---------- */
-.convite-auvox {
-  background: #12161a;
-  color: #f3f5f6;
-}
-.convite-auvox .demo-dialogo-fechar { background: rgb(255 255 255 / 0.1); color: #f3f5f6; }
-.convite-auvox .demo-dialogo-fechar:hover { background: rgb(255 255 255 / 0.18); }
-.convite-auvox .convite-texto { color: rgb(243 245 246 / 0.7); }
-.convite-auvox .demo-botao { background: #f3f5f6; color: #12161a; }
-.convite-auvox .demo-botao:hover { background: #fff; }
-.convite-auvox .demo-botao-sec { background: rgb(255 255 255 / 0.08); color: #f3f5f6; }
+/* ---------- Auvox: a logo (azul-marinho e dourado) chega e o nome aparece ---------- */
+.convite-auvox { --auvox-marinho: #14213d; --auvox-ouro: #c9a24a; }
+.convite-auvox h2 { color: var(--auvox-marinho); }
+.convite-auvox .demo-botao { background: var(--auvox-marinho); color: #fff; }
+.convite-auvox .demo-botao:hover { background: #0b1528; }
 .convite-auvox-marca {
-  position: relative;
   display: grid;
-  place-items: center;
-  width: 100%;
-  height: 120px;
+  justify-items: center;
+  gap: 4px;
   margin-bottom: var(--space-2);
 }
-.convite-auvox-onda {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  opacity: 0.55;
+.convite-auvox-marca img {
+  width: 104px;
+  height: 104px;
+  object-fit: contain;
+  animation: convite-logo 0.9s var(--convite-ease) both;
 }
-.convite-auvox-onda i {
-  width: 5px;
-  height: calc(18px + (4 - (var(--i) - 4) * (var(--i) - 4) / 4) * 18px);
-  border-radius: 5px;
-  background: linear-gradient(#5fd39c, #2f6fd6);
-  transform-origin: center;
-  animation: convite-onda 1.6s ease-in-out infinite alternate;
-  animation-delay: calc(var(--i) * -0.18s);
-}
-@keyframes convite-onda {
-  from { transform: scaleY(0.35); }
-  to { transform: scaleY(1); }
+@keyframes convite-logo {
+  from { opacity: 0; transform: translateY(14px) rotate(-8deg) scale(0.8); }
 }
 .convite-auvox-nome {
-  position: relative;
   display: inline-flex;
-  font-size: 54px;
+  font-size: 34px;
   font-weight: 800;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.04em;
   line-height: 1;
+  color: var(--auvox-marinho);
 }
 .convite-auvox-nome b {
   display: inline-block;
   font-weight: inherit;
-  animation: convite-letra 0.7s var(--convite-ease) both;
-  animation-delay: calc(0.1s + var(--i) * 0.07s);
+  animation: convite-letra 0.6s var(--convite-ease) both;
+  animation-delay: calc(0.45s + var(--i) * 0.06s);
 }
+.convite-auvox-nome b:nth-child(2) { color: var(--auvox-ouro); }
 @keyframes convite-letra {
-  from { opacity: 0; transform: translateY(18px); filter: blur(6px); }
-}
-.convite-auvox-marca img {
-  position: relative;
-  width: 72px;
-  height: 72px;
-  object-fit: contain;
+  from { opacity: 0; transform: translateY(12px); filter: blur(5px); }
 }
 
 /* ---------- Instagram ---------- */
@@ -160,7 +134,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .convite-estrelas svg,
-  .convite-auvox-onda i,
+  .convite-auvox-marca img,
   .convite-auvox-nome b,
   .convite-insta rect,
   .convite-insta circle,
@@ -168,4 +142,15 @@
   .convite-equipe span {
     animation: none;
   }
+}
+
+/* Centralizado também no celular (não é folha presa à esquerda) */
+@media (max-width: 560px) {
+  .convite.demo-dialogo {
+    width: calc(100vw - 32px);
+    margin: auto;
+    border-radius: var(--radius-xl);
+  }
+  .convite.demo-dialogo h2 { padding-right: 0; }
+  .convite-corpo { padding: var(--space-8) var(--space-5) var(--space-5); }
 }

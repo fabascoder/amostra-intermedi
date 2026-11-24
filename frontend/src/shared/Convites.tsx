@@ -96,16 +96,10 @@ function ConviteAuvox({ onFechar }: { onFechar: () => void }) {
     <Dialogo rotulo="Conheça a Auvox" onFechar={onFechar} className="convite convite-auvox">
       <div className="convite-corpo">
         <div className="convite-auvox-marca" aria-hidden="true">
-          <span className="convite-auvox-onda">
-            {Array.from({ length: 9 }, (_, i) => <i key={i} style={{ "--i": i } as React.CSSProperties} />)}
+          {LOGO_AUVOX && <img src={LOGO_AUVOX} alt="" width="104" height="104" />}
+          <span className="convite-auvox-nome">
+            {"auvox".split("").map((letra, i) => <b key={i} style={{ "--i": i } as React.CSSProperties}>{letra}</b>)}
           </span>
-          {LOGO_AUVOX ? (
-            <img src={LOGO_AUVOX} alt="" width="72" height="72" />
-          ) : (
-            <span className="convite-auvox-nome">
-              {"auvox".split("").map((letra, i) => <b key={i} style={{ "--i": i } as React.CSSProperties}>{letra}</b>)}
-            </span>
-          )}
         </div>
         <h2>Você conheceu o Intermedi. Agora conheça a Auvox.</h2>
         <p className="convite-texto">A equipe que fez a plataforma das farmácias, o aplicativo e o servidor.</p>

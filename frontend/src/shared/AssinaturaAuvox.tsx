@@ -1,9 +1,10 @@
 // Assinatura no pé da tela de entrada, como o "from Meta" de outros apps:
 // "um produto da" em cima e a marca da Auvox embaixo.
 // Para usar a logo oficial, coloque o arquivo em assets/brand e passe-o em LOGO_AUVOX.
+import logoAuvox from "../assets/brand/logo-auvox.png";
 import "./assinaturaAuvox.css";
 
-export const LOGO_AUVOX: string | null = null;
+export const LOGO_AUVOX: string | null = logoAuvox;
 
 export function AssinaturaAuvox({ className = "" }: { className?: string }) {
   return (
