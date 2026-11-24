@@ -49,7 +49,7 @@ export default function Perfil() {
         </div>
         <div className="a-grupo">
           <LinhaLista inicio={<MascoteAvatar id={mascote} tamanho={44} />} titulo="Seu mascote" subtitulo={MASCOTES[mascote].nome} onClick={() => navigate("/aplicativo/mascote")} />
-          <LinhaLista divisor icone="ellipse-outline" tom="blue" titulo="Seus comprimidos" direita={pendente ? <Tag rotulo={`Próxima ${pendente.horario}`} tom="amber" /> : undefined} onClick={() => navigate("/aplicativo/comprimidos")} />
+          <LinhaLista divisor icone="alarm-outline" tom="blue" titulo="Seus comprimidos" direita={pendente ? <Tag rotulo={`Próxima ${pendente.horario}`} tom="amber" /> : undefined} onClick={() => navigate("/aplicativo/comprimidos")} />
           <LinhaLista divisor icone="notifications-outline" tom="orange" titulo="Notificações" direita={naoLidas ? <Tag rotulo={`${naoLidas} nova${naoLidas > 1 ? "s" : ""}`} tom="red" /> : undefined} onClick={() => navigate("/aplicativo/notificacoes")} />
         </div>
         <div className="a-grupo a-grupo-demo">

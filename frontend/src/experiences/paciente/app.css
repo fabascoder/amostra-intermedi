@@ -819,8 +819,6 @@
   color: inherit;
   text-align: left;
   scroll-snap-align: start;
-  animation: a-tela-entra 0.45s var(--a-ease) both;
-  animation-delay: calc(var(--i) * 50ms);
 }
 .a-fileira-card .a-foto-remedio {
   margin-bottom: 6px;
@@ -2130,11 +2128,10 @@
   box-shadow: var(--a-sombra);
   color: inherit;
   text-align: left;
-  animation: a-buscar-card 0.45s var(--a-ease) both;
-  animation-delay: calc(min(var(--i), 8) * 45ms);
+  animation: a-buscar-card 0.25s ease both;
 }
 @keyframes a-buscar-card {
-  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+  from { opacity: 0; }
 }
 .a-buscar-tipo {
   font-weight: 600;
@@ -2645,3 +2642,131 @@
 .a-opcao-mapa-amostra .agua { width: 24px; height: 70px; right: -5px; transform: rotate(25deg); }
 .a-opcao-mapa-amostra .rua { width: 80px; height: 7px; transform: rotate(-30deg); }
 .a-opcao-mapa-amostra .ion { position: relative; }
+
+/* Foto real do remédio */
+.a-foto-remedio.is-foto {
+  overflow: hidden;
+  background: var(--a-surface-muted);
+  box-shadow: inset 0 0 0 1px rgb(13 35 28 / 0.06);
+}
+.a-foto-remedio.is-foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* =====================================================================
+   Menos "cara de gerado": menos cartões, menos cor de enfeite
+   ===================================================================== */
+.a-cab-decor { display: none; }
+
+/* Atalhos do início: linha branca simples, ícone na cor do mascote */
+.a-atalho {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--a-border);
+  border-radius: 16px;
+  background: var(--a-surface);
+  color: var(--a-text);
+}
+.a-atalho .a-flex { display: grid; gap: 1px; }
+.a-atalho .t-caption { color: var(--a-text-2); }
+.a-atalho-icone { color: var(--a-mascote); flex-shrink: 0; }
+
+/* Perfil: os três números numa faixa só, separados por linhas finas */
+.a-estatisticas {
+  gap: 0;
+  padding: 14px 4px;
+  border-radius: 18px;
+  background: var(--a-surface);
+  box-shadow: var(--a-sombra);
+}
+.a-estatistica {
+  min-height: 0;
+  padding: 0 12px;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+.a-estatistica + .a-estatistica { border-left: 1px solid var(--a-border); }
+.a-estatistica .t-h2 { color: var(--a-text) !important; font-variant-numeric: tabular-nums; }
+
+/* Broto: perguntas sugeridas como lista */
+.a-sugestoes {
+  display: grid;
+  gap: 0;
+  padding: 0 16px;
+  border-radius: 18px;
+  background: var(--a-surface);
+  box-shadow: var(--a-sombra);
+}
+.a-sugestao {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 12px 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--a-text);
+  text-align: left;
+}
+.a-sugestao + .a-sugestao { border-top: 1px solid var(--a-border); }
+.a-sugestao-texto { font-size: 15px !important; line-height: 21px !important; font-weight: 500 !important; }
+
+/* Remédio: farmácias numa lista só, com o tempo a pé na frente */
+.a-onde { display: grid; gap: 8px; }
+.a-onde h2 { margin: 0; }
+.a-lista-lugares {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--a-border);
+}
+.a-lista-lugares li { border-bottom: 1px solid var(--a-border); }
+.a-lugar-linha {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 4px;
+  border: 0;
+  background: none;
+  color: var(--a-text);
+  text-align: left;
+}
+.a-lugar-linha .a-flex { display: grid; gap: 1px; min-width: 0; }
+.a-lugar-tempo {
+  display: grid;
+  justify-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  font-size: 11px;
+  line-height: 1.1;
+  color: var(--a-text-2);
+}
+.a-lugar-tempo strong {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--a-text);
+  font-variant-numeric: tabular-nums;
+}
+.a-lugar-linha.is-ativo .a-lugar-tempo strong,
+.a-lugar-linha.is-ativo .t-bodyBold { color: var(--a-mascote); }
+.a-lugar-aviso {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--a-warning-text);
+}
+
+/* Detalhes do remédio: lista de rótulo e valor */
+.a-ficha { margin: 0; }
+.a-ficha dd { margin: 0; color: var(--a-text); }
+.a-ficha .a-tags { margin-top: 4px; }

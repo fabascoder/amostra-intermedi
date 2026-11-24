@@ -11,7 +11,6 @@ import { MASCOTES, MascoteAvatar } from "../../../shared/Mascote";
 import type { Remedio } from "../../../types";
 import { POUCAS_UNIDADES, exigeReceita, ondeTem, tituloRemedio, type Tom } from "../dados";
 import { Ionicon } from "../components/Ionicon";
-import { IconTile } from "../components/ui";
 import { FALAS, type Falas } from "../personalidade";
 
 type Resposta = {
@@ -39,7 +38,7 @@ function responder(pergunta: string, f: Falas): Resposta {
   const achados = acharRemedios(pergunta);
   if (achados.length >= 2) {
     return {
-      texto: `${achados.slice(0, 2).map((r) => `${tituloRemedio(r)}: ${ondeTem(r.idRemedio).length} farmácia(s) com estoque${exigeReceita(r) ? ", exige receita" : ""}`).join("\n")}\n\nQual é melhor para você depende do caso — confirme com o farmacêutico ou com seu médico.`,
+      texto: `${achados.slice(0, 2).map((r) => `${tituloRemedio(r)}: ${ondeTem(r.idRemedio).length} farmácia(s) com estoque${exigeReceita(r) ? ", exige receita" : ""}`).join("\n")}\n\nQual é melhor para você depende do caso. Confirme com o farmacêutico ou com seu médico.`,
       acoes: achados.slice(0, 2).map((r, i) => ({ rotulo: `Ver ${r.nomeRemedio}`, destino: `/aplicativo/medicamento/${r.idRemedio}`, principal: i === 0 })),
     };
   }
@@ -71,7 +70,7 @@ function responder(pergunta: string, f: Falas): Resposta {
   }
   if (/reserv/.test(q)) return { texto: "Ainda não dá para reservar pelo app. Abra o remédio, veja qual farmácia tem estoque e vá até lá.", acoes: [{ rotulo: "Ver remédios", destino: "/aplicativo/remedios", principal: true }] };
   if (/renov/.test(q)) return { texto: "A renovação da receita é feita com o médico, na UBS ou na consulta. Leve a receita antiga e um documento com foto." };
-  if (/receita/.test(q)) return { texto: "Remédios com a etiqueta \"Exige receita\" só são entregues com a receita em mãos. Os que mostram \"Sem receita\" são isentos de prescrição — mesmo assim, confirme com o farmacêutico.", acoes: [{ rotulo: "Ver remédios", destino: "/aplicativo/remedios" }] };
+  if (/receita/.test(q)) return { texto: "Remédios com a etiqueta \"Exige receita\" só são entregues com a receita em mãos. Os que mostram \"Sem receita\" não precisam de receita. Mesmo assim, confirme com o farmacêutico.", acoes: [{ rotulo: "Ver remédios", destino: "/aplicativo/remedios" }] };
   if (/horario|movimento|fila|lotad|cheio/.test(q)) return { texto: "Ainda não tenho o movimento das unidades por horário. O horário de funcionamento de cada farmácia aparece na aba Farmácias.", acoes: [{ rotulo: "Ver farmácias", destino: "/aplicativo/farmacias", principal: true }] };
   if (/mascote|trocar/.test(q)) return { texto: "Para trocar de mascote, vá em Perfil → Seu mascote e escolha entre Broto, Lume e Luar.", acoes: [{ rotulo: "Trocar mascote", destino: "/aplicativo/mascote", principal: true }] };
   if (/lembr|dose|rotina|tomar|horas/.test(q)) return { texto: "Abra um remédio e toque em \"Adicionar à rotina\". Eu mostro a próxima dose na tela inicial e você confirma com \"Tomei\".", acoes: [{ rotulo: "Seus comprimidos", destino: "/aplicativo/comprimidos", principal: true }] };
@@ -155,9 +154,9 @@ export default function Broto() {
             <h2 className="t-h3">Experimente perguntar</h2>
             <div className="a-sugestoes">
               {sugestoes.map((s) => (
-                <button key={s.texto} type="button" className={`a-sugestao tom-${s.tom} a-pressavel`} onClick={() => perguntar(s.texto)}>
-                  <IconTile icone={s.icone} tom={s.tom} tamanho={40} />
-                  <span className="t-bodyBold a-sugestao-texto">{s.texto}</span>
+                <button key={s.texto} type="button" className="a-sugestao" onClick={() => perguntar(s.texto)}>
+                  <span className="t-bodyBold a-sugestao-texto a-flex">{s.texto}</span>
+                  <Ionicon name="chevron-forward" size={18} color="var(--a-text-2)" />
                 </button>
               ))}
             </div>
