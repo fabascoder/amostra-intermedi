@@ -4,7 +4,7 @@ import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { buscarRemedios, listarRemedios } from "../../../demoServices/medicationService";
 import type { Remedio } from "../../../types";
-import { categoriasDoCatalogo, estiloCategoria, exigeReceita, ondeTem } from "../dados";
+import { categoriasDoCatalogo, exigeReceita, ondeTem } from "../dados";
 import { Ionicon } from "../components/Ionicon";
 import { Botao, Cabecalho, CartaoRemedio, Vazio } from "../components/ui";
 
@@ -97,7 +97,7 @@ export default function Remedios() {
         {categorias.map((rotulo) => {
           const ativo = filtros.categorias.includes(rotulo);
           return (
-            <button key={rotulo} type="button" role="tab" aria-selected={ativo} className={`a-chip tom-${estiloCategoria(rotulo).tom}${ativo ? " is-ativo" : ""}`} onClick={() => escolherCategoria(ativo && umaCategoria ? "" : rotulo)}>
+            <button key={rotulo} type="button" role="tab" aria-selected={ativo} className={`a-chip tom-cat${ativo ? " is-ativo" : ""}`} onClick={() => escolherCategoria(ativo && umaCategoria ? "" : rotulo)}>
               <i />
               {rotulo}
             </button>

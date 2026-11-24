@@ -79,7 +79,6 @@ function responder(pergunta: string, f: Falas): Resposta {
   return { texto: `${f.naoEntendi} Para dúvidas de tratamento, fale com o farmacêutico.` };
 }
 
-const TONS_CHIP: Tom[] = ["orange", "blue", "amber", "purple"];
 
 export default function Broto() {
   const navigate = useNavigate();
@@ -205,8 +204,8 @@ export default function Broto() {
             )}
             {pensando && <p className="a-balao-bot a-pensando t-label"><span className="a-pontos"><i /><i /><i /></span>{f.pensando}</p>}
             <div className="a-chips a-chips-chat">
-              {chips.map((c, i) => (
-                <button key={c} type="button" className={`a-chip tom-${TONS_CHIP[i % TONS_CHIP.length]}`} onClick={() => perguntar(c)}>{c}</button>
+              {chips.map((c) => (
+                <button key={c} type="button" className="a-chip tom-cat" onClick={() => perguntar(c)}>{c}</button>
               ))}
             </div>
             <div ref={fim} />

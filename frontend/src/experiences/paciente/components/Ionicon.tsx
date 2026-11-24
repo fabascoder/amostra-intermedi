@@ -1,7 +1,7 @@
 // Ionicons, o mesmo conjunto de ícones do intermedi-app (@expo/vector-icons).
 // Só os ícones listados aqui entram no bundle (SVG inline, sem fonte de ícones).
 const SVGS = import.meta.glob(
-  "/node_modules/ionicons/dist/svg/{add-circle-outline,add-circle,bandage-outline,bandage,home-outline,home,chatbubble-ellipses-outline,chatbubble-ellipses,heart-outline,heart,person-outline,person,search-outline,options-outline,location-outline,chevron-down,notifications-outline,chevron-forward,chevron-back,chevron-up,map-outline,thermometer-outline,rainy-outline,flower-outline,water-outline,nutrition-outline,shield-checkmark-outline,body-outline,leaf-outline,medkit-outline,ellipse-outline,cube-outline,business-outline,checkmark,time-outline,alarm-outline,information-circle-outline,trash-outline,refresh,send,bulb-outline,storefront-outline,close,checkmark-circle,document-text-outline}.svg",
+  "/node_modules/ionicons/dist/svg/{add-circle-outline,add-circle,bandage-outline,bandage,home-outline,home,chatbubble-ellipses-outline,chatbubble-ellipses,heart-outline,heart,person-outline,person,search-outline,options-outline,location-outline,chevron-down,notifications-outline,chevron-forward,chevron-back,chevron-up,map-outline,thermometer-outline,rainy-outline,flower-outline,water-outline,nutrition-outline,shield-checkmark-outline,body-outline,leaf-outline,medkit-outline,ellipse-outline,cube-outline,business-outline,checkmark,time-outline,alarm-outline,information-circle-outline,trash-outline,refresh,send,bulb-outline,storefront-outline,close,checkmark-circle,document-text-outline,walk-outline,car-outline,navigate-outline,alert-circle-outline}.svg",
   { query: "?raw", import: "default", eager: true },
 ) as Record<string, string>;
 

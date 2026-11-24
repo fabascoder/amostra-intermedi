@@ -7,7 +7,8 @@ import { REMEDIOS } from "../../data/remedios";
 import { distanciaKm, listarFarmacias } from "../../demoServices/pharmacyService";
 import type { Farmacia, Remedio } from "../../types";
 
-export type Tom = "green" | "orange" | "blue" | "purple" | "red" | "amber" | "neutral";
+/** "cat": categorias, só o texto na cor do mascote. */
+export type Tom = "green" | "orange" | "blue" | "purple" | "red" | "amber" | "neutral" | "cat";
 export type FormatoComprimido = "round" | "capsule" | "oval";
 
 export const POUCAS_UNIDADES = 10;
