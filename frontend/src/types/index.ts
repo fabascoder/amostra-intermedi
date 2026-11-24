@@ -117,6 +117,8 @@ export type Progresso = {
   conviteAvaliacaoDispensado: boolean;
   /** Agradecimento mostrado depois das três experiências. */
   agradecimentoVisto: boolean;
+  /** Guia prático (passo a passo do primeiro pedido) concluído ou pulado. */
+  guiasConcluidos: Partial<Record<"solicitante" | "fornecedora", true>>;
 };
 
 export type AlvoAvaliacao = "geral" | "paciente" | "solicitante" | "fornecedora";

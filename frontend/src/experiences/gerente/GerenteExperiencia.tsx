@@ -10,8 +10,8 @@ import { useAviso } from "../../demoServices/notificationService";
 import { usePaciente } from "../../demoServices/patientService";
 import { concluirOnboarding, marcarVisita } from "../../session/session";
 import { useProgresso } from "../../session/hooks";
-import { ContadorSessao, TrocarExperiencia } from "../../shared/Sessao";
 import BoasVindas from "./components/BoasVindas";
+import { GuiaPratico, useGuiaPratico } from "./components/GuiaPratico";
 import Notificacoes from "./components/Notificacoes";
 import PersonaAvatar from "./components/PersonaAvatar";
 import { ToastRegion } from "./components/Remedios";
@@ -40,6 +40,7 @@ import "./styles/boasVindas.css";
 import "./styles/preparos.css";
 import "./styles/motion.css";
 import "./styles/demo.css";
+import "./styles/guia.css";
 
 export default function GerenteExperiencia({ experiencia }: { experiencia: ExperienciaGerente }) {
   // O gerente é o próprio visitante: o nome informado nas boas-vindas.
@@ -85,11 +86,20 @@ export default function GerenteExperiencia({ experiencia }: { experiencia: Exper
   const contexto = useMemo<ContextoGerente>(() => ({ config, visao, pedirARede, abrirRemedio }), [config, visao, pedirARede, abrirRemedio]);
   const pendentes = visao.recebidos.filter((p) => p.status === "solicitada").length;
   const naRaiz = pathname.replace(/\/$/, "") === config.basePath;
+  // Guia prático do primeiro pedido: depois das boas-vindas, até concluir ou fechar.
+  const guiaConcluido = useProgresso((p) => Boolean(p.guiasConcluidos?.[experiencia]));
+  const guia = useGuiaPratico({
+    experiencia,
+    base: config.basePath,
+    pedidos: experiencia === "solicitante" ? visao.enviados : visao.recebidos,
+    pedindo: pedindo !== null,
+  });
+  const comGuia = onboardingConcluido && !guiaConcluido;
 
   return (
     <GerenteContexto.Provider value={contexto}>
       <div className="persona-accessibility">
-        <div className="mgr-shell">
+        <div className={`mgr-shell${comGuia ? " com-guia" : ""}`}>
           {mostrarGuia && (
             <BoasVindas
               papel="gerente"
@@ -100,7 +110,7 @@ export default function GerenteExperiencia({ experiencia }: { experiencia: Exper
               farmacia={{ id: config.idFarmacia, nome: config.unidade }}
               gerentes={time.outrosGerentes.map((nome, i) => ({ idGerente: `${experiencia}-g${i}`, nomeGerente: nome }))}
               equipe={time.funcionarios.map((f) => ({ idFuncionario: f.id }))}
-              ocultarNoPasseio={experiencia === "fornecedora" ? ["pedir-a-rede"] : []}
+              semPasseio
               tarefas={config.tarefas}
             />
           )}
@@ -112,9 +122,6 @@ export default function GerenteExperiencia({ experiencia }: { experiencia: Exper
                 <span className="mgr-topbar-divider">/</span> <strong>{config.unidade}</strong>{" "}
                 <span className="demo-beta-selo" title="Versão beta: ainda não tem todas as funcionalidades do Intermedi">Beta</span>
               </span>
-              <span className="demo-topbar-sessao">
-                <ContadorSessao />
-              </span>
               <Notificacoes experiencia={experiencia} basePath={config.basePath} visao={visao} />
               <div className="mgr-account">
                 <span className="mgr-account-button is-estatico">
@@ -124,7 +131,6 @@ export default function GerenteExperiencia({ experiencia }: { experiencia: Exper
                     <small>Gerente demonstrativo</small>
                   </span>
                 </span>
-                <TrocarExperiencia className="demo-trocar-topo" />
               </div>
             </div>
             <main id="conteudo" tabIndex={-1} className={`mgr-main${naRaiz ? "" : " directory-layout"}`}>
@@ -142,8 +148,9 @@ export default function GerenteExperiencia({ experiencia }: { experiencia: Exper
             </footer>
           </div>
           <ToastRegion message={aviso} />
+          {comGuia && <GuiaPratico experiencia={experiencia} guia={guia} escondido={pedindo !== null || remedioAberto !== null} />}
           {pedindo && experiencia === "solicitante" && (
-            <PedirARede idRemedioInicial={pedindo.idRemedio} onFechar={() => setPedindo(null)} />
+            <PedirARede idRemedioInicial={pedindo.idRemedio} onFechar={() => setPedindo(null)} guia={comGuia ? guia : null} />
           )}
           {remedioAberto !== null && (
             <DetalheRemedio

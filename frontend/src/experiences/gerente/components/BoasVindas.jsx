@@ -44,7 +44,7 @@ const TAREFAS = {
 // Etapas cujo alvo não aparece (ex.: menu escondido no celular) são puladas.
 const MENU = { alvo: ".manager-sidebar nav", icone: "info", titulo: "Seu menu", texto: "Todas as áreas da unidade ficam aqui do lado.", bloco: "nearest" };
 const SINO = { alvo: ".mgr-topbar .mgr-notifications", icone: "bell", lados: ["baixo", "esquerda"], bloco: "nearest", toque: "centro" };
-const CONTA = { alvo: ".mgr-topbar .mgr-account", icone: "user", titulo: "Trocar experiência", texto: "Por aqui você volta à Central e conhece os outros lados do Intermedi, sem perder nada.", lados: ["baixo", "esquerda"], bloco: "nearest" };
+const CONTA = { alvo: ".manager-sidebar-header .demo-trocar", icone: "user", titulo: "Trocar experiência", texto: "Por aqui você volta à Central e conhece os outros lados do Intermedi, sem perder nada.", lados: ["baixo", "esquerda"], bloco: "nearest" };
 
 const PASSEIO = {
   funcionario: [
@@ -172,7 +172,7 @@ function Confete() {
   );
 }
 
-export default function BoasVindas({ papel, pessoa, farmacia, base: baseRota, gerentes: gerentesDados = /** @type {any[]} */ ([]), equipe: equipeDados = /** @type {any[]} */ ([]), aberto: abertoInicial, onConcluir, tarefas, ocultarNoPasseio = /** @type {string[]} */ ([]) }) {
+export default function BoasVindas({ papel, pessoa, farmacia, base: baseRota, gerentes: gerentesDados = /** @type {any[]} */ ([]), equipe: equipeDados = /** @type {any[]} */ ([]), aberto: abertoInicial, onConcluir, tarefas, ocultarNoPasseio = /** @type {string[]} */ ([]), semPasseio = false }) {
   const id = pessoa?.id;
   const navigate = useNavigate();
   const location = useLocation();
@@ -201,8 +201,8 @@ export default function BoasVindas({ papel, pessoa, farmacia, base: baseRota, ge
     { tipo: "painel", chave: "intermedi" },
     { tipo: "painel", chave: "farmacia" },
     { tipo: "painel", chave: "tarefas" },
-    { tipo: "painel", chave: "passeio" },
-    ...passeio.map((item, indice) => ({ ...item, tipo: "passeio", chave: `passeio-${indice}`, numero: indice + 1 })),
+    ...(semPasseio ? [] : [{ tipo: "painel", chave: "passeio" }]),
+    ...(semPasseio ? [] : passeio).map((item, indice) => ({ ...item, tipo: "passeio", chave: `passeio-${indice}`, numero: indice + 1 })),
     { tipo: "painel", chave: "pronto" },
   ];
   const atual = etapas[etapa];
@@ -303,7 +303,7 @@ export default function BoasVindas({ papel, pessoa, farmacia, base: baseRota, ge
   const toque = furo && atual.toque
     ? { left: atual.toque === "icone" ? furo.x + FOLGA + 34 : furo.x + furo.w / 2, top: furo.y + furo.h / 2 }
     : null;
-  const rotuloAvancar = etapa === 0 ? "Começar" : atual.chave === "passeio" ? "Começar o passeio" : ultima ? "Ir para a plataforma" : "Continuar";
+  const rotuloAvancar = etapa === 0 ? "Começar" : atual.chave === "passeio" ? "Começar o passeio" : ultima ? (semPasseio ? "Começar na prática" : "Ir para a plataforma") : "Continuar";
 
   function conteudoDoPainel() {
     switch (atual.chave) {
@@ -430,7 +430,7 @@ export default function BoasVindas({ papel, pessoa, farmacia, base: baseRota, ge
               </svg>
             </span>
             <h1 ref={titulo} tabIndex={-1}>Tudo pronto, {nome}.</h1>
-            <p>Bom trabalho na {nomeFarmacia}.</p>
+            <p>{semPasseio ? "Agora vamos fazer juntos, na tela de verdade. O guia mostra onde tocar e para que serve cada passo." : `Bom trabalho na ${nomeFarmacia}.`}</p>
           </>
         );
     }

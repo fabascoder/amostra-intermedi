@@ -1,0 +1,208 @@
+/* =====================================================================
+   Guia prático: cartão no pé da tela (celular) ou no canto (computador),
+   e o alvo da vez piscando em verde na tela de verdade.
+   ===================================================================== */
+.guia {
+  --guia-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 60;
+  width: min(380px, calc(100vw - 32px));
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, var(--color-border));
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.04), 0 24px 48px -16px rgb(0 0 0 / 0.28);
+  animation: guia-entra 0.5s var(--guia-ease) both;
+}
+.guia-topo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+}
+.guia-marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: auto;
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+.guia-icone-botao {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+.guia-icone-botao:hover {
+  background: var(--color-fill);
+  color: var(--color-text-primary);
+}
+.guia-conteudo {
+  display: grid;
+  gap: var(--space-2);
+  animation: guia-passo 0.45s var(--guia-ease) both;
+}
+.guia-conteudo h2 {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+.guia-pratica {
+  margin: 0;
+  font-size: var(--text-small);
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+.guia-pratica strong {
+  color: var(--color-text-primary);
+}
+.guia-acao {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-1) 0 0;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-ink, var(--color-primary));
+  font-size: var(--text-small);
+  font-weight: var(--weight-semibold);
+  line-height: 1.35;
+}
+.guia-acao-icone {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  animation: guia-cutuca 1.4s ease-in-out infinite;
+}
+.guia-trilho {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 4px;
+  margin-top: var(--space-2);
+}
+.guia-trilho i {
+  height: 4px;
+  border-radius: 4px;
+  background: var(--color-surface-sunken);
+}
+.guia-trilho i.is-feito {
+  background: var(--color-primary);
+}
+.guia-concluir {
+  width: 100%;
+  margin-top: var(--space-4);
+}
+
+/* Minimizado: só uma pílula no canto */
+.guia-pilula {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #fff;
+  font: inherit;
+  font-size: var(--text-small);
+  font-weight: var(--weight-semibold);
+  box-shadow: 0 12px 28px -10px color-mix(in srgb, var(--color-primary) 80%, transparent);
+  cursor: pointer;
+  animation: guia-entra 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Dentro da janela "Pedir à rede": faixa no topo do formulário */
+.guia-na-janela {
+  position: static;
+  width: auto;
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-primary-soft) 60%, var(--color-surface));
+  box-shadow: none;
+  animation: none;
+}
+.guia-na-janela .guia-conteudo h2 {
+  font-size: 16px;
+}
+
+/* O alvo da vez: anel verde pulsando */
+.guia-alvo {
+  outline: 3px solid var(--color-primary) !important;
+  outline-offset: 4px;
+  border-radius: var(--radius-md);
+  animation: guia-alvo 1.6s ease-in-out infinite;
+  scroll-margin-block: 120px 260px;
+}
+
+/* Espaço no fim da página para o cartão não cobrir o último conteúdo */
+.mgr-shell.com-guia .mgr-main {
+  padding-bottom: 280px;
+}
+
+@media (max-width: 760px) {
+  .guia {
+    left: max(12px, env(safe-area-inset-left));
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
+    width: auto;
+    padding: var(--space-3) var(--space-4) var(--space-4);
+  }
+  .guia-na-janela {
+    padding: var(--space-3);
+  }
+  .guia-conteudo h2 {
+    font-size: 17px;
+  }
+}
+
+@keyframes guia-entra {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+}
+@keyframes guia-passo {
+  from { opacity: 0; transform: translateY(8px); }
+}
+@keyframes guia-cutuca {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(3px); }
+}
+@keyframes guia-alvo {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary) 45%, transparent); }
+  50% { box-shadow: 0 0 0 10px color-mix(in srgb, var(--color-primary) 0%, transparent); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .guia, .guia-pilula, .guia-conteudo, .guia-acao-icone, .guia-alvo {
+    animation: none;
+  }
+}
+
+/* Com o guia no pé da tela, os avisos sobem para o topo para não cobri-lo */
+.mgr-shell.com-guia .chamado-toast-region {
+  top: max(12px, env(safe-area-inset-top));
+  bottom: auto;
+}

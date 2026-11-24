@@ -1,7 +1,7 @@
 // components/ManagerSidebar.jsx do intermedi-frontend: mesmo menu, mesmo
 // indicador deslizante e mesmos ícones. Na demonstração o menu mostra só as
-// telas que existem aqui, e o rodapé ganha "Trocar experiência" ao lado da
-// unidade.
+// telas que existem aqui, e "Trocar experiência" (verde) fica no lugar de
+// "Espaço do gerente", ao lado da marca.
 import { useLayoutEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import logo from "../../../assets/brand/logo-intermedi.webp";
@@ -90,9 +90,7 @@ export default function Sidebar({ basePath, unitName, links, pendingOrders = 0 }
         <Link to={basePath} className="manager-sidebar-brand">
           <img src={logo} alt="Intermedi — visão geral" width="1920" height="1080" />
         </Link>
-        <span className="manager-sidebar-role">
-          <span /> Espaço do gerente
-        </span>
+        <TrocarExperiencia className="demo-trocar-marca" />
       </div>
 
       <div className="manager-sidebar-menu">
@@ -128,7 +126,6 @@ export default function Sidebar({ basePath, unitName, links, pendingOrders = 0 }
             <strong title={unitName}>{unitName}</strong>
           </div>
         </div>
-        <TrocarExperiencia className="demo-trocar-lateral" />
       </div>
     </aside>
   );
