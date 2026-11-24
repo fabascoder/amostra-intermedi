@@ -6,6 +6,7 @@ import { ContadorSessao } from "../../../shared/Sessao";
 import { farmaciasPorDistancia, formatoComprimido, itensEmEstoque, LOCAL_PACIENTE } from "../dados";
 import { BalaoMascote } from "../components/BalaoMascote";
 import { Ionicon } from "../components/Ionicon";
+import { NovidadesFarmacias } from "../components/NovidadesFarmacias";
 import { SecoesCategorias } from "../components/SecoesCategorias";
 import { Cabecalho, Card, MiniaturaRemedio, Tag, TituloSecao } from "../components/ui";
 import { FALAS } from "../personalidade";
@@ -80,6 +81,9 @@ export default function Inicio() {
 
         <TituloSecao titulo="Remédios por categoria" acao="Ver todos" onAcao={() => navigate("/aplicativo/remedios")} />
         <SecoesCategorias />
+
+        <TituloSecao titulo="Novidades nas farmácias" acao="Ver farmácias" onAcao={() => navigate("/aplicativo/farmacias")} />
+        <NovidadesFarmacias />
 
         <TituloSecao titulo="Remédios de hoje" acao="Ver todos" onAcao={() => navigate("/aplicativo/comprimidos")} />
         {doses.length ? (
