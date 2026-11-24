@@ -2497,3 +2497,76 @@
   .a-mapa .a-mapa-rota-base { animation: none !important; }
   .a-mapa-rota-fluxo, .a-mapa-voce-onda, .a-mapa-pino-corpo, .a-mapa-etiqueta { animation: none; }
 }
+
+/* ---------- Mapa do app (MapLibre), como no intermedi-app ---------- */
+.a-mapa-real {
+  width: 100%;
+  height: 100%;
+}
+.a-mapa-barra { pointer-events: none; z-index: 2; }
+.a-mapa-barra > * { pointer-events: auto; }
+.a-mapa-capa .maplibregl-ctrl-bottom-right { bottom: 30px; }
+.a-mapa-capa .maplibregl-ctrl-bottom-right .maplibregl-ctrl-attrib { margin-bottom: 0; }
+.a-mapa-capa .maplibregl-ctrl-group { border-radius: 12px; box-shadow: var(--a-sombra); }
+.a-mapa-real-voce {
+  width: 52px;
+  height: 52px;
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.28));
+}
+.a-mapa-real-farmacia {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.28));
+  outline: none;
+}
+.a-mapa-real-farmacia svg {
+  width: 44px;
+  height: 48px;
+  transform-origin: 50% 100%;
+  transition: transform 0.25s var(--a-ease);
+}
+.a-mapa-real-farmacia.is-ativa { z-index: 3; }
+.a-mapa-real-farmacia.is-ativa svg { transform: scale(1.18); }
+.a-mapa-real-farmacia:focus-visible svg { outline: 3px solid var(--a-text); outline-offset: 2px; border-radius: 12px; }
+.a-mapa-real-nome {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--a-text);
+  color: #fff;
+  font: 600 12px/1.3 var(--a-font);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.25s var(--a-ease);
+  pointer-events: none;
+}
+.a-mapa-real-farmacia.is-ativa .a-mapa-real-nome { opacity: 1; transform: none; }
+
+.a-rota-modos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--a-border);
+}
+.a-rota-modo {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 8px 4px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--a-surface-muted);
+  color: var(--a-text-2);
+  font: 500 12px/1.3 var(--a-font);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.a-rota-modo strong { font-size: 13px; color: var(--a-text); font-variant-numeric: tabular-nums; }
+.a-rota-modo.is-ativo { background: var(--a-mascote); color: #fff; }
+.a-rota-modo.is-ativo strong { color: #fff; }
+.a-rota-resumo { margin: 0; color: var(--a-text-2); }

@@ -1,15 +1,19 @@
 // Detalhe do remédio (medicamento/[id].tsx do intermedi-app). A primeira coisa
-// na tela é o mapa: onde tem o remédio perto de você e o trajeto até lá.
+// na tela é o mapa do app (MapLibre + OpenFreeMap) com as farmácias que têm o
+// remédio e o trajeto pelas ruas (Valhalla), a pé, de carro, moto ou bike.
+// Sem mapa (sem internet ou WebGL), entra o mapa desenhado no lugar.
 // Depois vêm as farmácias, a ficha simples, os cuidados e "Adicionar à rotina".
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { remedio as buscarRemedio } from "../../../demoServices/medicationService";
 import { adicionarDose, alternarFavoritoRemedio, usePaciente } from "../../../demoServices/patientService";
 import { formatarKm } from "../../../demoServices/pharmacyService";
-import { POUCAS_UNIDADES, cuidadosRemedio, exigeReceita, ondeTem, textoReceita, tituloRemedio } from "../dados";
+import { LOCAL_PACIENTE, POUCAS_UNIDADES, cuidadosRemedio, exigeReceita, ondeTem, textoReceita, tituloRemedio } from "../dados";
 import { FotoRemedio } from "../components/Fotos";
 import { Ionicon } from "../components/Ionicon";
-import { MapaFarmacias, minutosAPe, minutosDeCarro } from "../components/MapaFarmacias";
+import { MapaFarmacias, minutosAPe } from "../components/MapaFarmacias";
+import MapaReal from "../mapa/MapaReal";
+import { MODOS, calcularRota, type ModoLocomocao, type Rota } from "../mapa/rotas";
 import { Botao, BotaoFavorito, BotaoVoltar, IconTile, Tag } from "../components/ui";
 
 const HORARIOS = ["06:00", "07:30", "08:00", "12:00", "14:00", "18:00", "20:00", "22:00"];
@@ -24,6 +28,28 @@ export default function Medicamento() {
   const [rotina, setRotina] = useState(false);
   const [horario, setHorario] = useState("08:00");
   const [escolhida, setEscolhida] = useState<number | null>(null);
+  const [modo, setModo] = useState<ModoLocomocao>("pedestrian");
+  const [mapaFalhou, setMapaFalhou] = useState(false);
+  const [rotas, setRotas] = useState<{ id: number; rotas: Partial<Record<ModoLocomocao, Rota>>; falhou: boolean } | null>(null);
+  const aoFalharMapa = useCallback(() => setMapaFalhou(true), []);
+  const perto = useMemo(() => (remedio ? ondeTem(remedio.idRemedio) : []), [remedio]);
+  const farmaciasDoMapa = useMemo(() => perto.map((p) => p.farmacia), [perto]);
+  const idAlvo = (perto.find((p) => p.farmacia.idFarmacia === escolhida) ?? perto[0])?.farmacia.idFarmacia ?? null;
+
+  // Trajetos até a farmácia escolhida nos quatro modos, como a tela de rota do app.
+  useEffect(() => {
+    const destino = perto.find((p) => p.farmacia.idFarmacia === idAlvo)?.farmacia;
+    if (!destino) return undefined;
+    let ativo = true;
+    setRotas((r) => (r?.id === idAlvo ? r : null));
+    Promise.allSettled(MODOS.map((m) => calcularRota(LOCAL_PACIENTE, destino, m.valor))).then((resultados) => {
+      if (!ativo) return;
+      const achadas: Partial<Record<ModoLocomocao, Rota>> = {};
+      resultados.forEach((r, i) => { if (r.status === "fulfilled") achadas[MODOS[i].valor] = r.value; });
+      setRotas({ id: idAlvo!, rotas: achadas, falhou: !Object.keys(achadas).length });
+    });
+    return () => { ativo = false; };
+  }, [idAlvo, perto]);
 
   if (!remedio) {
     return (
@@ -35,9 +61,19 @@ export default function Medicamento() {
   }
 
   const receita = exigeReceita(remedio);
-  const perto = ondeTem(remedio.idRemedio);
   const maisPerto = perto[0];
   const alvo = perto.find((p) => p.farmacia.idFarmacia === escolhida) ?? maisPerto;
+  const rotasDoAlvo = rotas && rotas.id === alvo?.farmacia.idFarmacia ? rotas : null;
+  const rotaAtual = rotasDoAlvo?.rotas[modo] ?? null;
+  // Sem o Valhalla: estimativa pela distância em linha reta (com folga para as ruas).
+  const VELOCIDADE: Record<ModoLocomocao, number> = { pedestrian: 5, bicycle: 15, motorcycle: 30, auto: 25 };
+  const tempoDe = (m: ModoLocomocao) => {
+    const r = rotasDoAlvo?.rotas[m];
+    if (r) return { min: Math.max(1, Math.round(r.tempoSegundos / 60)), km: r.distanciaMetros / 1000, estimado: false };
+    if (!alvo) return null;
+    return { min: Math.max(1, Math.round((alvo.distancia * 1.3 * 60) / VELOCIDADE[m])), km: alvo.distancia * 1.3, estimado: true };
+  };
+  const tempoModo = tempoDe(modo);
   // Só o que ajuda quem vai comprar: o que vem na caixa, receita e se é genérico.
   const quadros: { rotulo: string; valor: string; icone: string; tom: "blue" | "amber" | "purple" | "green" }[] = [
     { rotulo: "Na caixa", valor: remedio.apresentacaoRemedio.replace(/^Caixa com /, "").replace(/^Tubo com /, ""), icone: "cube-outline", tom: "blue" },
@@ -49,7 +85,19 @@ export default function Medicamento() {
   return (
     <div className="a-tela a-tela-detalhe">
       <div className="a-mapa-capa">
-        <MapaFarmacias itens={perto} selecionada={alvo?.farmacia.idFarmacia ?? null} onSelecionar={setEscolhida} />
+        {mapaFalhou ? (
+          <MapaFarmacias itens={perto} selecionada={alvo?.farmacia.idFarmacia ?? null} onSelecionar={setEscolhida} />
+        ) : (
+          <MapaReal
+            voce={LOCAL_PACIENTE}
+            farmacias={farmaciasDoMapa}
+            selecionada={alvo?.farmacia.idFarmacia ?? null}
+            rota={rotaAtual}
+            onSelecionar={setEscolhida}
+            onErro={aoFalharMapa}
+            espacoInferior={70}
+          />
+        )}
         <div className="a-capa-barra a-mapa-barra">
           <BotaoVoltar tom="dark" />
           <BotaoFavorito flutuante selecionado={favorito} rotulo={favorito ? "Remover dos favoritos" : "Salvar nos favoritos"} onClick={() => alternarFavoritoRemedio(remedio.idRemedio)} />
@@ -80,11 +128,25 @@ export default function Medicamento() {
               </span>
               <Tag rotulo={alvo.quantidade < POUCAS_UNIDADES ? "Últimas unidades" : "Tem"} tom={alvo.quantidade < POUCAS_UNIDADES ? "amber" : "green"} />
             </div>
-            <div className="a-rota-tempos">
-              <span><Ionicon name="walk-outline" size={18} /> {minutosAPe(alvo.distancia)} min a pé</span>
-              <span><Ionicon name="car-outline" size={18} /> {minutosDeCarro(alvo.distancia)} min de carro</span>
-              <span><Ionicon name="navigate-outline" size={18} /> {formatarKm(alvo.distancia)}</span>
+            <div className="a-rota-modos" role="radiogroup" aria-label="Como você vai">
+              {MODOS.map((m) => {
+                const t = tempoDe(m.valor);
+                return (
+                  <button key={m.valor} type="button" role="radio" aria-checked={modo === m.valor} className={`a-rota-modo${modo === m.valor ? " is-ativo" : ""}`} onClick={() => setModo(m.valor)}>
+                    <Ionicon name={m.icone} size={18} />
+                    <span>{m.titulo}</span>
+                    <strong>{t ? `${t.estimado ? "≈" : ""}${t.min} min` : "—"}</strong>
+                  </button>
+                );
+              })}
             </div>
+            <p className="a-rota-resumo t-caption">
+              {rotasDoAlvo === null && !mapaFalhou
+                ? "Calculando o trajeto pelas ruas…"
+                : tempoModo
+                  ? `${formatarKm(tempoModo.km)} pelo trajeto${tempoModo.estimado ? " (estimado, sem conexão com o serviço de rotas)" : ""}`
+                  : ""}
+            </p>
           </div>
         )}
 
