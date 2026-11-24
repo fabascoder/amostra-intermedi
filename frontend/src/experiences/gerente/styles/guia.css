@@ -206,3 +206,95 @@
   top: max(12px, env(safe-area-inset-top));
   bottom: auto;
 }
+
+/* =====================================================================
+   Guia compacto e escuro: título, uma linha e "Ler mais".
+   O anel do alvo usa a mesma cor do cartão, para ler como uma coisa só.
+   ===================================================================== */
+.persona-accessibility {
+  --guia-fundo: #1c2421;
+  --guia-texto: #f1f5f3;
+  --guia-suave: rgb(241 245 243 / 0.68);
+  --guia-linha: rgb(241 245 243 / 0.14);
+  --guia-destaque: #5fd39c;
+}
+.guia {
+  border: 1px solid #2c3632;
+  background: var(--guia-fundo);
+  color: var(--guia-texto);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.18), 0 22px 44px -18px rgb(0 0 0 / 0.55);
+}
+.guia .guia-marca { color: var(--guia-destaque); }
+.guia .guia-icone-botao { color: var(--guia-suave); }
+.guia .guia-icone-botao:hover { background: var(--guia-linha); color: var(--guia-texto); }
+.guia-conteudo { gap: 6px; }
+.guia .guia-conteudo h2 { color: var(--guia-texto); font-size: 18px; }
+.guia-linha {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  font-size: var(--text-small);
+  line-height: 1.45;
+  color: var(--guia-texto);
+}
+.guia-linha .guia-acao-icone {
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  background: var(--guia-destaque);
+  color: var(--guia-fundo);
+}
+.guia .guia-pratica {
+  margin: 2px 0 0;
+  color: var(--guia-suave);
+  animation: guia-passo 0.3s ease both;
+}
+.guia .guia-pratica strong { color: var(--guia-texto); }
+.guia-rodape {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+.guia-rodape .guia-trilho { flex: 1; margin: 0; }
+.guia .guia-trilho i { background: var(--guia-linha); }
+.guia .guia-trilho i.is-feito { background: var(--guia-destaque); }
+.guia-ler-mais {
+  flex-shrink: 0;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--guia-texto);
+  font: inherit;
+  font-size: var(--text-small);
+  font-weight: var(--weight-semibold);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.guia-ler-mais:focus-visible,
+.guia .guia-icone-botao:focus-visible { outline: 2px solid var(--guia-destaque); outline-offset: 2px; border-radius: 6px; }
+.guia .guia-concluir { background: var(--guia-destaque); color: var(--guia-fundo); }
+.guia-pilula { background: var(--guia-fundo); box-shadow: 0 12px 28px -10px rgb(0 0 0 / 0.5); }
+.guia-na-janela {
+  background: var(--guia-fundo);
+  border: 0;
+}
+
+/* Alvo: anel grafite, a mesma cor do cartão do guia */
+.guia-alvo {
+  outline: 3px solid var(--guia-fundo, #1c2421) !important;
+  outline-offset: 4px;
+  animation: guia-alvo-escuro 1.6s ease-in-out infinite;
+}
+@keyframes guia-alvo-escuro {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(28 36 33 / 0.35); }
+  50% { box-shadow: 0 0 0 10px rgb(28 36 33 / 0); }
+}
+@media (max-width: 760px) {
+  .guia { padding: var(--space-3) var(--space-4) var(--space-3); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .guia .guia-pratica, .guia-alvo { animation: none; }
+}

@@ -26,6 +26,7 @@ const PROGRESSO_INICIAL: Progresso = {
   conviteAvaliacaoDispensado: false,
   agradecimentoVisto: false,
   guiasConcluidos: {},
+  convites: { proximoEm: null, vistos: [] },
 };
 
 const ehSessao = (valor: unknown): valor is Sessao => {
@@ -158,6 +159,15 @@ export function marcarAgradecimentoVisto(): void {
 export function concluirGuia(experiencia: "solicitante" | "fornecedora"): void {
   if (progressoStore.get().guiasConcluidos?.[experiencia]) return;
   atualizarProgresso((p) => ({ ...p, guiasConcluidos: { ...p.guiasConcluidos, [experiencia]: true } }));
+}
+
+/** Marca o convite como visto e agenda o próximo para daqui a `intervalo`. */
+export function agendarConvite(visto: string | null, intervalo: number): void {
+  atualizarProgresso((p) => {
+    const atual = p.convites ?? { proximoEm: null, vistos: [] };
+    const vistos = visto && !atual.vistos.includes(visto) ? [...atual.vistos, visto] : atual.vistos;
+    return { ...p, convites: { proximoEm: Date.now() + intervalo, vistos } };
+  });
 }
 
 export function dispensarConviteAvaliacao(): void {

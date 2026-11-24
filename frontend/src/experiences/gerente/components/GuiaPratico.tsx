@@ -258,25 +258,35 @@ function useDestaque(alvo: string | undefined, chave: string) {
   }, [alvo, chave]);
 }
 
+/** Título, uma linha (o que fazer agora) e "Ler mais" para o porquê. */
 function Conteudo({ passo, numero, total }: { passo: PassoGuia; numero: number; total: number }) {
+  const [mais, setMais] = useState(false);
+  useEffect(() => setMais(false), [passo.id]);
+  const linha = passo.acao ?? passo.pratica;
+  const temMais = Boolean(passo.acao);
+  const idMais = `guia-mais-${passo.id}`;
   return (
     <div key={passo.id} className="guia-conteudo">
       <h2>{passo.titulo}</h2>
-      <p className="guia-pratica">
-        <strong>Na prática: </strong>
-        {passo.pratica}
-      </p>
-      {passo.acao && (
-        <p className="guia-acao">
+      <p className="guia-linha">
+        {passo.acao && (
           <span className="guia-acao-icone" aria-hidden="true">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
           </span>
-          {passo.acao}
-        </p>
-      )}
-      <span className="guia-trilho" aria-hidden="true">
-        {Array.from({ length: total }, (_, i) => <i key={i} className={i < numero ? "is-feito" : undefined} />)}
-      </span>
+        )}
+        {linha}
+      </p>
+      {temMais && mais && <p id={idMais} className="guia-pratica">{passo.pratica}</p>}
+      <div className="guia-rodape">
+        <span className="guia-trilho" aria-hidden="true">
+          {Array.from({ length: total }, (_, i) => <i key={i} className={i < numero ? "is-feito" : undefined} />)}
+        </span>
+        {temMais && (
+          <button type="button" className="guia-ler-mais" aria-expanded={mais} aria-controls={idMais} onClick={() => setMais((v) => !v)}>
+            {mais ? "Ler menos" : "Ler mais"}
+          </button>
+        )}
+      </div>
     </div>
   );
 }

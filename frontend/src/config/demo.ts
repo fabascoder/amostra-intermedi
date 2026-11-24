@@ -53,3 +53,16 @@ export const CONTACT: { email: string; phone: string; site: string } = {
  * vazio, o botão "Ver vídeo da plataforma" avisa que o vídeo chega em breve.
  */
 export const VIDEO_PLATAFORMA_URL = "";
+
+/**
+ * Auvox, a equipe por trás do Intermedi: site e Instagram usados nos convites
+ * que aparecem depois das três experiências. Sem Instagram preenchido, o
+ * convite dele avisa que o perfil chega em breve.
+ */
+export const AUVOX: { site: string; instagram: string } = {
+  site: "https://auvox.vercel.app",
+  instagram: "",
+};
+
+/** Intervalo entre os convites depois das três experiências. */
+export const CONVITE_INTERVALO_MS = 2 * 60 * 1000;

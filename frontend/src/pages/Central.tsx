@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/brand/logo-intermedi.webp";
 import { useEstadoPedidos, useAgoraDosPedidos } from "../demoServices/orderService";
 import { usePaciente } from "../demoServices/patientService";
@@ -359,6 +359,8 @@ export default function Central() {
         <p>
           Versão demonstrativa · Um produto{" "}
           <a href="https://auvox.vercel.app" target="_blank" rel="noopener noreferrer">Auvox</a>
+          {" · "}
+          <Link to="/bastidores">Bastidores</Link>
         </p>
       </footer>
 
