@@ -17,27 +17,21 @@ import { BoasVindasDemo } from "./BoasVindasDemo";
 import { VideoPlataforma } from "../shared/VideoPlataforma";
 import "./central.css";
 
-const EXPERIENCIAS: { id: ExperienciaId; rota: string; titulo: string; onde: string; papel: string }[] = [
+const EXPERIENCIAS: { id: ExperienciaId; rota: string; titulo: string }[] = [
   {
     id: "solicitante",
     rota: "/solicitante",
     titulo: "Quero solicitar medicamentos",
-    onde: "Farmácia Central · Guaianases",
-    papel: "Gerente",
   },
   {
     id: "fornecedora",
     rota: "/fornecedora",
     titulo: "Quero atender solicitações",
-    onde: "Farmácia Jardim · Jardim Soares",
-    papel: "Gerente",
   },
   {
     id: "paciente",
     rota: "/aplicativo",
     titulo: "Quero conhecer o aplicativo",
-    onde: "Aplicativo do paciente",
-    papel: "Paciente",
   },
 ];
 
@@ -312,9 +306,6 @@ export default function Central() {
                     </span>
                     <span className="central-opcao-texto">
                       <span className="central-opcao-titulo">{exp.titulo}</span>
-                      <span className="central-opcao-meta">
-                        <span>{exp.papel} · {exp.onde}</span>
-                      </span>
                       {agora && <span className="central-opcao-agora" aria-live="polite">{agora}</span>}
                     </span>
                     <span className="central-opcao-ir" aria-hidden="true">
