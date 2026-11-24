@@ -62,15 +62,19 @@ export default function Inicio() {
         <BalaoMascote doses={doses} />
 
         <div className="a-atalhos">
-          <button type="button" className="a-atalho tom-blue a-pressavel" onClick={() => navigate("/aplicativo/farmacias")}>
-            <span className="a-atalho-icone"><Ionicon name="map-outline" size={24} color="var(--a-blue)" /></span>
-            <span className="t-bodyBold">Farmácias perto</span>
-            <span className="t-caption" style={{ color: "var(--a-blue)" }}>{comEstoque} com estoque</span>
+          <button type="button" className="a-atalho a-pressavel" onClick={() => navigate("/aplicativo/farmacias")}>
+            <Ionicon name="map-outline" size={22} className="a-atalho-icone" />
+            <span className="a-flex">
+              <span className="t-bodyBold">Farmácias perto</span>
+              <span className="t-caption">{comEstoque} com estoque</span>
+            </span>
           </button>
-          <button type="button" className="a-atalho tom-orange a-pressavel" onClick={() => navigate("/aplicativo/comprimidos")}>
-            <span className="a-atalho-icone"><Ionicon name="ellipse-outline" size={24} color="var(--a-orange)" /></span>
-            <span className="t-bodyBold">Seus comprimidos</span>
-            <span className="t-caption" style={{ color: "var(--a-orange)" }}>{doses.length ? `${doses.length} na rotina` : "Monte sua rotina"}</span>
+          <button type="button" className="a-atalho a-pressavel" onClick={() => navigate("/aplicativo/comprimidos")}>
+            <Ionicon name="alarm-outline" size={22} className="a-atalho-icone" />
+            <span className="a-flex">
+              <span className="t-bodyBold">Seus comprimidos</span>
+              <span className="t-caption">{doses.length ? `${doses.length} na rotina` : "Monte sua rotina"}</span>
+            </span>
           </button>
         </div>
 

@@ -62,7 +62,7 @@ export function LinhaLista({ icone, tom = "green", titulo, subtitulo, direita, o
 }) {
   const conteudo = (
     <>
-      {inicio ?? (icone ? <IconTile icone={icone} tom={tom} tamanho={44} /> : null)}
+      {inicio ?? (icone ? <IconTile icone={icone} tom={tom === "red" || tom === "amber" ? tom : "cat"} tamanho={44} /> : null)}
       <span className="a-linha-texto">
         <span className="t-bodyBold">{titulo}</span>
         {subtitulo && <span className="t-label">{subtitulo}</span>}
@@ -129,14 +129,9 @@ export function BotaoFavorito({ selecionado, rotulo, onClick, flutuante = false 
   );
 }
 
-/** Círculo e cruz translúcidos do canto dos cabeçalhos verdes. */
+/** Os cabeçalhos verdes ficam lisos: sem círculo e cruz de marca d'água. */
 function DecorCabecalho() {
-  return (
-    <span className="a-cab-decor" aria-hidden="true">
-      <i className="a-cab-circulo" />
-      <i className="a-cab-cruz"><b /><b /></i>
-    </span>
-  );
+  return null;
 }
 
 export function Cabecalho({ titulo, subtitulo, voltar = false, direita, inline, children, sobreposicao = 0, grande }: {

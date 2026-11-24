@@ -31,7 +31,7 @@ export default function Comprimidos() {
 
       <div className={`a-corpo${doses.length ? " a-corpo-sobe-muito" : ""}`}>
         {!selecionada ? (
-          <Vazio icone="ellipse-outline" titulo="Nenhum remédio na sua rotina" texto="Abra um remédio e toque em “Adicionar à rotina” para receber lembretes aqui.">
+          <Vazio icone="alarm-outline" titulo="Nenhum remédio na sua rotina" texto="Abra um remédio e toque em “Adicionar à rotina” para receber lembretes aqui.">
             <Botao compacto larguraTotal={false} titulo="Ver remédios" onClick={() => navigate("/aplicativo/remedios")} />
           </Vazio>
         ) : (
