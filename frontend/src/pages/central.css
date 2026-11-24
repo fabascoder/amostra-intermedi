@@ -651,3 +651,17 @@
     transition: none;
   }
 }
+
+/* "Visitada" no canto inferior direito do cartão */
+.central-opcao > .central-selo {
+  position: absolute;
+  right: var(--space-6);
+  bottom: var(--space-4);
+}
+.central-opcao.is-visitada {
+  padding-bottom: calc(var(--space-6) + var(--space-5));
+}
+@media (max-width: 560px) {
+  .central-opcao > .central-selo { right: var(--space-5); bottom: var(--space-3); }
+  .central-opcao.is-visitada { padding-bottom: calc(var(--space-5) + var(--space-5)); }
+}
