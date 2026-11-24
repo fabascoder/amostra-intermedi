@@ -13,6 +13,8 @@ import { FotoRemedio } from "../components/Fotos";
 import { Ionicon } from "../components/Ionicon";
 import { MapaFarmacias, minutosAPe } from "../components/MapaFarmacias";
 import MapaReal from "../mapa/MapaReal";
+import { SeletorMapa } from "../mapa/SeletorMapa";
+import { useEstiloMapa } from "../mapa/useEstiloMapa";
 import { MODOS, calcularRota, type ModoLocomocao, type Rota } from "../mapa/rotas";
 import { Botao, BotaoFavorito, BotaoVoltar, IconTile, Tag } from "../components/ui";
 
@@ -30,6 +32,7 @@ export default function Medicamento() {
   const [escolhida, setEscolhida] = useState<number | null>(null);
   const [modo, setModo] = useState<ModoLocomocao>("pedestrian");
   const [mapaFalhou, setMapaFalhou] = useState(false);
+  const { estilo: estiloMapa, escolherEstilo } = useEstiloMapa();
   const [rotas, setRotas] = useState<{ id: number; rotas: Partial<Record<ModoLocomocao, Rota>>; falhou: boolean } | null>(null);
   const aoFalharMapa = useCallback(() => setMapaFalhou(true), []);
   const perto = useMemo(() => (remedio ? ondeTem(remedio.idRemedio) : []), [remedio]);
@@ -89,6 +92,8 @@ export default function Medicamento() {
           <MapaFarmacias itens={perto} selecionada={alvo?.farmacia.idFarmacia ?? null} onSelecionar={setEscolhida} />
         ) : (
           <MapaReal
+            key={estiloMapa}
+            modelo={estiloMapa}
             voce={LOCAL_PACIENTE}
             farmacias={farmaciasDoMapa}
             selecionada={alvo?.farmacia.idFarmacia ?? null}
@@ -102,6 +107,11 @@ export default function Medicamento() {
           <BotaoVoltar tom="dark" />
           <BotaoFavorito flutuante selecionado={favorito} rotulo={favorito ? "Remover dos favoritos" : "Salvar nos favoritos"} onClick={() => alternarFavoritoRemedio(remedio.idRemedio)} />
         </div>
+        {!mapaFalhou && (
+          <div className="a-mapa-seletor">
+            <SeletorMapa estilo={estiloMapa} onChange={escolherEstilo} />
+          </div>
+        )}
         {!perto.length && (
           <p className="a-mapa-aviso" role="status">
             <Ionicon name="alert-circle-outline" size={18} /> Nenhuma farmácia perto tem agora

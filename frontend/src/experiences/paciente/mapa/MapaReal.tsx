@@ -1,5 +1,5 @@
 // Mapa de verdade do intermedi-app (src/components/map/mapa.web.tsx): MapLibre
-// com o estilo Liberty da OpenFreeMap, os mesmos marcadores de farmácia e de
+// com os modelos da OpenFreeMap (Liberty por padrão; o 3D levanta os prédios), os mesmos marcadores de farmácia e de
 // "você" e a linha da rota verde (#10b968). Se o mapa não carregar (sem WebGL,
 // sem internet ou bloqueado), avisa por onErro para a tela mostrar o desenho.
 import { useEffect, useRef, useState } from "react";
@@ -7,8 +7,7 @@ import type { Map as MapaLibre, Marker, GeoJSONSource, LngLatBoundsLike } from "
 import type { Farmacia } from "../../../types";
 import { ICONE_FARMACIA, ICONE_USUARIO } from "./marcadores";
 import type { Rota } from "./rotas";
-
-const ESTILO = "https://tiles.openfreemap.org/styles/liberty";
+import { PREDIOS_3D, urlEstiloMapa, type EstiloMapa } from "./estilos";
 const ESPERA_MAXIMA = 12000;
 
 type Ponto = { latitude: number; longitude: number };
@@ -23,6 +22,7 @@ export default function MapaReal({
   onSelecionar,
   onErro,
   espacoInferior = 60,
+  modelo = "liberty",
 }: {
   voce: Ponto;
   farmacias: Farmacia[];
@@ -31,7 +31,10 @@ export default function MapaReal({
   onSelecionar: (id: number) => void;
   onErro: () => void;
   espacoInferior?: number;
+  /** Trocar o modelo recria o mapa (a tela usa key={modelo}). */
+  modelo?: EstiloMapa;
 }) {
+  const inclinacao = modelo === "3d" ? 60 : 0;
   const caixa = useRef<HTMLDivElement>(null);
   const mapaRef = useRef<MapaLibre | null>(null);
   const prontoRef = useRef(false);
@@ -60,9 +63,10 @@ export default function MapaReal({
         libRef.current = maplibregl;
         mapa = new maplibregl.Map({
           container: caixa.current,
-          style: ESTILO,
+          style: urlEstiloMapa(modelo),
           center: [voce.longitude, voce.latitude],
           zoom: 13,
+          pitch: inclinacao,
           attributionControl: { compact: true },
         });
         mapaRef.current = mapa;
@@ -73,6 +77,13 @@ export default function MapaReal({
           if (!prontoRef.current && !(e as { tile?: unknown }).tile) erroRef.current();
         });
         mapa.once("load", () => {
+          if (modelo === "3d" && mapa) {
+            // como no app: esconde os prédios do estilo e põe os da camada 3D
+            const camadas = mapa.getStyle().layers;
+            camadas.filter((c) => c.type === "fill-extrusion").forEach((c) => mapa!.setLayoutProperty(c.id, "visibility", "none"));
+            mapa.addSource("intermedi-predios", { type: "vector", url: "https://tiles.openfreemap.org/planet" });
+            mapa.addLayer(PREDIOS_3D, camadas.find((c) => c.type === "symbol")?.id);
+          }
           prontoRef.current = true;
           window.clearTimeout(desistir);
           setFase(2);
@@ -183,6 +194,8 @@ export default function MapaReal({
           right: Math.min(50, caixaEl.clientWidth * 0.12),
         },
         maxZoom: 16,
+        pitch: inclinacao,
+        bearing: 0,
         duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 600,
       });
     };

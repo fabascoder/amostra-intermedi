@@ -2570,3 +2570,78 @@
 .a-rota-modo.is-ativo { background: var(--a-mascote); color: #fff; }
 .a-rota-modo.is-ativo strong { color: #fff; }
 .a-rota-resumo { margin: 0; color: var(--a-text-2); }
+
+/* ---------- Modelo do mapa (seletor-mapa.tsx do app) ---------- */
+.a-mapa-seletor {
+  position: absolute;
+  left: 16px;
+  bottom: 40px;
+  z-index: 2;
+}
+.a-seletor-mapa {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--a-border);
+  border-radius: 14px;
+  background: var(--a-surface);
+  color: var(--a-text);
+  font: 500 13px var(--a-font);
+  box-shadow: var(--a-sombra);
+}
+.a-seletor-mapa .ion:first-child { color: var(--a-mascote); }
+.a-folha-mapas-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.a-folha-mapas-fechar {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: none;
+  color: var(--a-text);
+}
+.a-folha-mapas-opcoes {
+  display: grid;
+  gap: 8px;
+  max-height: 60svh;
+  overflow-y: auto;
+}
+.a-opcao-mapa {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid var(--a-border);
+  border-radius: 14px;
+  background: var(--a-surface);
+  color: var(--a-text);
+  text-align: left;
+  font: inherit;
+}
+.a-opcao-mapa .a-flex { display: grid; gap: 2px; }
+.a-opcao-mapa > .ion:last-child { color: var(--a-muted); }
+.a-opcao-mapa.is-ativa {
+  border-color: var(--a-mascote);
+  background: var(--a-mascote-soft);
+}
+.a-opcao-mapa.is-ativa > .ion:last-child { color: var(--a-mascote); }
+.a-opcao-mapa-amostra {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 60px;
+  height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.a-opcao-mapa-amostra i { position: absolute; }
+.a-opcao-mapa-amostra .agua { width: 24px; height: 70px; right: -5px; transform: rotate(25deg); }
+.a-opcao-mapa-amostra .rua { width: 80px; height: 7px; transform: rotate(-30deg); }
+.a-opcao-mapa-amostra .ion { position: relative; }
