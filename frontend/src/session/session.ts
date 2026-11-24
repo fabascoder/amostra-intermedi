@@ -117,6 +117,14 @@ export function encerrarSessao(): void {
   aoTrocarSessao.forEach((fn) => fn());
 }
 
+/** Reativação pela equipe: apaga tudo deste navegador e volta ao começo (boas-vindas). */
+export function reativarSessao(): void {
+  remover(...Object.values(STORAGE_KEYS));
+  sessaoStore.set({ sessao: null });
+  progressoStore.set(PROGRESSO_INICIAL);
+  aoTrocarSessao.forEach((fn) => fn());
+}
+
 function atualizarProgresso(mudar: (p: Progresso) => Progresso): void {
   const sid = idSessaoAtual();
   if (!sid || !verificarSessao()) return;

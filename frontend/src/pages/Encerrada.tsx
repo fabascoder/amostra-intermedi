@@ -5,8 +5,8 @@ import { Mascote } from "../shared/Mascote";
 import "./encerrada.css";
 
 /**
- * Fim do acesso. Não há botão que reinicie as três horas: sem backend não
- * existe autorização remota de reativação (ver README, "Limitações").
+ * Fim do acesso. Não há botão que reinicie as três horas: quem reativa é a
+ * equipe, abrindo o link de reativação (session/reativacao.ts) neste aparelho.
  */
 export default function Encerrada() {
   useEffect(() => {
