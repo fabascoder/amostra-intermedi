@@ -76,8 +76,10 @@ export const PERIODOS: Periodo[] = [
   },
   {
     apresentador: "Fabricio",
-    resumo: "Apresenta o slide 12.",
-    slides: [{ numero: 12, titulo: "Slide 12", explicacao: PENDENTE }],
+    resumo: "Apresenta a solução: duas plataformas digitais interligadas, o aplicativo para a população e o sistema web para as instituições.",
+    slides: [
+      { numero: 12, titulo: "Solução", explicacao: "O app da população consulta a disponibilidade dos remédios, mostra os mais próximos e traz informações simples para facilitar o tratamento. O sistema web das instituições controla estoque e movimentação, liga postos, farmácias e administradores e abre chamados para reposição.", arquivo: "slide-12" },
+    ],
   },
   {
     apresentador: "Miguel",
