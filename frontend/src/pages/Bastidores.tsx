@@ -11,6 +11,7 @@ import {
 } from "../data/bastidores";
 import { PERIODOS, imagemDoSlide } from "../data/apresentacao";
 import { fotoDe } from "../data/fotos";
+import { ICONES_TECNOLOGIA } from "../data/iconesTecnologias";
 import { AssinaturaAuvox } from "../shared/AssinaturaAuvox";
 import { marcarBastidoresVisto } from "../session/session";
 import "./bastidores.css";
@@ -234,6 +235,21 @@ function EntradaApresentacao() {
 }
 
 /* ---------- Tecnologias ---------- */
+/** Logo da tecnologia (cor da marca) ou um ícone de traço do que ela faz. */
+function IconeTecnologia({ nome }: { nome: string }) {
+  const icone = ICONES_TECNOLOGIA[nome];
+  if (!icone) return null;
+  return icone.tipo === "marca" ? (
+    <svg className="bt-tec-icone" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style={{ "--marca": icone.cor } as React.CSSProperties}>
+      <path d={icone.d} />
+    </svg>
+  ) : (
+    <svg className="bt-tec-icone is-traco" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d={icone.d} />
+    </svg>
+  );
+}
+
 function Tecnologias() {
   const [escolhida, setEscolhida] = useState<string>(`${TECNOLOGIAS[0].titulo}|${TECNOLOGIAS[0].itens[3].nome}`);
   return (
@@ -251,6 +267,7 @@ function Tecnologias() {
                   const id = `${g.titulo}|${it.nome}`;
                   return (
                     <button key={id} type="button" className={escolhida === id ? "is-ativo" : undefined} aria-pressed={escolhida === id} onClick={() => setEscolhida(id)}>
+                      <IconeTecnologia nome={it.nome} />
                       {it.nome}
                     </button>
                   );

@@ -697,3 +697,11 @@
 }
 .bt-grafico-titulo { margin: 0 0 10px; font-size: 13px; font-weight: 700; color: var(--bt-suave); }
 .bt-coluna-total small { display: block; font-size: 10px; font-weight: 500; color: var(--bt-apagado); }
+
+/* Ícone à esquerda de cada tecnologia */
+.bt-tec-chips button { display: inline-flex; align-items: center; gap: 7px; }
+.bt-tec-icone { flex-shrink: 0; fill: var(--marca); }
+.bt-tec-icone.is-traco { fill: none; color: var(--bt-suave); }
+/* chip selecionado (fundo verde): o ícone fica branco para não sumir */
+.bt-tec-chips button.is-ativo .bt-tec-icone { fill: currentColor; }
+.bt-tec-chips button.is-ativo .bt-tec-icone.is-traco { fill: none; color: #fff; }
