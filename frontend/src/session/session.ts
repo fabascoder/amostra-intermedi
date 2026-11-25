@@ -163,6 +163,13 @@ export function marcarBastidoresVisto(): void {
   atualizarProgresso((p) => ({ ...p, bastidoresVisto: true }));
 }
 
+/** Dica de etapa da Central fechada ou seguida: não volta a aparecer. */
+export function marcarDicaVista(id: string): void {
+  const vistas = progressoStore.get().dicasVistas ?? [];
+  if (vistas.includes(id)) return;
+  atualizarProgresso((p) => ({ ...p, dicasVistas: [...(p.dicasVistas ?? []), id] }));
+}
+
 export function concluirGuia(experiencia: "solicitante" | "fornecedora"): void {
   if (progressoStore.get().guiasConcluidos?.[experiencia]) return;
   atualizarProgresso((p) => ({ ...p, guiasConcluidos: { ...p.guiasConcluidos, [experiencia]: true } }));

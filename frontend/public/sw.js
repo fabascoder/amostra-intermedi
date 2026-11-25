@@ -2,7 +2,7 @@
 // - Navegação (index.html): rede primeiro, cópia guardada se a rede falhar.
 // - Arquivos com hash em /assets/: cache primeiro (nunca mudam de conteúdo).
 // Não intercepta nada de outra origem. A aplicação não faz chamadas a APIs.
-const VERSAO = "intermedi-demo-v1";
+const VERSAO = "intermedi-demo-v2";
 
 self.addEventListener("install", (evento) => {
   evento.waitUntil(caches.open(VERSAO).then((cache) => cache.addAll(["/", "/favicon.png"])).then(() => self.skipWaiting()));
@@ -26,8 +26,11 @@ self.addEventListener("fetch", (evento) => {
     evento.respondWith(
       fetch(request)
         .then((resposta) => {
-          const copia = resposta.clone();
-          caches.open(VERSAO).then((cache) => cache.put("/", copia));
+          // só guarda a página do app (nunca uma página de erro do servidor)
+          if (resposta.ok) {
+            const copia = resposta.clone();
+            caches.open(VERSAO).then((cache) => cache.put("/", copia));
+          }
           return resposta;
         })
         .catch(() => caches.match("/").then((r) => r || Response.error())),

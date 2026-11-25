@@ -13,6 +13,7 @@ const PacienteApp = lazy(() => import("./experiences/paciente/PacienteApp"));
 const Encerrada = lazy(() => import("./pages/Encerrada"));
 const Bastidores = lazy(() => import("./pages/Bastidores"));
 const Apresentacao = lazy(() => import("./pages/Apresentacao"));
+const NaoEncontrada = lazy(() => import("./pages/NaoEncontrada"));
 
 function Carregando() {
   return (
@@ -52,7 +53,7 @@ function Rotas() {
         <Route path="/bastidores" element={<Bastidores />} />
         <Route path="/bastidores/apresentacao" element={<Apresentacao />} />
         <Route path="/encerrada" element={situacao === "expirada" ? <Encerrada /> : <Navigate to="/" replace />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NaoEncontrada />} />
       </Routes>
     </Suspense>
   );

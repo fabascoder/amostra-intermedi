@@ -121,6 +121,8 @@ export type Progresso = {
   guiasConcluidos: Partial<Record<"solicitante" | "fornecedora", true>>;
   /** Abriu os Bastidores (libera o cartão "Conheça a Auvox" na Central). */
   bastidoresVisto?: boolean;
+  /** Dicas de etapa da Central já vistas ("bastidores", "auvox"). */
+  dicasVistas?: string[];
   /** Convites depois das três experiências (avaliar, Auvox, Instagram, bastidores). */
   convites: { proximoEm: number | null; vistos: string[] };
 };

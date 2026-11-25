@@ -4,7 +4,7 @@ import logo from "../assets/brand/logo-intermedi.webp";
 import { useEstadoPedidos, useAgoraDosPedidos } from "../demoServices/orderService";
 import { usePaciente } from "../demoServices/patientService";
 import { useAvaliacoes } from "../demoServices/feedbackService";
-import { marcarAgradecimentoVisto, verificarSessao } from "../session/session";
+import { marcarAgradecimentoVisto, marcarDicaVista, verificarSessao } from "../session/session";
 import { Agradecimento } from "../shared/Agradecimento";
 import { formatarRestante, useAgora, useExpiraEm, useProgresso, useSituacaoSessao } from "../session/hooks";
 import { etapaRecebida, etapaSolicitado, ETAPAS_SOLICITANTE } from "../simulators/pedidos";
@@ -233,14 +233,52 @@ function SobreAmostra() {
  * de abri-los, outra para a Auvox. Ficam na Central até o fim da sessão.
  * Os convites em janela continuam aparecendo de tempos em tempos.
  */
-function Desbloqueados({ bastidoresVisto }: { bastidoresVisto: boolean }) {
+const SEM_DICAS: string[] = [];
+const DICAS = {
+  bastidores: { passo: 1, texto: "Agora que você viu as três plataformas, veja como fizemos." },
+  auvox: { passo: 2, texto: "Agora que você viu os bastidores, conheça a equipe que fez o Intermedi." },
+} as const;
+type DicaId = keyof typeof DICAS;
+
+/** Dica de etapa (mesmo visual do guia prático) acima da linha que acabou de aparecer. */
+function DicaEtapa({ id }: { id: DicaId }) {
+  const ref = useRef<HTMLDivElement>(null);
+  // a linha nova pode estar fora da tela (no celular): rola até ela uma vez
+  useEffect(() => {
+    const reduzir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const t = window.setTimeout(() => ref.current?.scrollIntoView({ block: "center", behavior: reduzir ? "auto" : "smooth" }), 500);
+    return () => window.clearTimeout(t);
+  }, [id]);
+  const { passo, texto } = DICAS[id];
+  return (
+    <div ref={ref} className="central-dica" role="status">
+      <div className="central-dica-topo">
+        <span className="central-dica-marca">Novo · passo extra {passo} de 2</span>
+        <button type="button" className="central-dica-fechar" onClick={() => marcarDicaVista(id)} aria-label="Fechar a dica">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+        </button>
+      </div>
+      <p>{texto}</p>
+      <span className="central-dica-trilho" aria-hidden="true">
+        <i className="is-feito" />
+        <i className={passo === 2 ? "is-feito" : undefined} />
+      </span>
+    </div>
+  );
+}
+
+function Desbloqueados({ bastidoresVisto, dicasVistas }: { bastidoresVisto: boolean; dicasVistas: string[] }) {
   const seta = (
     <svg className="central-extra-seta" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
   );
+  const dica: DicaId | null = !bastidoresVisto
+    ? (dicasVistas.includes("bastidores") ? null : "bastidores")
+    : (dicasVistas.includes("auvox") ? null : "auvox");
   return (
     <ul className="central-extras" aria-label="Mais sobre o Intermedi">
       <li>
-        <Link to="/bastidores" className="central-extra" data-track="central:bastidores">
+        {dica === "bastidores" && <DicaEtapa id="bastidores" />}
+        <Link to="/bastidores" className={`central-extra${dica === "bastidores" ? " is-destaque" : ""}`} data-track="central:bastidores">
           <span className="central-extra-equipe" aria-hidden="true">
             {PESSOAS.map((p) => (
               <span key={p.id} style={{ background: p.cor }}>{p.nome.charAt(0)}</span>
@@ -252,7 +290,15 @@ function Desbloqueados({ bastidoresVisto }: { bastidoresVisto: boolean }) {
       </li>
       {bastidoresVisto && (
         <li>
-          <a className="central-extra" href={AUVOX.site} target="_blank" rel="noopener noreferrer" data-track="central:auvox">
+          {dica === "auvox" && <DicaEtapa id="auvox" />}
+          <a
+            className={`central-extra${dica === "auvox" ? " is-destaque" : ""}`}
+            href={AUVOX.site}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-track="central:auvox"
+            onClick={() => marcarDicaVista("auvox")}
+          >
             <span className="central-extra-marca" aria-hidden="true">
               {LOGO_AUVOX && <img src={LOGO_AUVOX} alt="" width="28" height="28" />}
             </span>
@@ -284,6 +330,7 @@ export default function Central() {
   // Depois das três experiências: agradecimento, uma única vez por sessão.
   const agradecimentoVisto = useProgresso((p) => p.agradecimentoVisto);
   const bastidoresVisto = useProgresso((p) => Boolean(p.bastidoresVisto));
+  const dicasVistas = useProgresso((p) => p.dicasVistas ?? SEM_DICAS);
   const mostrarAgradecimento = situacao === "ativa" && totalVisitadas === EXPERIENCIAS.length && !agradecimentoVisto && !avaliando;
 
   useEffect(() => {
@@ -365,7 +412,7 @@ export default function Central() {
             })}
           </ul>
 
-          {situacao === "ativa" && agradecimentoVisto && <Desbloqueados bastidoresVisto={bastidoresVisto} />}
+          {situacao === "ativa" && agradecimentoVisto && <Desbloqueados bastidoresVisto={bastidoresVisto} dicasVistas={dicasVistas} />}
 
           <SobreAmostra />
         </div>
