@@ -83,10 +83,13 @@ export const PERIODOS: Periodo[] = [
   },
   {
     apresentador: "Miguel",
-    resumo: "Apresenta o slide 13, com todas as suas telas, e o slide 14.",
+    resumo: "Explica a identidade visual do Intermedi, o significado do nome e de cada parte do logotipo, e apresenta a marca: saúde, tecnologia e acessibilidade.",
     slides: [
-      { numero: 13, titulo: "Slide 13", explicacao: PENDENTE },
-      { numero: 14, titulo: "Slide 14", explicacao: PENDENTE },
+      { numero: 13, titulo: "Identidade Visual", parte: "Inter", explicacao: "\"Inter\" vem de intermediador: a conexão entre pacientes, farmácias e unidades de saúde. As cores da marca são o verde #08b760 e o preto #000000.", arquivo: "slide-13-a" },
+      { numero: 13, titulo: "Identidade Visual", parte: "Medi", explicacao: "\"Medi\" vem de medicamento, reforçando o foco principal da plataforma.", arquivo: "slide-13-b" },
+      { numero: 13, titulo: "Identidade Visual", parte: "O \"i\" em cápsula", explicacao: "O \"i\" do fim do nome foi redesenhado para lembrar uma pílula ou cápsula.", arquivo: "slide-13-c" },
+      { numero: 13, titulo: "Identidade Visual", parte: "A cruz verde", explicacao: "O símbolo verde em volta do nome faz referência à Cruz Vermelha, ou Cruz da Vida, sinal ligado à saúde.", arquivo: "slide-13-d" },
+      { numero: 14, titulo: "Intermedi", explicacao: "O Intermedi atua na área da saúde e tecnologia: conecta usuários a farmácias para encontrar medicamentos de forma rápida, prática e acessível.", arquivo: "slide-14" },
     ],
   },
   {
