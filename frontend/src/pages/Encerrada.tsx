@@ -31,7 +31,8 @@ export default function Encerrada() {
         <p className="fim-obrigado">Obrigado por conhecer o Intermedi!</p>
         <p>Seu período de acesso à versão demonstrativa foi encerrado.</p>
         <p>
-          Gostaria de explorar a plataforma novamente? Entre em contato com nossa equipe para solicitar um novo acesso.
+          Quer explorar de novo? Peça um novo acesso à nossa equipe. Você vai entrar numa <strong>nova sessão</strong>,
+          com mais 3 horas, começando do início: as solicitações, avaliações e o progresso desta visita não continuam.
         </p>
 
         <div className="fim-contato">
