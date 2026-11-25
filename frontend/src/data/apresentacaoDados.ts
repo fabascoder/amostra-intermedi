@@ -100,6 +100,7 @@ export const PERIODOS: Periodo[] = [
       { numero: 15, titulo: "Canvas", parte: "Atividades Principais", explicacao: "Soluções logísticas para distribuir medicamentos por intermédio da empresa (B2B/C2B) e atendimento a empresas e pacientes da rede pública.", arquivo: "slide-15-b" },
       { numero: 15, titulo: "Canvas", parte: "Recursos Principais", explicacao: "Os sistemas que sustentam o negócio: controle de estoque, solicitação de lotes e o aplicativo do paciente.", arquivo: "slide-15-c" },
       { numero: 15, titulo: "Canvas", parte: "Canais", explicacao: "Atendimento pelo e-mail da empresa e pelas redes sociais (bate-papo).", arquivo: "slide-15-d" },
+      { numero: 15, titulo: "Canvas", parte: "Relacionamento com Clientes", explicacao: "Como o Intermedi se relaciona com quem usa: informações de onde há remédio em estoque, atendimento exclusivo por chat, chamados para avisar a falta de um remédio e avaliação dos estabelecimentos.", arquivo: "slide-15-g" },
       { numero: 15, titulo: "Canvas", parte: "Estrutura de Custos", explicacao: "Desenvolvimento e manutenção, servidores e dados, suporte, logística e transporte, segurança da informação e marketing.", arquivo: "slide-15-e" },
       { numero: 15, titulo: "Canvas", parte: "Fontes de Receita", explicacao: "Taxa por volume entregue, contratos de disponibilidade pagos pelo contratante (como o SUS) e investimentos destinados à saúde.", arquivo: "slide-15-f" },
       { numero: 16, titulo: "Slide 16", explicacao: PENDENTE },
@@ -107,11 +108,14 @@ export const PERIODOS: Periodo[] = [
   },
   {
     apresentador: "Alexandre Rafael",
-    resumo: "Apresenta os slides 17 a 19.",
+    resumo: "Apresenta os diagramas do sistema: o modelo do banco de dados (MER), o diagrama de classes e o diagrama de casos de uso, com um exemplo ampliado de cada um.",
     slides: [
-      { numero: 17, titulo: "Slide 17", explicacao: PENDENTE },
-      { numero: 18, titulo: "Slide 18", explicacao: PENDENTE },
-      { numero: 19, titulo: "Slide 19", explicacao: PENDENTE },
+      { numero: 17, titulo: "MER", explicacao: "O modelo entidade-relacionamento do banco: endereço, admin, gerente, farmácia, funcionário, paciente, remédio, estoque, chamado, redistribuição, serviço e categoria, com as chaves e a cardinalidade de cada ligação.", arquivo: "slide-17-a" },
+      { numero: 17, titulo: "MER", parte: "Tabela paciente", explicacao: "Exemplo ampliado: a tabela paciente, com chave primária, CPF e e-mail únicos, senha guardada como hash e o endereço como chave estrangeira.", arquivo: "slide-17-b" },
+      { numero: 18, titulo: "Diagrama de Classes", explicacao: "As classes do sistema e como se ligam: Usuário e Farmácia têm um Endereço, a Farmácia possui Remédios, o Favorito liga Usuário e Farmácia, e o Admin gerencia usuários, farmácias e remédios.", arquivo: "slide-18-a" },
+      { numero: 18, titulo: "Diagrama de Classes", parte: "Classe Usuário", explicacao: "Exemplo ampliado: a classe Usuário, com seus atributos (nome, e-mail, senha, telefone, foto) e métodos como cadastrar, login, pesquisar remédios e farmácias e favoritar remédios.", arquivo: "slide-18-b" },
+      { numero: 19, titulo: "Diagrama de Casos de Uso", explicacao: "O que cada ator faz no Intermedi: paciente, funcionário, gerente e admin, com as relações de include e extend entre os casos de uso.", arquivo: "slide-19-a" },
+      { numero: 19, titulo: "Diagrama de Casos de Uso", parte: "Admin", explicacao: "Exemplo ampliado: o admin faz login, vê o histórico de chamados e o painel de desempenho, cadastra farmácias, gerentes e remédios, envia o e-mail de acesso e gerencia os gerentes.", arquivo: "slide-19-b" },
     ],
   },
   {
