@@ -3,10 +3,11 @@
 import alexandreSantiago from "../assets/equipe/alexandre-santiago.webp";
 import ariella from "../assets/equipe/ariella.webp";
 import eduardo from "../assets/equipe/eduardo.webp";
+import fabricio from "../assets/equipe/fabricio.webp";
 import matheus from "../assets/equipe/matheus.webp";
 
 // Nome completo quando há dois com o mesmo primeiro nome (Alexandre Santiago e Alexandre Rafael).
-const FOTOS: Record<string, string> = { "alexandre santiago": alexandreSantiago, ariella, eduardo, matheus };
+const FOTOS: Record<string, string> = { "alexandre santiago": alexandreSantiago, ariella, eduardo, fabricio, matheus };
 
 const normalizar = (texto: string) => texto.trim().normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ");
 
