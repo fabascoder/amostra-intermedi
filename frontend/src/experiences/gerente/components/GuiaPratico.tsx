@@ -332,38 +332,50 @@ export function GuiaNaJanela({ guia }: { guia: ReturnType<typeof useGuiaPratico>
   );
 }
 
-/** Cartão fixo no pé da tela (celular) ou no canto (computador). */
-export function GuiaPratico({ experiencia, guia, escondido }: { experiencia: ExperienciaGerente; guia: ReturnType<typeof useGuiaPratico>; escondido: boolean }) {
-  const [minimizado, setMinimizado] = useState(false);
-  useDestaque(escondido || minimizado ? undefined : guia.passo.alvo, guia.passo.id);
-  // Passo novo: o cartão volta a abrir, para a pessoa ver o que fazer.
-  useEffect(() => setMinimizado(false), [guia.passo.id]);
-  if (escondido) return null;
+/**
+ * Guia obrigatório: enquanto não termina, só o que o passo pede responde ao
+ * toque (o alvo, o botão da seta, a janela do pedido e o próprio guia).
+ * Qualquer outro toque é barrado e o cartão do guia chama a atenção.
+ */
+const SEMPRE_LIVRE = ".guia, .guia-na-janela, .demo-trocar, .skip-link";
+export function useGuiaObrigatorio(ativo: boolean, passo: PassoGuia) {
+  useEffect(() => {
+    if (!ativo) return undefined;
+    const permitido = (alvo: Element) => {
+      if (alvo.closest(SEMPRE_LIVRE)) return true;
+      for (const seletor of [passo.alvo, passo.avancar]) {
+        if (seletor && alvo.closest(seletor)) return true;
+      }
+      // janela aberta pelo próprio guia (ex.: Pedir à rede, que traz o guia dentro)
+      const janela = alvo.closest("dialog, [role='dialog'], .mgr-modal");
+      return Boolean(janela?.querySelector(".guia-na-janela, .guia-alvo") || janela?.classList.contains("guia-alvo"));
+    };
+    const barrar = (e: Event) => {
+      const alvo = e.target as Element | null;
+      if (!alvo || !(alvo instanceof Element) || permitido(alvo)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const cartao = document.querySelector(".guia:not(.guia-na-janela)");
+      cartao?.classList.remove("is-chamando");
+      void (cartao as HTMLElement | null)?.offsetWidth; // reinicia a animação
+      cartao?.classList.add("is-chamando");
+    };
+    document.addEventListener("click", barrar, true);
+    return () => document.removeEventListener("click", barrar, true);
+  }, [ativo, passo.alvo, passo.avancar]);
+}
 
-  if (minimizado) {
-    return (
-      <button type="button" className="guia-pilula" onClick={() => setMinimizado(false)} aria-label={`Abrir o guia prático: passo ${guia.numero} de ${guia.total}`}>
-        <ManagerIcon name="info" size={16} />
-        Guia · passo {guia.numero} de {guia.total}
-      </button>
-    );
-  }
+/** Cartão fixo no pé da tela (celular) ou no canto (computador). Não fecha: o passo a passo é obrigatório. */
+export function GuiaPratico({ experiencia, guia, escondido }: { experiencia: ExperienciaGerente; guia: ReturnType<typeof useGuiaPratico>; escondido: boolean }) {
+  useDestaque(escondido ? undefined : guia.passo.alvo, guia.passo.id);
+  if (escondido) return null;
 
   return (
     <aside className={`guia${guia.passo.final ? " is-final" : ""}`} aria-label="Guia prático" aria-live="polite">
       <div className="guia-topo">
         <span className="guia-marca"><ManagerIcon name="info" size={14} /> Guia prático · passo {guia.numero} de {guia.total}</span>
-        {!guia.passo.final && (
-          <>
-            <button type="button" className="guia-icone-botao" onClick={() => setMinimizado(true)} aria-label="Minimizar o guia">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M6 12h12" /></svg>
-            </button>
-            <button type="button" className="guia-icone-botao" onClick={() => concluirGuia(experiencia)} aria-label="Fechar o guia (você pode explorar sozinho)">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="m6 6 12 12M18 6 6 18" /></svg>
-            </button>
-          </>
-        )}
       </div>
+      {!guia.passo.final && <p className="guia-obrigatorio">Siga o passo a passo para liberar a plataforma.</p>}
       <Conteudo {...guia} />
       {guia.passo.final && (
         <button type="button" className="mgr-primary guia-concluir" onClick={() => concluirGuia(experiencia)}>

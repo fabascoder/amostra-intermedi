@@ -117,6 +117,7 @@
   flex-direction: column-reverse;
   gap: 2px;
   min-height: 4px;
+  flex-shrink: 0;
   border-radius: 6px 6px 2px 2px;
   overflow: hidden;
   transform-origin: bottom;
@@ -694,3 +695,5 @@
   line-height: 1.5;
   color: var(--bt-apagado);
 }
+.bt-grafico-titulo { margin: 0 0 10px; font-size: 13px; font-weight: 700; color: var(--bt-suave); }
+.bt-coluna-total small { display: block; font-size: 10px; font-weight: 500; color: var(--bt-apagado); }

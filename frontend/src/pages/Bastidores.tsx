@@ -132,6 +132,7 @@ function GraficoCommits() {
   ] as const;
   return (
     <figure className="bt-grafico">
+      <p className="bt-grafico-titulo">Commits por mês</p>
       <div className="bt-grafico-colunas" role="group" aria-label="Commits por mês">
         {COMMITS_POR_MES.map((m, i) => {
           const total = m.intermedi + m.auvox + m.demo;
@@ -146,7 +147,7 @@ function GraficoCommits() {
               onClick={() => setMes(m.mes)}
             >
               <span className="bt-coluna-total">{total}</span>
-              <span className="bt-coluna-pilha" style={{ height: `${(total / max) * 100}%` }}>
+              <span className="bt-coluna-pilha" style={{ height: `calc(${total / max} * (100% - 52px))` }}>
                 {SERIES.map(([chave, , cor]) => m[chave] > 0 && (
                   <i key={chave} style={{ flexGrow: m[chave], background: cor }} />
                 ))}
@@ -161,12 +162,12 @@ function GraficoCommits() {
           <span key={chave}>
             <i style={{ background: cor }} />
             {nome}
-            {atual && <b>{atual[chave]}</b>}
+            {atual && <b>{atual[chave]} {atual[chave] === 1 ? "commit" : "commits"}</b>}
           </span>
         ))}
       </figcaption>
       <p className="bt-grafico-nota">
-        Commits de {REPOSITORIOS.join(", ")}, sem merges. Contagem de 25/11/2026; {TOTAL_COMMITS - PESSOAS.reduce((s, p) => s + p.commits, 0)} commits da demo foram feitos com o Claude Code.
+        Números de commits (com merges) de {REPOSITORIOS.join(", ")}. Contagem de 25/11/2026; {TOTAL_COMMITS - PESSOAS.reduce((s, p) => s + p.commits, 0)} commits da demo foram feitos com o Claude Code.
       </p>
     </figure>
   );

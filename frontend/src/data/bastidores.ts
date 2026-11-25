@@ -8,10 +8,10 @@
 export type PessoaId = "fabricio" | "matheus" | "miguel" | "gabriel" | "eduardo";
 
 export const PESSOAS: { id: PessoaId; nome: string; cor: string; fez: string; commits: number }[] = [
-  { id: "fabricio", nome: "Fabrício", cor: "#1f8a5b", fez: "Plataforma web das farmácias, servidor e banco de dados", commits: 157 },
-  { id: "matheus", nome: "Matheus", cor: "#2f6fd6", fez: "Aplicativo do paciente, mapa e rotas", commits: 62 },
-  { id: "eduardo", nome: "Eduardo Viana", cor: "#d0573c", fez: "Administração no servidor e cadastro de pacientes", commits: 31 },
-  { id: "miguel", nome: "Miguel Basaglia", cor: "#c98712", fez: "Login da equipe e telas do gerente", commits: 28 },
+  { id: "fabricio", nome: "Fabrício", cor: "#1f8a5b", fez: "Plataforma web das farmácias, servidor e banco de dados", commits: 199 },
+  { id: "matheus", nome: "Matheus", cor: "#2f6fd6", fez: "Aplicativo do paciente, mapa e rotas", commits: 72 },
+  { id: "eduardo", nome: "Eduardo Viana", cor: "#d0573c", fez: "Administração no servidor e cadastro de pacientes", commits: 36 },
+  { id: "miguel", nome: "Miguel Basaglia", cor: "#c98712", fez: "Login da equipe e telas do gerente", commits: 31 },
   { id: "gabriel", nome: "Gabriel Ancelmo", cor: "#7a55d4", fez: "Painel do administrador", commits: 50 },
 ];
 
@@ -187,15 +187,15 @@ export const LINHA_DO_TEMPO: { data: string; titulo: string; texto: string; quem
 /**
  * Commits por mês, somando os repositórios: Intermedi (intermedi-front-end,
  * intermedi-back-end e intermedi-app), Auvox (front-end-auvox e back-end-auvox)
- * e esta demo (amostra-intermedi). Contagem de 25/11/2026, sem merges.
+ * e esta demo (amostra-intermedi). Contagem de 25/11/2026, com merges.
  */
 export const COMMITS_POR_MES: { mes: string; intermedi: number; auvox: number; demo: number }[] = [
   { mes: "jun", intermedi: 0, auvox: 3, demo: 0 },
   { mes: "jul", intermedi: 2, auvox: 0, demo: 0 },
   { mes: "ago", intermedi: 16, auvox: 2, demo: 0 },
-  { mes: "set", intermedi: 112, auvox: 13, demo: 0 },
-  { mes: "out", intermedi: 68, auvox: 16, demo: 0 },
-  { mes: "nov", intermedi: 44, auvox: 32, demo: 40 },
+  { mes: "set", intermedi: 135, auvox: 15, demo: 0 },
+  { mes: "out", intermedi: 84, auvox: 16, demo: 0 },
+  { mes: "nov", intermedi: 56, auvox: 32, demo: 47 },
 ];
 
 /** Repositórios contados nas estatísticas (nota discreta nos Bastidores). */

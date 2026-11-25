@@ -11,7 +11,7 @@ import { usePaciente } from "../../demoServices/patientService";
 import { concluirOnboarding, marcarVisita } from "../../session/session";
 import { useProgresso } from "../../session/hooks";
 import BoasVindas from "./components/BoasVindas";
-import { GuiaPratico, useGuiaPratico } from "./components/GuiaPratico";
+import { GuiaPratico, useGuiaObrigatorio, useGuiaPratico } from "./components/GuiaPratico";
 import Notificacoes from "./components/Notificacoes";
 import PersonaAvatar from "./components/PersonaAvatar";
 import { ToastRegion } from "./components/Remedios";
@@ -95,6 +95,8 @@ export default function GerenteExperiencia({ experiencia }: { experiencia: Exper
     pedindo: pedindo !== null,
   });
   const comGuia = onboardingConcluido && !guiaConcluido;
+  // Até terminar o guia, só o que o passo pede funciona.
+  useGuiaObrigatorio(comGuia, guia.passo);
 
   return (
     <GerenteContexto.Provider value={contexto}>

@@ -63,18 +63,23 @@ function BarraAbas() {
 }
 
 const TELAS_SEM_ABAS = /\/aplicativo\/(medicamento|farmacia|notificacoes|comprimidos|mascote|buscar)\b/;
+// Telas principais com o atalho "Trocar experiência" visível no celular. Fica
+// fora das telas de um remédio ou de uma farmácia, do chat (tem campo no
+// rodapé) e do Perfil (que já tem o botão).
+const TELAS_COM_TROCAR = /^\/aplicativo(\/(remedios|farmacias|favoritos))?\/?$/;
 
 function Telefone() {
   const { pathname } = useLocation();
   const tela = useRef<HTMLDivElement>(null);
   const comAbas = !TELAS_SEM_ABAS.test(pathname);
+  const comTrocar = TELAS_COM_TROCAR.test(pathname);
   // cada tela começa do topo, como num app
   useEffect(() => {
     tela.current?.scrollTo({ top: 0 });
     window.scrollTo({ top: 0 });
   }, [pathname]);
   return (
-    <div className={`a-telefone${comAbas ? " com-abas" : ""}`} ref={tela}>
+    <div className={`a-telefone${comAbas ? " com-abas" : ""}${comTrocar ? " com-trocar" : ""}`} ref={tela}>
       <div className="a-telefone-tela" key={pathname}>
         <Routes>
           <Route index element={<Inicio />} />
@@ -92,6 +97,7 @@ function Telefone() {
           <Route path="*" element={<Navigate to="/aplicativo" replace />} />
         </Routes>
       </div>
+      {comTrocar && <TrocarExperiencia className="a-trocar-flutuante" />}
       {comAbas && <BarraAbas />}
     </div>
   );

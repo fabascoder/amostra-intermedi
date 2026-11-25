@@ -2851,3 +2851,22 @@
   font-size: 11px;
   font-weight: 700;
 }
+
+/* "Trocar experiência" nas telas principais do celular: pílula acima das abas.
+   No computador ela já está na coluna ao lado do telefone. */
+.a-trocar-flutuante {
+  position: fixed;
+  right: 16px;
+  bottom: calc(max(12px, env(safe-area-inset-bottom)) + 78px);
+  z-index: 31;
+  min-height: 40px;
+  background: #fff;
+  color: #0e6b50;
+  box-shadow: 0 6px 18px -8px rgb(0 0 0 / 0.35), 0 0 0 1px rgb(14 107 80 / 0.15);
+}
+.a-trocar-flutuante:hover { background: #f2f8f5; }
+.a-telefone.com-trocar .a-telefone-tela { padding-bottom: 160px; }
+@media (min-width: 900px) {
+  .a-trocar-flutuante { display: none; }
+  .a-telefone.com-trocar .a-telefone-tela { padding-bottom: 110px; }
+}

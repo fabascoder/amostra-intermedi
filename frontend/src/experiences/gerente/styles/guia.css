@@ -311,3 +311,17 @@
 @media (prefers-reduced-motion: reduce) {
   .guia .guia-pratica, .guia-alvo { animation: none; }
 }
+
+/* Guia obrigatório: aviso curto e o cartão balança quando a pessoa toca fora do passo */
+.guia-obrigatorio { margin: -2px 0 8px; font-size: 12px; color: var(--guia-suave, rgb(241 245 243 / 0.68)); }
+.guia.is-chamando { animation: guia-chama 0.5s ease both; }
+@keyframes guia-chama {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(7px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .guia.is-chamando { animation: none; outline: 2px solid var(--guia-destaque, #5fd39c); }
+}
