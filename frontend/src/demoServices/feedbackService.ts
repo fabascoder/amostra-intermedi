@@ -1,7 +1,7 @@
-// Avaliações do visitante. Nesta etapa ficam só no navegador, como dado
-// demonstrativo: não há envio para a equipe. Para integrar um serviço real
-// no futuro (Tally, formulário próprio, API), implemente FeedbackProvider e
-// troque `provedor` — os componentes não mudam.
+// Avaliações do visitante. Com o Google Forms configurado (src/config/avaliacao.ts)
+// vão para a planilha da equipe; sem ele, ficam só no navegador. Para trocar de
+// serviço, implemente FeedbackProvider e troque `provedor` — os componentes não mudam.
+import { ENTRADAS, formsConfigurado, urlRespostaForms } from "../config/avaliacao";
 import { STORAGE_KEYS } from "../config/demo";
 import { gravar, ler } from "../lib/storage";
 import { createStore, useStore } from "../lib/store";
@@ -41,7 +41,34 @@ const provedorLocal: FeedbackProvider = {
   },
 };
 
-export const provedor: FeedbackProvider = provedorLocal;
+// Envia para o Google Forms da equipe (src/config/avaliacao.ts) e guarda a cópia
+// local, que marca o item como avaliado nesta sessão. O Google não libera CORS,
+// então o envio é "no-cors": só dá para saber se a rede falhou, não a resposta.
+const provedorForms: FeedbackProvider = {
+  enviaParaEquipe: true,
+  async registrar(avaliacao) {
+    const sid = idSessaoAtual();
+    if (!sid || !verificarSessao()) throw new Error("Sua sessão demonstrativa terminou.");
+    const corpo = new URLSearchParams({
+      [ENTRADAS.nota]: String(avaliacao.nota),
+      [ENTRADAS.alvo]: ALVOS.find((a) => a.valor === avaliacao.alvo)?.rotulo ?? avaliacao.alvo,
+      [ENTRADAS.comentario]: avaliacao.comentario,
+    });
+    try {
+      await fetch(urlRespostaForms(), {
+        method: "POST",
+        mode: "no-cors",
+        body: corpo,
+        signal: AbortSignal.timeout(15_000),
+      });
+    } catch {
+      throw new Error("Não foi possível enviar a avaliação. Confira a internet e tente de novo.");
+    }
+    await provedorLocal.registrar(avaliacao);
+  },
+};
+
+export const provedor: FeedbackProvider = formsConfigurado() ? provedorForms : provedorLocal;
 
 export type ErrosAvaliacao = Partial<Record<"nota" | "alvo" | "comentario", string>>;
 
