@@ -41,8 +41,11 @@ export const STORAGE_KEYS = {
  * Contato oficial para pedir novo acesso. Não há contato validado nos
  * projetos originais, então os campos ficam vazios e a tela de sessão
  * encerrada mostra apenas a orientação presencial. Preencha antes de publicar.
+ * `whatsapp`: número com DDI e DDD (ex.: "5519999999999"). Preenchido, a tela
+ * de fim mostra o botão "Pedir novo acesso pelo WhatsApp" com o nome do visitante.
  */
-export const CONTACT: { email: string; phone: string; site: string } = {
+export const CONTACT: { whatsapp: string; email: string; phone: string; site: string } = {
+  whatsapp: "5511986063276",
   email: "",
   phone: "",
   site: "",

@@ -107,6 +107,8 @@ export type Sessao = {
   createdAt: number;
   expiresAt: number;
   status: "active" | "expired";
+  /** Primeiro nome do visitante, guardado só na sessão encerrada (pedido de novo acesso). */
+  nome?: string;
 };
 
 export type Progresso = {

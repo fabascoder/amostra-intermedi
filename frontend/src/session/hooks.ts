@@ -6,7 +6,8 @@ import { progressoStore, sessaoStore, situacao, verificarSessao } from "./sessio
 import type { Progresso } from "../types";
 
 export const useSituacaoSessao = () => useStore(sessaoStore, (e) => situacao(e.sessao));
-export const useExpiraEm = () => useStore(sessaoStore, (e) => e.sessao?.expiresAt ?? null);
+export const useNomeDaSessao = () => useStore(sessaoStore, (e) => e.sessao?.nome ?? "");
+export const useExpiraEm =() => useStore(sessaoStore, (e) => e.sessao?.expiresAt ?? null);
 export const useIdSessao = () => useStore(sessaoStore, (e) => (e.sessao?.status === "active" ? e.sessao.sessionId : null));
 export function useProgresso<S>(seletor: (p: Progresso) => S): S {
   return useStore(progressoStore, seletor);
