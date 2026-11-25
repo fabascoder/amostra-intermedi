@@ -11,6 +11,7 @@ import {
 } from "../data/bastidores";
 import { PERIODOS, imagemDoSlide } from "../data/apresentacao";
 import { AssinaturaAuvox } from "../shared/AssinaturaAuvox";
+import { marcarBastidoresVisto } from "../session/session";
 import "./bastidores.css";
 
 const pessoa = (id: PessoaId) => PESSOAS.find((p) => p.id === id)!;
@@ -52,6 +53,7 @@ export default function Bastidores() {
   useEffect(() => {
     document.title = "Bastidores | Intermedi Demo";
     window.scrollTo({ top: 0 });
+    marcarBastidoresVisto(); // libera "Conheça a Auvox" na Central
     return () => { document.title = "Intermedi Demo"; };
   }, []);
 
@@ -88,10 +90,9 @@ export default function Bastidores() {
           <p className="bt-lead">
             {PESSOAS.length} pessoas da Auvox, 3 repositórios e {TOTAL_COMMITS} commits, de 26 de julho a 19 de novembro de 2026.
           </p>
+          <EntradaApresentacao />
           <GraficoCommits />
         </section>
-
-        <EntradaApresentacao />
 
         <nav className="bt-nav" aria-label="Seções dos bastidores">
           <div className="bt-nav-trilho">
@@ -214,11 +215,13 @@ function EntradaApresentacao() {
         ))}
       </span>
       <span className="bt-apresentacao-texto">
-        <strong>Apresentação</strong>
-        <span>Quem apresentou cada parte do TCC, com uma explicação de cada slide.</span>
+        <small className="bt-apresentacao-selo">Comece por aqui</small>
+        <strong>Apresentação do TCC</strong>
+        <span>Quem apresentou cada parte, com uma explicação de cada slide.</span>
         <small>{PERIODOS.length} apresentadores · {totalSlides} slides</small>
       </span>
       <span className="bt-apresentacao-ir" aria-hidden="true">
+        <span className="bt-apresentacao-ir-rotulo">Ver a apresentação</span>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
       </span>
     </Link>

@@ -15,6 +15,9 @@ import { MascoteAvatar } from "../shared/Mascote";
 import type { ExperienciaId } from "../types";
 import { BoasVindasDemo } from "./BoasVindasDemo";
 import { VideoPlataforma } from "../shared/VideoPlataforma";
+import { LOGO_AUVOX } from "../shared/AssinaturaAuvox";
+import { AUVOX } from "../config/demo";
+import { PESSOAS } from "../data/bastidores";
 import "./central.css";
 
 const EXPERIENCIAS: { id: ExperienciaId; rota: string; titulo: string }[] = [
@@ -225,6 +228,62 @@ function SobreAmostra() {
   );
 }
 
+/**
+ * Seções que aparecem depois das três experiências, uma de cada vez:
+ * primeiro os Bastidores; depois de abri-los, a Auvox. Ficam na Central até o
+ * fim da sessão, num visual diferente das três experiências.
+ */
+function Desbloqueados({ bastidoresVisto }: { bastidoresVisto: boolean }) {
+  const site = AUVOX.site.replace(/^https?:\/\//, "");
+  return (
+    <section className="central-extras" aria-labelledby="central-extras-titulo">
+      <p className="central-extras-rotulo" id="central-extras-titulo">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <rect x="4" y="11" width="16" height="10" rx="2.5" /><path d="M8 11V7.5a4 4 0 0 1 7.6-1.7" />
+        </svg>
+        Desbloqueado para você
+      </p>
+      <ul>
+        <li>
+          <Link to="/bastidores" className="central-extra central-extra-bastidores" data-track="central:bastidores">
+            <span className="central-extra-equipe" aria-hidden="true">
+              {PESSOAS.slice(0, 5).map((p, i) => (
+                <span key={p.id} style={{ "--i": i, background: p.cor } as React.CSSProperties}>{p.nome.charAt(0)}</span>
+              ))}
+              {PESSOAS.length > 5 && <span className="is-mais" style={{ "--i": 5 } as React.CSSProperties}>+{PESSOAS.length - 5}</span>}
+            </span>
+            <span className="central-extra-texto">
+              <small>{bastidoresVisto ? "Bastidores" : "Novo"}</small>
+              <strong>Conheça nossos bastidores</strong>
+              <span>A apresentação do TCC, a equipe, os diagramas e como o Intermedi foi feito.</span>
+            </span>
+            <span className="central-extra-ir" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
+            </span>
+          </Link>
+        </li>
+        {bastidoresVisto && (
+          <li>
+            <a className="central-extra central-extra-auvox" href={AUVOX.site} target="_blank" rel="noopener noreferrer" data-track="central:auvox">
+              <span className="central-extra-marca" aria-hidden="true">
+                {LOGO_AUVOX && <img src={LOGO_AUVOX} alt="" width="56" height="56" />}
+              </span>
+              <span className="central-extra-texto">
+                <small>Novo</small>
+                <strong>Conheça a Auvox</strong>
+                <span>A equipe por trás do Intermedi. Abre {site} em outra aba.</span>
+              </span>
+              <span className="central-extra-ir" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17 17 7M9 7h8v8" /></svg>
+              </span>
+            </a>
+          </li>
+        )}
+      </ul>
+    </section>
+  );
+}
+
 export default function Central() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -242,6 +301,7 @@ export default function Central() {
   const [emBoasVindas, setEmBoasVindas] = useState(precisaBoasVindas);
   // Depois das três experiências: agradecimento, uma única vez por sessão.
   const agradecimentoVisto = useProgresso((p) => p.agradecimentoVisto);
+  const bastidoresVisto = useProgresso((p) => Boolean(p.bastidoresVisto));
   const mostrarAgradecimento = situacao === "ativa" && totalVisitadas === EXPERIENCIAS.length && !agradecimentoVisto && !avaliando;
 
   useEffect(() => {
@@ -322,6 +382,8 @@ export default function Central() {
               );
             })}
           </ul>
+
+          {situacao === "ativa" && agradecimentoVisto && <Desbloqueados bastidoresVisto={bastidoresVisto} />}
 
           <SobreAmostra />
         </div>

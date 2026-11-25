@@ -119,6 +119,8 @@ export type Progresso = {
   agradecimentoVisto: boolean;
   /** Guia prático (passo a passo do primeiro pedido) concluído ou pulado. */
   guiasConcluidos: Partial<Record<"solicitante" | "fornecedora", true>>;
+  /** Abriu os Bastidores (libera o cartão "Conheça a Auvox" na Central). */
+  bastidoresVisto?: boolean;
   /** Convites depois das três experiências (avaliar, Auvox, Instagram, bastidores). */
   convites: { proximoEm: number | null; vistos: string[] };
 };

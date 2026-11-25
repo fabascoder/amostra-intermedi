@@ -160,7 +160,7 @@ function ConviteBastidores({ onVer, onFechar }: { onVer: () => void; onFechar: (
           ))}
         </div>
         <h2>Quer ver os bastidores?</h2>
-        <p className="convite-texto">Quem fez cada tela, as tecnologias, os diagramas e como o Intermedi foi feito.</p>
+        <p className="convite-texto">A apresentação do TCC, a equipe, as tecnologias, os diagramas e como o Intermedi foi feito.</p>
         <div className="convite-botoes">
           <button type="button" className="demo-botao" onClick={onVer} autoFocus>Ver os bastidores</button>
           <button type="button" className="demo-botao-sec" onClick={onFechar}>Agora não</button>

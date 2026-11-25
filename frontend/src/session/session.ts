@@ -25,6 +25,7 @@ const PROGRESSO_INICIAL: Progresso = {
   simulacoesConcluidas: {},
   conviteAvaliacaoDispensado: false,
   agradecimentoVisto: false,
+  bastidoresVisto: false,
   guiasConcluidos: {},
   convites: { proximoEm: null, vistos: [] },
 };
@@ -154,6 +155,12 @@ export function marcarSimulacaoConcluida(experiencia: "solicitante" | "fornecedo
 export function marcarAgradecimentoVisto(): void {
   if (progressoStore.get().agradecimentoVisto) return;
   atualizarProgresso((p) => ({ ...p, agradecimentoVisto: true }));
+}
+
+/** Abriu os Bastidores: a Central passa a mostrar "Conheça a Auvox". */
+export function marcarBastidoresVisto(): void {
+  if (progressoStore.get().bastidoresVisto) return;
+  atualizarProgresso((p) => ({ ...p, bastidoresVisto: true }));
 }
 
 export function concluirGuia(experiencia: "solicitante" | "fornecedora"): void {
