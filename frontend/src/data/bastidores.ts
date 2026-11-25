@@ -8,11 +8,11 @@
 export type PessoaId = "fabricio" | "matheus" | "miguel" | "gabriel" | "eduardo";
 
 export const PESSOAS: { id: PessoaId; nome: string; cor: string; fez: string; commits: number }[] = [
-  { id: "fabricio", nome: "Fabrício", cor: "#1f8a5b", fez: "Plataforma web das farmácias, servidor e banco de dados", commits: 133 },
-  { id: "matheus", nome: "Matheus", cor: "#2f6fd6", fez: "Aplicativo do paciente, mapa e rotas", commits: 43 },
-  { id: "eduardo", nome: "Eduardo Viana", cor: "#d0573c", fez: "Administração no servidor e cadastro de pacientes", commits: 33 },
-  { id: "miguel", nome: "Miguel Basaglia", cor: "#c98712", fez: "Login da equipe e telas do gerente", commits: 25 },
-  { id: "gabriel", nome: "Gabriel Ancelmo", cor: "#7a55d4", fez: "Painel do administrador", commits: 5 },
+  { id: "fabricio", nome: "Fabrício", cor: "#1f8a5b", fez: "Plataforma web das farmácias, servidor e banco de dados", commits: 157 },
+  { id: "matheus", nome: "Matheus", cor: "#2f6fd6", fez: "Aplicativo do paciente, mapa e rotas", commits: 62 },
+  { id: "eduardo", nome: "Eduardo Viana", cor: "#d0573c", fez: "Administração no servidor e cadastro de pacientes", commits: 31 },
+  { id: "miguel", nome: "Miguel Basaglia", cor: "#c98712", fez: "Login da equipe e telas do gerente", commits: 28 },
+  { id: "gabriel", nome: "Gabriel Ancelmo", cor: "#7a55d4", fez: "Painel do administrador", commits: 50 },
 ];
 
 export type Plataforma = "web" | "app" | "servidor";
@@ -184,11 +184,21 @@ export const LINHA_DO_TEMPO: { data: string; titulo: string; texto: string; quem
   { data: "2026-11-23", titulo: "Esta amostra", texto: "As três experiências juntas, sem servidor, para a apresentação. Montada com o Claude Code a partir do código das três plataformas.", quem: ["fabricio"] },
 ];
 
-/** Commits por mês em cada repositório. */
-export const COMMITS_POR_MES: { mes: string; app: number; web: number; servidor: number }[] = [
-  { mes: "jul", app: 2, web: 0, servidor: 0 },
-  { mes: "ago", app: 16, web: 0, servidor: 0 },
-  { mes: "set", app: 12, web: 48, servidor: 53 },
-  { mes: "out", app: 2, web: 29, servidor: 40 },
-  { mes: "nov", app: 0, web: 37, servidor: 7 },
+/**
+ * Commits por mês, somando os repositórios: Intermedi (intermedi-front-end,
+ * intermedi-back-end e intermedi-app), Auvox (front-end-auvox e back-end-auvox)
+ * e esta demo (amostra-intermedi). Contagem de 25/11/2026, sem merges.
+ */
+export const COMMITS_POR_MES: { mes: string; intermedi: number; auvox: number; demo: number }[] = [
+  { mes: "jun", intermedi: 0, auvox: 3, demo: 0 },
+  { mes: "jul", intermedi: 2, auvox: 0, demo: 0 },
+  { mes: "ago", intermedi: 16, auvox: 2, demo: 0 },
+  { mes: "set", intermedi: 112, auvox: 13, demo: 0 },
+  { mes: "out", intermedi: 68, auvox: 16, demo: 0 },
+  { mes: "nov", intermedi: 44, auvox: 32, demo: 40 },
+];
+
+/** Repositórios contados nas estatísticas (nota discreta nos Bastidores). */
+export const REPOSITORIOS = [
+  "intermedi-front-end", "intermedi-back-end", "intermedi-app", "front-end-auvox", "back-end-auvox", "amostra-intermedi",
 ];

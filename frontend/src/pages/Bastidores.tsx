@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/brand/logo-intermedi.webp";
 import {
-  ATORES, CASOS_DE_USO, CLASSES, COMMITS_POR_MES, LINHA_DO_TEMPO, PESSOAS, RELACOES, TECNOLOGIAS,
+  ATORES, CASOS_DE_USO, CLASSES, COMMITS_POR_MES, REPOSITORIOS, LINHA_DO_TEMPO, PESSOAS, RELACOES, TECNOLOGIAS,
   type Ator, type ClasseId, type PessoaId,
 } from "../data/bastidores";
 import { PERIODOS, imagemDoSlide } from "../data/apresentacao";
@@ -16,7 +16,7 @@ import { marcarBastidoresVisto } from "../session/session";
 import "./bastidores.css";
 
 const pessoa = (id: PessoaId) => PESSOAS.find((p) => p.id === id)!;
-const TOTAL_COMMITS = COMMITS_POR_MES.reduce((s, m) => s + m.app + m.web + m.servidor, 0);
+const TOTAL_COMMITS = COMMITS_POR_MES.reduce((s, m) => s + m.intermedi + m.auvox + m.demo, 0);
 const SECOES = [
   ["equipe", "Equipe"],
   ["tecnologias", "Tecnologias"],
@@ -89,7 +89,7 @@ export default function Bastidores() {
           <p className="bt-sobre">Bastidores</p>
           <h1 id="bt-titulo">Quem fez o Intermedi, e como</h1>
           <p className="bt-lead">
-            {PESSOAS.length} pessoas da Auvox, 3 repositórios e {TOTAL_COMMITS} commits, de 26 de julho a 19 de novembro de 2026.
+            {PESSOAS.length} pessoas da Auvox, {REPOSITORIOS.length} repositórios e {TOTAL_COMMITS} commits, de 16 de junho a 25 de novembro de 2026.
           </p>
           <EntradaApresentacao />
           <GraficoCommits />
@@ -123,18 +123,18 @@ export default function Bastidores() {
 /* ---------- Commits por mês (abertura) ---------- */
 function GraficoCommits() {
   const [mes, setMes] = useState<string | null>("set");
-  const max = Math.max(...COMMITS_POR_MES.map((m) => m.app + m.web + m.servidor));
+  const max = Math.max(...COMMITS_POR_MES.map((m) => m.intermedi + m.auvox + m.demo));
   const atual = COMMITS_POR_MES.find((m) => m.mes === mes);
   const SERIES = [
-    ["web", "Plataforma web", "var(--bt-web)"],
-    ["servidor", "Servidor", "var(--bt-servidor)"],
-    ["app", "Aplicativo", "var(--bt-app)"],
+    ["intermedi", "Intermedi", "var(--bt-web)"],
+    ["auvox", "Site da Auvox", "var(--bt-servidor)"],
+    ["demo", "Esta demo", "var(--bt-app)"],
   ] as const;
   return (
     <figure className="bt-grafico">
       <div className="bt-grafico-colunas" role="group" aria-label="Commits por mês">
         {COMMITS_POR_MES.map((m, i) => {
-          const total = m.app + m.web + m.servidor;
+          const total = m.intermedi + m.auvox + m.demo;
           return (
             <button
               key={m.mes}
@@ -165,6 +165,9 @@ function GraficoCommits() {
           </span>
         ))}
       </figcaption>
+      <p className="bt-grafico-nota">
+        Commits de {REPOSITORIOS.join(", ")}, sem merges. Contagem de 25/11/2026; {TOTAL_COMMITS - PESSOAS.reduce((s, p) => s + p.commits, 0)} commits da demo foram feitos com o Claude Code.
+      </p>
     </figure>
   );
 }

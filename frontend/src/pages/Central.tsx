@@ -230,8 +230,8 @@ function SobreAmostra() {
 }
 
 /**
- * Depois das três experiências: uma linha pequena para os Bastidores e, depois
- * de abri-los, outra para a Auvox. Ficam na Central até o fim da sessão.
+ * Linhas pequenas para os Bastidores e a Auvox, sempre visíveis na Central.
+ * Depois das três experiências, uma dica de etapa aponta para cada uma.
  * Os convites em janela continuam aparecendo de tempos em tempos.
  */
 const SEM_DICAS: string[] = [];
@@ -268,13 +268,14 @@ function DicaEtapa({ id }: { id: DicaId }) {
   );
 }
 
-function Desbloqueados({ bastidoresVisto, dicasVistas }: { bastidoresVisto: boolean; dicasVistas: string[] }) {
+function Desbloqueados({ tresVistas, bastidoresVisto, dicasVistas }: { tresVistas: boolean; bastidoresVisto: boolean; dicasVistas: string[] }) {
   const seta = (
     <svg className="central-extra-seta" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
   );
+  // As duas linhas ficam sempre visíveis; a dica de etapa só acompanha quem fez o percurso.
   const dica: DicaId | null = !bastidoresVisto
-    ? (dicasVistas.includes("bastidores") ? null : "bastidores")
-    : (dicasVistas.includes("auvox") ? null : "auvox");
+    ? (tresVistas && !dicasVistas.includes("bastidores") ? "bastidores" : null)
+    : (tresVistas && !dicasVistas.includes("auvox") ? "auvox" : null);
   return (
     <ul className="central-extras" aria-label="Mais sobre o Intermedi">
       <li>
@@ -289,26 +290,24 @@ function Desbloqueados({ bastidoresVisto, dicasVistas }: { bastidoresVisto: bool
           {seta}
         </Link>
       </li>
-      {bastidoresVisto && (
-        <li>
-          {dica === "auvox" && <DicaEtapa id="auvox" />}
-          <a
-            className={`central-extra${dica === "auvox" ? " is-destaque" : ""}`}
-            href={AUVOX.site}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-track="central:auvox"
-            onClick={() => marcarDicaVista("auvox")}
-          >
-            <span className="central-extra-marca" aria-hidden="true">
-              {LOGO_AUVOX && <img src={LOGO_AUVOX} alt="" width="28" height="28" />}
-            </span>
-            <span className="central-extra-texto">Quer saber mais sobre como foi a vida da Auvox? Entre já no site</span>
-            {seta}
-            <span className="sr-only"> (abre em outra aba)</span>
-          </a>
-        </li>
-      )}
+      <li>
+        {dica === "auvox" && <DicaEtapa id="auvox" />}
+        <a
+          className={`central-extra${dica === "auvox" ? " is-destaque" : ""}`}
+          href={AUVOX.site}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-track="central:auvox"
+          onClick={() => marcarDicaVista("auvox")}
+        >
+          <span className="central-extra-marca" aria-hidden="true">
+            {LOGO_AUVOX && <img src={LOGO_AUVOX} alt="" width="28" height="28" />}
+          </span>
+          <span className="central-extra-texto">Quer saber mais sobre como foi a vida da Auvox? Entre já no site</span>
+          {seta}
+          <span className="sr-only"> (abre em outra aba)</span>
+        </a>
+      </li>
     </ul>
   );
 }
@@ -413,7 +412,7 @@ export default function Central() {
             })}
           </ul>
 
-          {situacao === "ativa" && agradecimentoVisto && <Desbloqueados bastidoresVisto={bastidoresVisto} dicasVistas={dicasVistas} />}
+          {situacao === "ativa" && <Desbloqueados tresVistas={agradecimentoVisto} bastidoresVisto={bastidoresVisto} dicasVistas={dicasVistas} />}
 
           <SobreAmostra />
         </div>
