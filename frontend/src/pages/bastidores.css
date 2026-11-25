@@ -585,3 +585,58 @@
   .bt-uc-linha { stroke-dashoffset: 0; }
   .bt-barra i { transition: none; }
 }
+
+/* Entrada da Apresentação do TCC (tela própria em /bastidores/apresentacao) */
+.bt-apresentacao {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr) 52px;
+  align-items: center;
+  gap: 28px;
+  margin: 8px 0 4px;
+  padding: 22px;
+  border-radius: 24px;
+  background: var(--color-surface);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 140ms var(--bt-ease);
+}
+.bt-apresentacao:active { transform: scale(0.992); }
+.bt-apresentacao:focus-visible { outline: 3px solid var(--color-primary-ring); outline-offset: 3px; }
+.bt-apresentacao-pilha { position: relative; display: block; aspect-ratio: 16 / 10; max-width: 100%; }
+.bt-apresentacao-pilha img {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 86%;
+  height: auto;
+  border-radius: 8px;
+  transform: translate(calc(var(--i) * 7%), calc(var(--i) * -14%));
+  transition: transform 420ms var(--bt-ease);
+}
+.bt-apresentacao-pilha img:nth-child(1) { z-index: 3; }
+.bt-apresentacao-pilha img:nth-child(2) { z-index: 2; }
+.bt-apresentacao-pilha img:nth-child(3) { z-index: 1; }
+.bt-apresentacao:hover .bt-apresentacao-pilha img { transform: translate(calc(var(--i) * 10%), calc(var(--i) * -18%)); }
+.bt-apresentacao-texto { display: grid; gap: 6px; min-width: 0; }
+.bt-apresentacao-texto strong { font-size: clamp(24px, 3vw, 34px); line-height: 1.1; letter-spacing: -0.022em; }
+.bt-apresentacao-texto span { font-size: 16px; line-height: 1.5; color: var(--bt-suave); }
+.bt-apresentacao-texto small { font-size: 13px; color: var(--bt-apagado); }
+.bt-apresentacao-ir {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  transition: transform 320ms var(--bt-ease);
+}
+.bt-apresentacao:hover .bt-apresentacao-ir { transform: translateX(4px); }
+@media (max-width: 640px) {
+  .bt-apresentacao { grid-template-columns: minmax(0, 1fr) 44px; gap: 18px; padding: 18px; border-radius: 18px; }
+  .bt-apresentacao-pilha { grid-column: 1 / -1; width: min(240px, 80%); }
+  .bt-apresentacao-ir { width: 44px; height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bt-apresentacao, .bt-apresentacao-pilha img, .bt-apresentacao-ir { transition: none; }
+}

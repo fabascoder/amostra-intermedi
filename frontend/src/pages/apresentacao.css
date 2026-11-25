@@ -1,0 +1,414 @@
+/* =====================================================================
+   Apresentação do TCC — linha do tempo de períodos (como o slide
+   "Histórico"), cada ponto é quem apresentou um trecho de slides.
+   Mesmos tokens e moldura da Central de Experiências.
+   ===================================================================== */
+.bast {
+  --bast-margem: clamp(16px, 4vw, 48px);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 var(--bast-margem) var(--space-16);
+  color: var(--color-text-primary);
+}
+.bast-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+}
+.bast-logo {
+  width: 132px;
+  height: auto;
+  margin-left: -8px;
+}
+.bast-corpo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr); /* a linha do tempo rola dentro dela, não alarga a página */
+  gap: var(--space-10);
+  padding-top: var(--space-10);
+}
+.bast-titulo h1 {
+  margin: 0;
+  max-width: 16ch;
+  font-size: clamp(31px, 5.6vw, 68px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: var(--weight-bold);
+  text-wrap: balance;
+  animation: bast-sobe var(--t-reveal) var(--ease-expo) backwards;
+}
+.bast-titulo p {
+  max-width: 40em;
+  margin-top: var(--space-5);
+  font-size: clamp(17px, 1.4vw, 19px);
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  animation: bast-sobe var(--t-reveal) var(--ease-expo) 80ms backwards;
+}
+
+/* ---------- Linha do tempo ---------- */
+.bast-linha {
+  padding: var(--space-8) var(--space-6) var(--space-5);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  animation: bast-sobe var(--t-reveal) var(--ease-expo) 160ms backwards;
+}
+.bast-pontos {
+  --bast-marca: 22px;
+  --bast-faixa: 44px; /* altura do texto acima da marca */
+  position: relative;
+  display: flex;
+  gap: 0;
+  margin: 0;
+  padding: 0 0 var(--space-2);
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+/* a linha passa pelo centro das marcas: um trecho em cada aba, para rolar junto */
+.bast-ponto::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  top: calc(var(--bast-faixa) + var(--bast-marca) / 2 - 2px);
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  opacity: 0.85;
+}
+.bast-pontos > .bast-ponto {
+  flex: 1 0 120px;
+  position: relative;
+}
+.bast-ponto {
+  display: grid;
+  justify-items: center;
+  align-content: start; /* nome em duas linhas não desloca a marca */
+  gap: 0;
+  width: 100%;
+  padding: 0 var(--space-2) var(--space-2);
+  border: 0;
+  background: transparent;
+  text-align: center;
+  cursor: pointer;
+}
+.bast-ponto-faixa {
+  display: grid;
+  align-items: end;
+  height: var(--bast-faixa);
+  padding-bottom: var(--space-3);
+  font-size: var(--text-body);
+  line-height: 1.25;
+  text-wrap: balance;
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-secondary);
+  transition: color var(--t-hover) ease;
+}
+.bast-ponto-marca {
+  position: relative;
+  z-index: 1;
+  width: var(--bast-marca);
+  height: var(--bast-marca);
+  border-radius: 50%;
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 4px var(--color-text-disabled); /* taste-skill-ignore: contorno da marca da linha do tempo */
+  transition: transform 240ms var(--ease-out), background-color var(--t-hover) ease, box-shadow var(--t-hover) ease;
+}
+.bast-ponto-pessoa {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  font-size: var(--text-small);
+  line-height: 1.3;
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+}
+.bast-ponto:hover .bast-ponto-marca {
+  transform: scale(1.12);
+}
+.bast-ponto.is-ativo .bast-ponto-faixa {
+  color: var(--color-primary);
+}
+.bast-ponto.is-ativo .bast-avatar {
+  background: var(--color-primary);
+  color: #fff;
+}
+.bast-ponto.is-ativo .bast-ponto-marca {
+  background: var(--color-primary-ink);
+  box-shadow: 0 0 0 4px var(--color-surface), 0 0 0 7px var(--color-brand); /* taste-skill-ignore: anel do ponto ativo */
+  transform: scale(1.18);
+}
+.bast-ponto.is-ativo .bast-ponto-pessoa {
+  color: var(--color-text-primary);
+  font-weight: var(--weight-semibold);
+}
+.bast-ponto:focus-visible {
+  outline: 3px solid var(--color-primary-ring);
+  outline-offset: 4px;
+  border-radius: var(--radius-md);
+}
+.bast-resumo {
+  margin-top: var(--space-5);
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+}
+
+.bast-avatar {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-ink);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.02em;
+}
+.bast-avatar.is-grande {
+  width: 56px;
+  height: 56px;
+  font-size: 19px;
+}
+
+/* ---------- Slides do período ---------- */
+.bast-periodo {
+  display: grid;
+  gap: var(--space-6);
+  animation: bast-sobe 520ms var(--ease-out) backwards;
+}
+.bast-periodo-cabeca {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.bast-periodo-cabeca h2 {
+  margin: 0;
+  font-size: clamp(24px, 2.4vw, 32px);
+  line-height: 1.15;
+  letter-spacing: var(--tracking-tight);
+}
+.bast-periodo-faixa {
+  font-size: var(--text-body-lg);
+  color: var(--color-text-secondary);
+}
+.bast-explicacao {
+  max-width: 46em;
+  margin-top: calc(var(--space-2) * -1);
+  font-size: clamp(17px, 1.5vw, 20px);
+  line-height: 1.55;
+  color: var(--color-text-primary);
+}
+.bast-slides {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bast-slides > li {
+  display: grid; /* cartões da mesma linha com a mesma altura */
+  animation: bast-sobe 520ms var(--ease-out) backwards;
+  animation-delay: calc(80ms + var(--i) * 70ms);
+}
+.bast-slide {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3);
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  text-align: left;
+  cursor: zoom-in;
+  transition: transform var(--t-press) var(--ease-out);
+}
+.bast-slide.is-pendente {
+  cursor: default;
+}
+.bast-slide:not(.is-pendente):active {
+  transform: scale(0.985);
+}
+.bast-slide:focus-visible {
+  outline: 3px solid var(--color-primary-ring);
+  outline-offset: 3px;
+}
+.bast-slide-imagem {
+  display: block;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-surface-sunken);
+}
+.bast-slide-imagem img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 420ms var(--ease-out);
+}
+.bast-slide:hover .bast-slide-imagem img {
+  transform: scale(1.03);
+}
+.bast-slide-vazio {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+}
+.bast-slide-texto {
+  display: grid;
+  gap: var(--space-1);
+  padding: 0 var(--space-1) var(--space-2);
+}
+.bast-slide-legenda {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: var(--text-body);
+  font-weight: var(--weight-semibold);
+}
+.bast-slide-parte {
+  font-size: var(--text-body);
+  font-weight: var(--weight-medium);
+  color: var(--color-primary-ink);
+}
+.bast-slide-explicacao {
+  font-size: var(--text-body);
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+.bast-slide.is-pendente .bast-slide-explicacao {
+  color: var(--color-text-muted);
+}
+.bast-slide-legenda b {
+  display: inline-grid;
+  place-items: center;
+  min-width: 26px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-ink);
+  font-size: var(--text-caption);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Visor do slide ---------- */
+.demo-dialogo.bast-visor {
+  width: min(1120px, calc(100vw - 24px));
+}
+.bast-visor-figura {
+  margin: 0;
+  padding: var(--space-4);
+}
+.bast-visor-figura img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  animation: demo-fade 260ms ease;
+}
+.bast-visor-figura figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-2) var(--space-1);
+  font-size: var(--text-body);
+  color: var(--color-text-secondary);
+}
+.bast-visor-texto {
+  display: grid;
+  gap: var(--space-1);
+  flex: 1 1 320px;
+  min-width: 0;
+}
+.bast-visor-texto span {
+  font-size: var(--text-body);
+  line-height: 1.5;
+  color: var(--color-text-primary);
+}
+.bast-visor-texto small {
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+}
+.bast-visor-figura strong {
+  font-size: var(--text-body-lg);
+  color: var(--color-text-primary);
+}
+.bast-visor-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-variant-numeric: tabular-nums;
+}
+.bast-visor-nav button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-fill);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+.bast-visor-nav button:hover:not(:disabled) {
+  background: var(--color-fill-strong);
+}
+.bast-visor-nav button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.bast-seta-direita {
+  display: grid;
+  transform: scaleX(-1);
+}
+/* o botão de fechar fica sobre o slide: fundo claro para aparecer em qualquer imagem */
+.bast-visor .demo-dialogo-fechar {
+  z-index: 1;
+  background: rgb(255 255 255 / 0.92);
+}
+
+@keyframes bast-sobe {
+  from { opacity: 0; transform: translateY(18px); }
+}
+
+@media (max-width: 560px) {
+  .bast-logo {
+    width: 104px;
+  }
+  .bast-corpo {
+    gap: var(--space-8);
+    padding-top: var(--space-6);
+  }
+  .bast-linha {
+    padding: var(--space-6) var(--space-4) var(--space-4);
+    border-radius: var(--radius-lg);
+  }
+  .bast-pontos > .bast-ponto {
+    flex-basis: 112px;
+  }
+  .bast-slides {
+    grid-template-columns: 1fr;
+  }
+  .demo-dialogo.bast-visor {
+    width: 100vw;
+  }
+  .bast-visor-figura {
+    padding: var(--space-3) var(--space-3) var(--space-5);
+  }
+}

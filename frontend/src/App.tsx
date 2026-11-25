@@ -12,6 +12,7 @@ const GerenteExperiencia = lazy(() => import("./experiences/gerente/GerenteExper
 const PacienteApp = lazy(() => import("./experiences/paciente/PacienteApp"));
 const Encerrada = lazy(() => import("./pages/Encerrada"));
 const Bastidores = lazy(() => import("./pages/Bastidores"));
+const Apresentacao = lazy(() => import("./pages/Apresentacao"));
 
 function Carregando() {
   return (
@@ -49,6 +50,7 @@ function Rotas() {
         />
         <Route path="/aplicativo/*" element={<ExigeSessao experiencia="paciente"><PacienteApp /></ExigeSessao>} />
         <Route path="/bastidores" element={<Bastidores />} />
+        <Route path="/bastidores/apresentacao" element={<Apresentacao />} />
         <Route path="/encerrada" element={situacao === "expirada" ? <Encerrada /> : <Navigate to="/" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

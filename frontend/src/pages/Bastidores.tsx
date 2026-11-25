@@ -1,13 +1,15 @@
 // Bastidores: quem fez o Intermedi e como. Tudo aqui vem dos repositórios da
 // Auvox (ver data/bastidores.ts). A tela é para mexer: escolher uma pessoa
-// acende as telas que ela fez, os diagramas respondem ao toque.
+// destaca o que ela fez na linha do tempo, os diagramas respondem ao toque.
+// A Apresentação do TCC (quem apresentou cada slide) abre em tela própria.
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/brand/logo-intermedi.webp";
 import {
-  ATORES, CASOS_DE_USO, CLASSES, COMMITS_POR_MES, LINHA_DO_TEMPO, PESSOAS, PLATAFORMAS, RELACOES, TECNOLOGIAS, TELAS,
-  type Ator, type ClasseId, type PessoaId, type Plataforma,
+  ATORES, CASOS_DE_USO, CLASSES, COMMITS_POR_MES, LINHA_DO_TEMPO, PESSOAS, RELACOES, TECNOLOGIAS,
+  type Ator, type ClasseId, type PessoaId,
 } from "../data/bastidores";
+import { PERIODOS, imagemDoSlide } from "../data/apresentacao";
 import { AssinaturaAuvox } from "../shared/AssinaturaAuvox";
 import "./bastidores.css";
 
@@ -15,7 +17,6 @@ const pessoa = (id: PessoaId) => PESSOAS.find((p) => p.id === id)!;
 const TOTAL_COMMITS = COMMITS_POR_MES.reduce((s, m) => s + m.app + m.web + m.servidor, 0);
 const SECOES = [
   ["equipe", "Equipe"],
-  ["telas", "Quem fez cada tela"],
   ["tecnologias", "Tecnologias"],
   ["casos", "Casos de uso"],
   ["classes", "Classes"],
@@ -90,6 +91,8 @@ export default function Bastidores() {
           <GraficoCommits />
         </section>
 
+        <EntradaApresentacao />
+
         <nav className="bt-nav" aria-label="Seções dos bastidores">
           <div className="bt-nav-trilho">
             {SECOES.map(([id, nome]) => (
@@ -101,7 +104,6 @@ export default function Bastidores() {
         </nav>
 
         <Equipe escolhida={escolhida} onEscolher={setEscolhida} />
-        <QuemFez escolhida={escolhida} onEscolher={setEscolhida} />
         <Tecnologias />
         <CasosDeUso />
         <Classes />
@@ -167,11 +169,10 @@ function GraficoCommits() {
 
 /* ---------- Equipe ---------- */
 function Equipe({ escolhida, onEscolher }: { escolhida: PessoaId | null; onEscolher: (p: PessoaId | null) => void }) {
-  const telasPorPessoa = (id: PessoaId) => TELAS.filter((t) => t.autores.some(([a, pct]) => a === id && pct >= 5)).length;
   return (
     <section id="equipe" className="bt-secao" aria-labelledby="bt-equipe">
       <h2 id="bt-equipe">Equipe</h2>
-      <p className="bt-secao-texto">Toque numa pessoa para ver as telas dela acenderem logo abaixo.</p>
+      <p className="bt-secao-texto">Toque numa pessoa para destacar o que ela fez na linha do tempo do projeto.</p>
       <ul className="bt-equipe">
         {PESSOAS.map((p) => {
           const ativa = escolhida === p.id;
@@ -190,7 +191,7 @@ function Equipe({ escolhida, onEscolher }: { escolhida: PessoaId | null; onEscol
                   <span>{p.fez}</span>
                 </span>
                 <span className="bt-pessoa-numeros">
-                  <b>{p.commits}</b> commits · <b>{telasPorPessoa(p.id)}</b> telas
+                  <b>{p.commits}</b> commits
                 </span>
               </button>
             </li>
@@ -201,69 +202,26 @@ function Equipe({ escolhida, onEscolher }: { escolhida: PessoaId | null; onEscol
   );
 }
 
-/* ---------- Quem fez cada tela ---------- */
-function QuemFez({ escolhida, onEscolher }: { escolhida: PessoaId | null; onEscolher: (p: PessoaId | null) => void }) {
-  const [ref, visivel] = useVisivel<HTMLElement>();
-  const [aberta, setAberta] = useState<string | null>(null);
-  const grupos = (Object.keys(PLATAFORMAS) as Plataforma[]).map((pl) => ({ pl, telas: TELAS.filter((t) => t.plataforma === pl) }));
+/* ---------- Apresentação do TCC (abre em /bastidores/apresentacao) ---------- */
+function EntradaApresentacao() {
+  const capas = ["slide-00", "slide-05-a", "slide-15-a"].map((a) => imagemDoSlide(a, true)).filter(Boolean) as string[];
+  const totalSlides = new Set(PERIODOS.flatMap((p) => p.slides.map((s) => s.numero)).filter((n) => n > 0)).size;
   return (
-    <section id="telas" ref={ref} className={`bt-secao${visivel ? " is-visivel" : ""}`} aria-labelledby="bt-telas">
-      <h2 id="bt-telas">Quem fez cada tela</h2>
-      <div className="bt-filtro-pessoas" role="group" aria-label="Destacar uma pessoa">
-        <button type="button" className={!escolhida ? "is-ativo" : undefined} aria-pressed={!escolhida} onClick={() => onEscolher(null)}>Todos</button>
-        {PESSOAS.map((p) => (
-          <button key={p.id} type="button" className={escolhida === p.id ? "is-ativo" : undefined} aria-pressed={escolhida === p.id} style={{ "--cor": p.cor } as React.CSSProperties} onClick={() => onEscolher(escolhida === p.id ? null : p.id)}>
-            <i aria-hidden="true" />
-            {p.nome.split(" ")[0]}
-          </button>
+    <Link to="/bastidores/apresentacao" className="bt-apresentacao">
+      <span className="bt-apresentacao-pilha" aria-hidden="true">
+        {capas.map((src, i) => (
+          <img key={src} src={src} alt="" width="480" height="270" style={{ "--i": i } as React.CSSProperties} />
         ))}
-      </div>
-      {grupos.map(({ pl, telas }) => (
-        <div key={pl} className="bt-grupo">
-          <h3>
-            {PLATAFORMAS[pl].nome}
-            <code>{PLATAFORMAS[pl].repo}</code>
-          </h3>
-          <ul className="bt-telas">
-            {telas.map((t, i) => {
-              const parte = escolhida ? t.autores.find(([a]) => a === escolhida)?.[1] ?? 0 : null;
-              const chave = `${pl}-${t.tela}`;
-              const expandida = aberta === chave;
-              return (
-                <li key={chave} className={parte === 0 ? "is-apagada" : undefined}>
-                  <button type="button" className="bt-tela" aria-expanded={expandida} onClick={() => setAberta(expandida ? null : chave)}>
-                    <span className="bt-tela-nome">{t.tela}</span>
-                    <span className="bt-tela-pct">
-                      {parte === null ? `${pessoa(t.autores[0][0]).nome.split(" ")[0]} ${t.autores[0][1]}%` : `${parte}%`}
-                    </span>
-                    <span className="bt-barra" aria-hidden="true">
-                      {t.autores.map(([a, pct]) => (
-                        <i
-                          key={a}
-                          className={escolhida && escolhida !== a ? "is-outra" : undefined}
-                          style={{ "--w": `${pct}%`, "--i": i, background: pessoa(a).cor } as React.CSSProperties}
-                        />
-                      ))}
-                    </span>
-                  </button>
-                  {expandida && (
-                    <div className="bt-tela-detalhe">
-                      <ul>
-                        {t.autores.map(([a, pct]) => (
-                          <li key={a}><i style={{ background: pessoa(a).cor }} />{pessoa(a).nome}<b>{pct}%</b></li>
-                        ))}
-                      </ul>
-                      <p><code>{t.arquivo}</code> · {t.linhas.toLocaleString("pt-BR")} linhas escritas</p>
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      ))}
-      <p className="bt-fonte">Calculado pelas linhas que cada pessoa escreveu nos arquivos de cada tela, no histórico do GitHub.</p>
-    </section>
+      </span>
+      <span className="bt-apresentacao-texto">
+        <strong>Apresentação</strong>
+        <span>Quem apresentou cada parte do TCC, com uma explicação de cada slide.</span>
+        <small>{PERIODOS.length} apresentadores · {totalSlides} slides</small>
+      </span>
+      <span className="bt-apresentacao-ir" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
+      </span>
+    </Link>
   );
 }
 
