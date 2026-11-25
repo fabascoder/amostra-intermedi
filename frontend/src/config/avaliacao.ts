@@ -18,6 +18,8 @@ export const ENTRADAS = {
   nota: "entry.92885925",
   alvo: "entry.627285629",
   comentario: "entry.674250888",
+  // nome digitado no início da demonstração (vazio = não envia)
+  nome: "entry.1658178487",
 };
 
 export const formsConfigurado = (): boolean =>

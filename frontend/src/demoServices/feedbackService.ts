@@ -3,6 +3,7 @@
 // serviço, implemente FeedbackProvider e troque `provedor` — os componentes não mudam.
 import { ENTRADAS, formsConfigurado, urlRespostaForms } from "../config/avaliacao";
 import { STORAGE_KEYS } from "../config/demo";
+import { pacienteStore } from "./patientService";
 import { gravar, ler } from "../lib/storage";
 import { createStore, useStore } from "../lib/store";
 import { idSessaoAtual, registrarLimpeza, verificarSessao } from "../session/session";
@@ -54,6 +55,9 @@ const provedorForms: FeedbackProvider = {
       [ENTRADAS.alvo]: ALVOS.find((a) => a.valor === avaliacao.alvo)?.rotulo ?? avaliacao.alvo,
       [ENTRADAS.comentario]: avaliacao.comentario,
     });
+    // quem respondeu: o primeiro nome informado no início da demonstração
+    const nome = pacienteStore.get().nome;
+    if (ENTRADAS.nome && nome) corpo.set(ENTRADAS.nome, nome);
     try {
       await fetch(urlRespostaForms(), {
         method: "POST",
