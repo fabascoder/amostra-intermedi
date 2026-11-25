@@ -641,85 +641,44 @@
   .bt-apresentacao, .bt-apresentacao-pilha img, .bt-apresentacao-ir { transition: none; }
 }
 
-/* Apresentação em destaque: logo abaixo do título, antes do gráfico de commits */
+/* Apresentação logo abaixo do título, antes do gráfico de commits: branco fosco */
 .bt-abertura .bt-apresentacao {
-  grid-template-columns: 240px minmax(0, 1fr) auto;
+  grid-template-columns: 220px minmax(0, 1fr) auto;
   margin: 28px 0 8px;
-  padding: 26px 26px 26px 28px;
-  border-radius: 28px;
-  overflow: hidden;
-  position: relative;
-  isolation: isolate;
-  color: #fff;
-  background:
-    radial-gradient(90% 140% at 100% 0%, rgb(79 212 134 / 0.32), transparent 60%),
-    linear-gradient(135deg, #0f2a1c 0%, #16432c 60%, #1b5a39 100%);
-  box-shadow: 0 30px 60px -36px rgb(15 42 28 / 0.95), 0 0 0 1px rgb(79 212 134 / 0.18) inset;
-  animation: bt-apresentacao-chega 0.8s var(--bt-ease) both;
+  padding: 24px 24px 24px 26px;
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 14px 32px -24px rgb(0 0 0 / 0.25);
+  transition: border-color 0.2s ease, transform 140ms var(--bt-ease);
 }
-.bt-abertura .bt-apresentacao::after {
-  /* brilho que passa pelo cartão de tempos em tempos */
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(105deg, transparent 38%, rgb(255 255 255 / 0.12) 50%, transparent 62%);
-  transform: translateX(-100%);
-  animation: bt-apresentacao-brilho 5s 1s ease-in-out infinite;
-}
-.bt-abertura .bt-apresentacao:hover { transform: translateY(-2px); }
-.bt-abertura .bt-apresentacao-pilha img { box-shadow: 0 12px 26px -12px rgb(0 0 0 / 0.6); }
+.bt-abertura .bt-apresentacao:hover { border-color: color-mix(in srgb, var(--color-primary) 35%, var(--color-border)); }
 .bt-apresentacao-selo {
   justify-self: start;
-  padding: 3px 10px;
-  border-radius: 999px;
-  background: #4fd486;
-  color: #0f2a1c !important;
-  font-size: 11px !important;
+  font-size: 12px !important;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  color: var(--color-primary) !important;
 }
-.bt-abertura .bt-apresentacao-texto strong { font-size: clamp(26px, 3.4vw, 40px); }
-.bt-abertura .bt-apresentacao-texto > span { color: rgb(255 255 255 / 0.78); }
-.bt-abertura .bt-apresentacao-texto > small:last-child { color: rgb(255 255 255 / 0.55); }
+.bt-abertura .bt-apresentacao-texto strong { font-size: clamp(24px, 3vw, 34px); }
 .bt-abertura .bt-apresentacao-ir {
   display: inline-flex;
   gap: 8px;
   width: auto;
-  height: 52px;
-  padding: 0 20px 0 22px;
+  height: 48px;
+  padding: 0 18px 0 20px;
   border-radius: 999px;
-  background: #4fd486;
-  color: #0f2a1c;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
-  box-shadow: 0 0 0 0 rgb(79 212 134 / 0.55);
-  animation: bt-apresentacao-pulso 2.4s 1.2s ease-out infinite;
 }
-.bt-abertura .bt-apresentacao:hover .bt-apresentacao-ir { transform: translateX(4px); }
 .bt-abertura .bt-grafico { margin-top: 36px; }
 @media (max-width: 860px) {
   .bt-abertura .bt-apresentacao { grid-template-columns: 180px minmax(0, 1fr); }
   .bt-abertura .bt-apresentacao-ir { grid-column: 1 / -1; justify-self: start; }
 }
 @media (max-width: 640px) {
-  .bt-abertura .bt-apresentacao { grid-template-columns: minmax(0, 1fr); padding: 20px; border-radius: 22px; }
-  .bt-abertura .bt-apresentacao-ir { justify-self: stretch; justify-content: center; height: 48px; }
-}
-@keyframes bt-apresentacao-chega {
-  from { opacity: 0; transform: translateY(16px); }
-}
-@keyframes bt-apresentacao-brilho {
-  0%, 60% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-@keyframes bt-apresentacao-pulso {
-  0% { box-shadow: 0 0 0 0 rgb(79 212 134 / 0.55); }
-  70%, 100% { box-shadow: 0 0 0 14px rgb(79 212 134 / 0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .bt-abertura .bt-apresentacao, .bt-abertura .bt-apresentacao::after, .bt-abertura .bt-apresentacao-ir { animation: none; }
-  .bt-abertura .bt-apresentacao::after { display: none; }
+  .bt-abertura .bt-apresentacao { grid-template-columns: minmax(0, 1fr); padding: 18px; border-radius: 20px; }
+  .bt-abertura .bt-apresentacao-ir { justify-self: stretch; justify-content: center; height: 46px; }
 }

@@ -229,58 +229,40 @@ function SobreAmostra() {
 }
 
 /**
- * Seções que aparecem depois das três experiências, uma de cada vez:
- * primeiro os Bastidores; depois de abri-los, a Auvox. Ficam na Central até o
- * fim da sessão, num visual diferente das três experiências.
+ * Depois das três experiências: uma linha pequena para os Bastidores e, depois
+ * de abri-los, outra para a Auvox. Ficam na Central até o fim da sessão.
+ * Os convites em janela continuam aparecendo de tempos em tempos.
  */
 function Desbloqueados({ bastidoresVisto }: { bastidoresVisto: boolean }) {
-  const site = AUVOX.site.replace(/^https?:\/\//, "");
+  const seta = (
+    <svg className="central-extra-seta" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
+  );
   return (
-    <section className="central-extras" aria-labelledby="central-extras-titulo">
-      <p className="central-extras-rotulo" id="central-extras-titulo">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <rect x="4" y="11" width="16" height="10" rx="2.5" /><path d="M8 11V7.5a4 4 0 0 1 7.6-1.7" />
-        </svg>
-        Desbloqueado para você
-      </p>
-      <ul>
+    <ul className="central-extras" aria-label="Mais sobre o Intermedi">
+      <li>
+        <Link to="/bastidores" className="central-extra" data-track="central:bastidores">
+          <span className="central-extra-equipe" aria-hidden="true">
+            {PESSOAS.map((p) => (
+              <span key={p.id} style={{ background: p.cor }}>{p.nome.charAt(0)}</span>
+            ))}
+          </span>
+          <span className="central-extra-texto">Como construímos?</span>
+          {seta}
+        </Link>
+      </li>
+      {bastidoresVisto && (
         <li>
-          <Link to="/bastidores" className="central-extra central-extra-bastidores" data-track="central:bastidores">
-            <span className="central-extra-equipe" aria-hidden="true">
-              {PESSOAS.slice(0, 5).map((p, i) => (
-                <span key={p.id} style={{ "--i": i, background: p.cor } as React.CSSProperties}>{p.nome.charAt(0)}</span>
-              ))}
-              {PESSOAS.length > 5 && <span className="is-mais" style={{ "--i": 5 } as React.CSSProperties}>+{PESSOAS.length - 5}</span>}
+          <a className="central-extra" href={AUVOX.site} target="_blank" rel="noopener noreferrer" data-track="central:auvox">
+            <span className="central-extra-marca" aria-hidden="true">
+              {LOGO_AUVOX && <img src={LOGO_AUVOX} alt="" width="28" height="28" />}
             </span>
-            <span className="central-extra-texto">
-              <small>{bastidoresVisto ? "Bastidores" : "Novo"}</small>
-              <strong>Conheça nossos bastidores</strong>
-              <span>A apresentação do TCC, a equipe, os diagramas e como o Intermedi foi feito.</span>
-            </span>
-            <span className="central-extra-ir" aria-hidden="true">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
-            </span>
-          </Link>
+            <span className="central-extra-texto">Quer saber mais sobre como foi a vida da Auvox? Entre já no site</span>
+            {seta}
+            <span className="sr-only"> (abre em outra aba)</span>
+          </a>
         </li>
-        {bastidoresVisto && (
-          <li>
-            <a className="central-extra central-extra-auvox" href={AUVOX.site} target="_blank" rel="noopener noreferrer" data-track="central:auvox">
-              <span className="central-extra-marca" aria-hidden="true">
-                {LOGO_AUVOX && <img src={LOGO_AUVOX} alt="" width="56" height="56" />}
-              </span>
-              <span className="central-extra-texto">
-                <small>Novo</small>
-                <strong>Conheça a Auvox</strong>
-                <span>A equipe por trás do Intermedi. Abre {site} em outra aba.</span>
-              </span>
-              <span className="central-extra-ir" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17 17 7M9 7h8v8" /></svg>
-              </span>
-            </a>
-          </li>
-        )}
-      </ul>
-    </section>
+      )}
+    </ul>
   );
 }
 
