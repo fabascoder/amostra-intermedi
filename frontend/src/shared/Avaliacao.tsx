@@ -67,7 +67,7 @@ export function AvaliacaoDialogo({ alvoInicial = "geral", onFechar }: { alvoInic
               <path d="m6 12.5 4 4 8-9" />
             </svg>
           </span>
-          <h2>Avaliação registrada nesta demonstração.</h2>
+          <h2>{provedor.enviaParaEquipe ? "Avaliação enviada para a equipe." : "Avaliação registrada nesta demonstração."}</h2>
           <p className="demo-dialogo-texto">
             {provedor.enviaParaEquipe
               ? "Obrigado por contar o que achou."
@@ -87,7 +87,7 @@ export function AvaliacaoDialogo({ alvoInicial = "geral", onFechar }: { alvoInic
       <form className="demo-dialogo-corpo av-form" onSubmit={enviar} noValidate aria-busy={enviando}>
         <div>
           <h2>O que achou do Intermedi?</h2>
-          <p className="demo-dialogo-texto" style={{ marginTop: 8 }}>Leva menos de um minuto. Sua opinião fica registrada nesta demonstração.</p>
+          <p className="demo-dialogo-texto" style={{ marginTop: 8 }}>Leva menos de um minuto. {provedor.enviaParaEquipe ? "Sua opinião vai direto para a equipe da Auvox." : "Sua opinião fica registrada nesta demonstração."}</p>
         </div>
 
         <fieldset aria-describedby={erros.nota ? `${uid}-erro-nota` : `${uid}-nota-texto`}>
