@@ -112,7 +112,10 @@ export function verificarSessao(): boolean {
 export function encerrarSessao(): void {
   const sessao = sessaoStore.get().sessao;
   if (!sessao) return;
-  const encerrada: Sessao = { ...sessao, status: "expired" };
+  // o nome sobrevive ao fim, só para a mensagem de pedido de novo acesso
+  const paciente = lerBruto<{ nome?: unknown }>(STORAGE_KEYS.patient);
+  const nome = paciente?.sid === sessao.sessionId && typeof paciente.data?.nome === "string" ? paciente.data.nome : "";
+  const encerrada: Sessao = { ...sessao, status: "expired", ...(nome && { nome }) };
   remover(STORAGE_KEYS.progress, STORAGE_KEYS.orders, STORAGE_KEYS.feedback, STORAGE_KEYS.patient);
   gravar(STORAGE_KEYS.session, null, encerrada);
   sessaoStore.set({ sessao: encerrada });
