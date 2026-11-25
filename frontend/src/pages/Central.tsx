@@ -18,6 +18,7 @@ import { VideoPlataforma } from "../shared/VideoPlataforma";
 import { LOGO_AUVOX } from "../shared/AssinaturaAuvox";
 import { AUVOX } from "../config/demo";
 import { PESSOAS } from "../data/bastidores";
+import { fotoDe } from "../data/fotos";
 import "./central.css";
 
 const EXPERIENCIAS: { id: ExperienciaId; rota: string; titulo: string }[] = [
@@ -281,7 +282,7 @@ function Desbloqueados({ bastidoresVisto, dicasVistas }: { bastidoresVisto: bool
         <Link to="/bastidores" className={`central-extra${dica === "bastidores" ? " is-destaque" : ""}`} data-track="central:bastidores">
           <span className="central-extra-equipe" aria-hidden="true">
             {PESSOAS.map((p) => (
-              <span key={p.id} style={{ background: p.cor }}>{p.nome.charAt(0)}</span>
+              <span key={p.id} style={{ background: p.cor }}>{fotoDe(p.nome) ? <img src={fotoDe(p.nome)!} alt="" /> : p.nome.charAt(0)}</span>
             ))}
           </span>
           <span className="central-extra-texto">Como construímos?</span>

@@ -682,3 +682,7 @@
   .bt-abertura .bt-apresentacao { grid-template-columns: minmax(0, 1fr); padding: 18px; border-radius: 20px; }
   .bt-abertura .bt-apresentacao-ir { justify-self: stretch; justify-content: center; height: 46px; }
 }
+
+/* Foto da pessoa no lugar da inicial */
+.bt-avatar, .bt-linha-quem i { overflow: hidden; }
+.bt-avatar img, .bt-linha-quem i img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }

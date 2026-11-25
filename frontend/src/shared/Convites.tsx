@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AUVOX, CONVITE_INTERVALO_MS } from "../config/demo";
 import { PESSOAS } from "../data/bastidores";
+import { fotoDe } from "../data/fotos";
 import { useAvaliacoes } from "../demoServices/feedbackService";
 import { useProgresso, useSituacaoSessao } from "../session/hooks";
 import { agendarConvite, progressoStore } from "../session/session";
@@ -156,7 +157,7 @@ function ConviteBastidores({ onVer, onFechar }: { onVer: () => void; onFechar: (
       <div className="convite-corpo">
         <div className="convite-equipe" aria-hidden="true">
           {PESSOAS.map((p, i) => (
-            <span key={p.id} style={{ "--i": i, background: p.cor } as React.CSSProperties}>{p.nome.charAt(0)}</span>
+            <span key={p.id} style={{ "--i": i, background: p.cor } as React.CSSProperties}>{fotoDe(p.nome) ? <img src={fotoDe(p.nome)!} alt="" /> : p.nome.charAt(0)}</span>
           ))}
         </div>
         <h2>Quer ver os bastidores?</h2>

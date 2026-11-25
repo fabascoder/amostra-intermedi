@@ -10,6 +10,7 @@ import {
   type Ator, type ClasseId, type PessoaId,
 } from "../data/bastidores";
 import { PERIODOS, imagemDoSlide } from "../data/apresentacao";
+import { fotoDe } from "../data/fotos";
 import { AssinaturaAuvox } from "../shared/AssinaturaAuvox";
 import { marcarBastidoresVisto } from "../session/session";
 import "./bastidores.css";
@@ -186,7 +187,7 @@ function Equipe({ escolhida, onEscolher }: { escolhida: PessoaId | null; onEscol
                 aria-pressed={ativa}
                 onClick={() => onEscolher(ativa ? null : p.id)}
               >
-                <span className="bt-avatar" aria-hidden="true">{p.nome.charAt(0)}</span>
+                <span className="bt-avatar" aria-hidden="true">{fotoDe(p.nome) ? <img src={fotoDe(p.nome)!} alt="" /> : p.nome.charAt(0)}</span>
                 <span className="bt-pessoa-texto">
                   <strong>{p.nome}</strong>
                   <span>{p.fez}</span>
@@ -426,7 +427,7 @@ function ComoFoiFeito({ escolhida }: { escolhida: PessoaId | null }) {
                 <strong>{m.titulo}</strong>
                 <p>{m.texto}</p>
                 <span className="bt-linha-quem">
-                  {m.quem.map((q) => <i key={q} title={pessoa(q).nome} style={{ background: pessoa(q).cor }}>{pessoa(q).nome.charAt(0)}</i>)}
+                  {m.quem.map((q) => <i key={q} title={pessoa(q).nome} style={{ background: pessoa(q).cor }}>{fotoDe(pessoa(q).nome) ? <img src={fotoDe(pessoa(q).nome)!} alt="" /> : pessoa(q).nome.charAt(0)}</i>)}
                 </span>
               </div>
             </li>

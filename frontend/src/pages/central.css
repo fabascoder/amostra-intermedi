@@ -803,3 +803,7 @@
 @media (prefers-reduced-motion: reduce) {
   .central-dica, .central-extra.is-destaque { animation: none; }
 }
+
+/* Foto da pessoa no lugar da inicial */
+.central-extra-equipe span { overflow: hidden; }
+.central-extra-equipe span img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }

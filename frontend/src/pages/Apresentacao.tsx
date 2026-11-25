@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import logo from "../assets/brand/logo-intermedi.webp";
 import { PERIODOS, faixaDeSlides, imagemDoSlide, rotuloDoSlide, type Periodo, type Slide } from "../data/apresentacao";
+import { fotoDe } from "../data/fotos";
 import { Dialogo } from "../shared/Dialogo";
 import { ManagerIcon } from "../shared/icons";
 import "./apresentacao.css";
@@ -102,7 +103,7 @@ export default function Apresentacao() {
                 <span className="bast-ponto-faixa">{faixaDeSlides(p.slides)}</span>
                 <span className="bast-ponto-marca" aria-hidden="true" />
                 <span className="bast-ponto-pessoa">
-                  <span className="bast-avatar" aria-hidden="true">{iniciais(p.apresentador)}</span>
+                  <span className="bast-avatar" aria-hidden="true">{fotoDe(p.apresentador) ? <img src={fotoDe(p.apresentador)!} alt="" /> : iniciais(p.apresentador)}</span>
                   {p.apresentador}
                 </span>
               </button>
@@ -115,7 +116,7 @@ export default function Apresentacao() {
 
         <section className="bast-periodo" id="painel-periodo" role="tabpanel" aria-labelledby={`aba-${ativo}`} key={periodo.apresentador}>
           <div className="bast-periodo-cabeca">
-            <span className="bast-avatar is-grande" aria-hidden="true">{iniciais(periodo.apresentador)}</span>
+            <span className="bast-avatar is-grande" aria-hidden="true">{fotoDe(periodo.apresentador) ? <img src={fotoDe(periodo.apresentador)!} alt="" /> : iniciais(periodo.apresentador)}</span>
             <div>
               <h2>{periodo.apresentador}</h2>
               <p className="bast-periodo-faixa">{faixaDeSlides(periodo.slides)}</p>
