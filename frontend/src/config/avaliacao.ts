@@ -12,12 +12,12 @@
 //
 // Enquanto FORMS_ID estiver vazio, a avaliação fica só no navegador (como antes).
 
-export const FORMS_ID = "";
+export const FORMS_ID = "1FAIpQLScbmFC9XQXvwkGGl-D6CcfQd5wtctlzICwH2MKI4hJK3wjjmw";
 
 export const ENTRADAS = {
-  nota: "",
-  alvo: "",
-  comentario: "",
+  nota: "entry.92885925",
+  alvo: "entry.627285629",
+  comentario: "entry.674250888",
 };
 
 export const formsConfigurado = (): boolean =>
