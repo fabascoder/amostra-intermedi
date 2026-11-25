@@ -242,9 +242,22 @@
   width: 20px;
   height: 20px;
   margin-top: 1px;
+  padding: 0;
+  border: 0;
   background: var(--guia-destaque);
   color: var(--guia-fundo);
+  cursor: pointer;
+  position: relative;
 }
+/* área de toque maior que o círculo, sem mudar o desenho */
+.guia-linha .guia-acao-icone::after {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+}
+.guia-linha .guia-acao-icone:hover { filter: brightness(1.08); }
+.guia-linha .guia-acao-icone:focus-visible { outline: 2px solid var(--guia-destaque); outline-offset: 3px; }
 .guia .guia-pratica {
   margin: 2px 0 0;
   color: var(--guia-suave);
@@ -284,7 +297,7 @@
 
 /* Alvo: anel grafite, a mesma cor do cartão do guia */
 .guia-alvo {
-  outline: 3px solid var(--guia-fundo, #1c2421) !important;
+  outline: 3px dashed var(--guia-fundo, #1c2421) !important;
   outline-offset: 4px;
   animation: guia-alvo-escuro 1.6s ease-in-out infinite;
 }

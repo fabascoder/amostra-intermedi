@@ -35,15 +35,44 @@ function suportaWebGL() {
 function useMediaQuery(query) {
   const assinar = useCallback((avisar) => {
     const lista = window.matchMedia(query);
-    lista.addEventListener("change", avisar);
-    return () => lista.removeEventListener("change", avisar);
+    // Safari antigo só tem addListener
+    if (lista.addEventListener) lista.addEventListener("change", avisar);
+    else lista.addListener(avisar);
+    return () => (lista.removeEventListener ? lista.removeEventListener("change", avisar) : lista.removeListener(avisar));
   }, [query]);
   return useSyncExternalStore(assinar, () => window.matchMedia(query).matches);
 }
 
-// Celular: toque como entrada principal e o lado menor da tela estreito.
-// Vale nas duas orientações (deitado, a largura passa de 600 px).
-const CELULAR = "(pointer: coarse) and (max-width: 600px), (pointer: coarse) and (max-height: 600px)";
+// Tamanho e orientação lidos da própria janela, e não de media queries: há
+// celulares (e navegadores dentro de apps) que não informam "pointer: coarse"
+// ou demoram a atualizar a orientação depois de girar.
+function assinarTela(avisar) {
+  window.addEventListener("resize", avisar);
+  window.addEventListener("orientationchange", avisar);
+  window.visualViewport?.addEventListener("resize", avisar);
+  return () => {
+    window.removeEventListener("resize", avisar);
+    window.removeEventListener("orientationchange", avisar);
+    window.visualViewport?.removeEventListener("resize", avisar);
+  };
+}
+const temToque = () =>
+  navigator.maxTouchPoints > 0 || window.matchMedia("(any-pointer: coarse)").matches || "ontouchstart" in window;
+const LADO_MENOR_CELULAR = 600;
+function useTela() {
+  // cada leitura devolve um valor simples, para o React comparar sem recriar objetos
+  const largura = useSyncExternalStore(assinarTela, () => window.innerWidth);
+  const altura = useSyncExternalStore(assinarTela, () => window.innerHeight);
+  const toque = useSyncExternalStore(assinarTela, temToque);
+  return {
+    // Celular: tela de toque com o lado menor estreito. Vale nas duas orientações.
+    celular: toque && Math.min(largura, altura) <= LADO_MENOR_CELULAR,
+    emPe: altura > largura,
+    // a cena 3D cabe no layout normal: tela larga, ou tablet/celular grande deitado
+    amplo: largura >= 768 || (toque && largura > altura && largura >= 560),
+    desktop: largura >= 768,
+  };
+}
 
 class LimiteDaCena extends Component {
   constructor(props) {
@@ -111,7 +140,7 @@ function useOperacaoDemo() {
 }
 
 /** Aviso do celular em pé: gire o aparelho para continuar. */
-function GireOCelular({ voltar }) {
+function GireOCelular({ voltar, abrirAssim }) {
   return (
     <div className="op-gire" role="dialog" aria-modal="true" aria-labelledby="op-gire-titulo">
       <div className="op-gire-figura" aria-hidden="true">
@@ -128,10 +157,14 @@ function GireOCelular({ voltar }) {
           </span>
         </div>
       </div>
-      <h1 id="op-gire-titulo">Gire seu celular</h1>
+      <h1 id="op-gire-titulo" className="op-gire-titulo">Gire seu celular</h1>
       <p>A Operação 3D funciona com o celular deitado. Assim o mapa da farmácia aparece inteiro.</p>
-      <button type="button" className="op-gire-voltar" onClick={voltar}>
-        Voltar à visão geral
+      <p className="op-gire-dica">A tela não girou? Desative o bloqueio de rotação do celular, ou</p>
+      <button type="button" className="op-gire-assim" onClick={abrirAssim}>
+        Abrir assim mesmo
+      </button>
+      <button type="button" className="op-gire-voltar" onClick={voltar} aria-label="Voltar à visão geral" title="Voltar à visão geral">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6" /></svg>
       </button>
     </div>
   );
@@ -150,17 +183,32 @@ export default function Operacao() {
   const [tentativa3d, setTentativa3d] = useState(0);
   const [painelAberto, setPainelAberto] = useState(false);
   const [webgl] = useState(suportaWebGL);
-  const celular = useMediaQuery(CELULAR);
-  const emPe = useMediaQuery("(orientation: portrait)");
-  const desktop = useMediaQuery("(min-width: 768px)");
+  // celular com a rotação travada: a pessoa pode abrir a cena mesmo em pé
+  const [abrirEmPe, setAbrirEmPe] = useState(false);
+  const { celular, emPe, amplo, desktop } = useTela();
   const reduzirMovimento = useMediaQuery("(prefers-reduced-motion: reduce)");
   const inspetorRef = useRef(null);
 
-  const telaCheia = celular && !emPe;
-  const usar3d = (desktop || telaCheia) && webgl && !falha3d && !preferencia2d;
+  const telaCheia = celular && (!emPe || abrirEmPe);
+  const usar3d = (amplo || telaCheia) && webgl && !falha3d && !preferencia2d;
   const motivo2d = !webgl
     ? "Este navegador não oferece WebGL, então a operação aparece como planta 2D."
-    : falha3d || (!desktop ? "Em telas pequenas a operação aparece como planta 2D." : "");
+    : falha3d || (!amplo ? "Em telas pequenas a operação aparece como planta 2D." : "");
+  const tentarDeNovo = () => {
+    setFalha3d("");
+    setTentativa3d((t) => t + 1);
+  };
+  // Celulares derrubam a placa de vídeo ao trocar de app ou girar rápido: a cena
+  // é remontada sozinha algumas vezes antes de cair para a planta 2D.
+  const remontagens = useRef(0);
+  const aoPerderContexto = useCallback(() => {
+    if (remontagens.current < 3) {
+      remontagens.current += 1;
+      setTentativa3d((t) => t + 1);
+      return;
+    }
+    setFalha3d("A placa de vídeo interrompeu a cena 3D. Mostrando a planta 2D.");
+  }, []);
 
   const voltar = () => navigate(config.basePath);
 
@@ -209,7 +257,7 @@ export default function Operacao() {
     },
   };
 
-  if (celular && emPe) return <GireOCelular voltar={voltar} />;
+  if (celular && emPe && !abrirEmPe) return <GireOCelular voltar={voltar} abrirAssim={() => setAbrirEmPe(true)} />;
 
   const cena = (
     <>
@@ -222,7 +270,8 @@ export default function Operacao() {
               onSelecionar={selecionarNaCena}
               foco={foco}
               reduzirMovimento={reduzirMovimento}
-              onContextoPerdido={() => setFalha3d("A placa de vídeo interrompeu a cena 3D. Mostrando a planta 2D.")}
+              leve={celular}
+              onContextoPerdido={aoPerderContexto}
             />
           </Suspense>
         </LimiteDaCena>
@@ -260,8 +309,13 @@ export default function Operacao() {
   // Celular deitado: a cena ocupa a tela; os detalhes abrem num painel lateral.
   if (telaCheia) {
     return (
-      <div className="op-tela-cheia" role="region" aria-label="Cena 3D da unidade">
+      <div className={`op-tela-cheia${emPe ? " is-em-pe" : ""}`} role="region" aria-label="Cena 3D da unidade">
         {usar3d ? cena : <Fallback2D operacao={operacao} selecionado={selecionado} motivo={motivo2d} onSelecionar={selecionarDaLista} />}
+        {falha3d && webgl && (
+          <button type="button" className="mgr-secondary op-tentar-3d op-tela-cheia-tentar" onClick={tentarDeNovo}>
+            Tentar a cena 3D de novo
+          </button>
+        )}
         <div className="op-tela-cheia-topo">
           <button type="button" className="op-tela-cheia-sair" onClick={voltar} aria-label="Sair da Operação 3D">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
@@ -297,7 +351,7 @@ export default function Operacao() {
       <KpiStrip operacao={operacao} onAbrir={abrirIndicador} />
 
       <section className="op-bancada">
-        <div className="op-palco" aria-label={usar3d ? "Cena 3D da unidade" : "Planta da unidade"} role="region">
+        <div className={`op-palco${usar3d ? " is-3d" : ""}`} aria-label={usar3d ? "Cena 3D da unidade" : "Planta da unidade"} role="region">
           <div className="op-barra">
             {usar3d && vistas}
             {desktop && webgl && (
@@ -328,8 +382,8 @@ export default function Operacao() {
           ) : (
             <>
               <Fallback2D operacao={operacao} selecionado={selecionado} motivo={motivo2d} onSelecionar={selecionarDaLista} />
-              {falha3d && webgl && desktop && (
-                <button type="button" className="mgr-secondary op-tentar-3d" onClick={() => { setFalha3d(""); setTentativa3d((t) => t + 1); }}>
+              {falha3d && webgl && amplo && (
+                <button type="button" className="mgr-secondary op-tentar-3d" onClick={tentarDeNovo}>
                   Tentar a cena 3D de novo
                 </button>
               )}

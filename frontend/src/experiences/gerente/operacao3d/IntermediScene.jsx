@@ -35,7 +35,7 @@ const TRASEIRA_HOVER = 14;
 // (services/operacao.js) e cada clique devolve a chave do objeto para a página,
 // que mostra o painel com os dados reais e as ações que já existem no sistema.
 // Renderiza sob demanda (frameloop="demand"): parada, a GPU fica ociosa.
-export default function IntermediScene({ operacao, selecionado, onSelecionar, foco, reduzirMovimento, onContextoPerdido }) {
+export default function IntermediScene({ operacao, selecionado, onSelecionar, foco, reduzirMovimento, onContextoPerdido, leve = false }) {
   const [hover, setHover] = useState(null);
   useCursor(Boolean(hover));
   // o ponteiro se move o tempo todo: só redesenha quando o objeto sob ele muda
@@ -302,11 +302,16 @@ export default function IntermediScene({ operacao, selecionado, onSelecionar, fo
       <Canvas
         frameloop="demand"
         flat
-        dpr={[1, 1.75]}
+        dpr={leve ? [1, 1.5] : [1, 1.75]}
         camera={{ position: VISTAS.geral.posicao, fov: 32, near: 0.5, far: 240 }}
-        gl={{ antialias: true, powerPreference: "high-performance" }}
+        gl={{ antialias: true, powerPreference: leve ? "default" : "high-performance" }}
         onCreated={(state) => {
-          state.gl.domElement.addEventListener("webglcontextlost", (event) => aoPerderContexto.current?.(event));
+          state.gl.domElement.addEventListener("webglcontextlost", (event) => {
+            // canvas já fora da página = a própria cena foi desmontada (ex.: girou o
+            // celular para em pé) e o R3F liberou a placa de vídeo. Não é falha.
+            if (!event.target.isConnected) return;
+            aoPerderContexto.current?.(event);
+          });
           // só no desenvolvimento: permite que os testes leiam a cena (draw calls, câmera)
           if (import.meta.env.DEV) window.__intermedi3d = state;
         }}

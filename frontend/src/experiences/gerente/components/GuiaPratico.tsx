@@ -21,6 +21,8 @@ export type PassoGuia = {
   acao?: string;
   /** Seletor do que deve piscar na tela. */
   alvo?: string;
+  /** O que a seta verde aciona para avançar o passo (se não for o próprio alvo). */
+  avancar?: string;
   final?: boolean;
 };
 
@@ -75,6 +77,7 @@ function passosSolicitante({ base, pathname, pedidos, pedindo, temNaTela }: Entr
             : naVisaoGeral
               ? '[data-track="atalho:pedidos-da-rede"]'
               : 'a[data-track="menu:pedidos"]',
+        avancar: nosPedidos && !naConfirmacao ? ".demo-rastreio-vivo .demo-concluir" : undefined,
       },
     };
   }
@@ -88,6 +91,7 @@ function passosSolicitante({ base, pathname, pedidos, pedindo, temNaTela }: Entr
         pratica: "A Intermedi só mostra as farmácias que podem enviar sem ficar abaixo do estoque mínimo delas, e já sugere a quantidade para repor o seu.",
         acao: "Confira e toque em Enviar solicitação.",
         alvo: ".demo-pedir-farmacias",
+        avancar: '.emp-service-form button[type="submit"]',
       },
     };
   }
@@ -157,6 +161,7 @@ function passosFornecedora({ base, pathname, pedidos }: Entrada): { passo: Passo
         pratica: "As caixas vão para o caminhão e ele sai para a farmácia que pediu. Ela acompanha cada etapa do lado dela, ao mesmo tempo que você.",
         acao: "Espere a entrega ou toque em Concluir simulação agora.",
         alvo: ".demo-pedido-rastreio, .preparos",
+        avancar: ".demo-concluir",
       },
     };
   }
@@ -183,6 +188,7 @@ function passosFornecedora({ base, pathname, pedidos }: Entrada): { passo: Passo
         pratica: "Antes de aceitar, a Intermedi mostra como fica o seu estoque depois do envio. Assim você ajuda sem ficar sem o remédio.",
         acao: "Toque em Aceitar pedido e depois em Confirmar aceite.",
         alvo: '[data-track="aceitar-pedido-rede"], .chamado-confirmar',
+        avancar: '[data-track="aceitar-pedido-rede"], .chamado-confirmar .mgr-primary',
       },
     };
   }
@@ -258,6 +264,27 @@ function useDestaque(alvo: string | undefined, chave: string) {
   }, [alvo, chave]);
 }
 
+/**
+ * Seta verde: faz o passo atual pela pessoa (toca no botão certo, escolhe o
+ * remédio). O guia percebe a mudança e avança sozinho, como num toque normal.
+ */
+function avancarPasso(passo: PassoGuia) {
+  const seletor = passo.avancar ?? passo.alvo;
+  const el = seletor ? document.querySelector<HTMLElement>(seletor) : null;
+  if (!el) return;
+  if (el instanceof HTMLSelectElement) {
+    const opcoes = Array.from(el.options).filter((o) => o.value);
+    const escolha = opcoes.find((o) => o.text.includes("precisa repor")) ?? opcoes[0];
+    if (!escolha) return;
+    // select controlado pelo React: muda pelo setter nativo e avisa com "change"
+    Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value")?.set?.call(el, escolha.value);
+    el.dispatchEvent(new Event("change", { bubbles: true }));
+    return;
+  }
+  const clicavel = el.matches("a, button, [role='button']") ? el : el.querySelector<HTMLElement>("a, button, [role='button']");
+  clicavel?.click();
+}
+
 /** Título, uma linha (o que fazer agora) e "Ler mais" para o porquê. */
 function Conteudo({ passo, numero, total }: { passo: PassoGuia; numero: number; total: number }) {
   const [mais, setMais] = useState(false);
@@ -270,9 +297,9 @@ function Conteudo({ passo, numero, total }: { passo: PassoGuia; numero: number; 
       <h2>{passo.titulo}</h2>
       <p className="guia-linha">
         {passo.acao && (
-          <span className="guia-acao-icone" aria-hidden="true">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
-          </span>
+          <button type="button" className="guia-acao-icone" onClick={() => avancarPasso(passo)} aria-label="Avançar uma etapa" title="Avançar uma etapa">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
+          </button>
         )}
         {linha}
       </p>
