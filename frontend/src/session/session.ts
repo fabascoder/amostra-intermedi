@@ -166,6 +166,12 @@ export function marcarBastidoresVisto(): void {
   atualizarProgresso((p) => ({ ...p, bastidoresVisto: true }));
 }
 
+/** Abriu o site da Auvox: o convite "Conheça a Auvox" não precisa mais aparecer. */
+export function marcarAuvoxVisitado(): void {
+  if (progressoStore.get().auvoxVisitado) return;
+  atualizarProgresso((p) => ({ ...p, auvoxVisitado: true }));
+}
+
 /** Dica de etapa da Central fechada ou seguida: não volta a aparecer. */
 export function marcarDicaVista(id: string): void {
   const vistas = progressoStore.get().dicasVistas ?? [];

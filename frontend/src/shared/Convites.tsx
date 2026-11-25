@@ -1,7 +1,9 @@
 // Convites depois das três experiências. A cada 2 minutos aparece um, na ordem:
 // avaliar a apresentação, conhecer a Auvox, o Instagram da Auvox e os
 // bastidores. Cada um aparece uma vez por sessão; fechar ou aceitar agenda o
-// próximo. Nunca aparece por cima de outra janela aberta.
+// próximo. Nunca aparece por cima de outra janela aberta. O que a pessoa já fez
+// por conta própria (avaliou, abriu o site da Auvox, viu os bastidores) é pulado;
+// com as três feitas, os convites param.
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AUVOX, CONVITE_INTERVALO_MS } from "../config/demo";
@@ -9,7 +11,7 @@ import { PESSOAS } from "../data/bastidores";
 import { fotoDe } from "../data/fotos";
 import { useAvaliacoes } from "../demoServices/feedbackService";
 import { useProgresso, useSituacaoSessao } from "../session/hooks";
-import { agendarConvite, progressoStore } from "../session/session";
+import { agendarConvite, marcarAuvoxVisitado, progressoStore } from "../session/session";
 import { LOGO_AUVOX } from "./AssinaturaAuvox";
 import { AvaliacaoDialogo } from "./Avaliacao";
 import { Dialogo } from "./Dialogo";
@@ -35,13 +37,36 @@ export function ConvitesPosVisita() {
     if (pronto && convites.proximoEm === null && !convites.vistos.length) agendarConvite(null, CONVITE_INTERVALO_MS);
   }, [pronto, convites.proximoEm, convites.vistos.length]);
 
+  // Qualquer link para o site da Auvox (Central, convite, assinatura) conta como visita.
+  useEffect(() => {
+    const aoClicar = (evento: MouseEvent) => {
+      const link = (evento.target as Element | null)?.closest?.("a[href]") as HTMLAnchorElement | null;
+      if (link && link.href.startsWith(AUVOX.site)) marcarAuvoxVisitado();
+    };
+    document.addEventListener("click", aoClicar, true);
+    document.addEventListener("auxclick", aoClicar, true);
+    return () => {
+      document.removeEventListener("click", aoClicar, true);
+      document.removeEventListener("auxclick", aoClicar, true);
+    };
+  }, []);
+
   useEffect(() => {
     if (!pronto || aberto || avaliando) return undefined;
     const conferir = () => {
-      const c = progressoStore.get().convites ?? SEM_CONVITES;
+      const p = progressoStore.get();
+      const c = p.convites ?? SEM_CONVITES;
       if (!c.proximoEm || Date.now() < c.proximoEm) return;
       if (document.querySelector("dialog[open]")) return; // espera a outra janela fechar
-      const proximo = ORDEM.find((id) => !c.vistos.includes(id) && !(id === "avaliar" && jaAvaliou) && !(id === "bastidores" && pathname === "/bastidores"));
+      // Já avaliou, já abriu o site da Auvox e já viu os bastidores: nenhum convite mais.
+      const feito: Record<ConviteId, boolean> = {
+        avaliar: jaAvaliou,
+        auvox: Boolean(p.auvoxVisitado),
+        bastidores: Boolean(p.bastidoresVisto) || pathname === "/bastidores",
+        instagram: false,
+      };
+      if (feito.avaliar && feito.auvox && feito.bastidores) return;
+      const proximo = ORDEM.find((id) => !c.vistos.includes(id) && !feito[id]);
       if (proximo) setAberto(proximo);
     };
     conferir();
