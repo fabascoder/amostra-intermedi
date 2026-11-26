@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/brand/logo-intermedi.webp";
 import {
-  ATORES, CASOS_DE_USO, CLASSES, COMMITS_POR_MES, REPOSITORIOS, LINHA_DO_TEMPO, PESSOAS, RELACOES, TECNOLOGIAS,
+  ATORES, CASOS_DE_USO, CLASSES, COMMITS_POR_MES, REPOSITORIOS, LINHA_DO_TEMPO, PESSOAS, EQUIPE_SLIDES, RELACOES, TECNOLOGIAS,
   type Ator, type ClasseId, type PessoaId,
 } from "../data/bastidores";
 import { PERIODOS, imagemDoSlide } from "../data/apresentacao";
@@ -90,7 +90,7 @@ export default function Bastidores() {
           <p className="bt-sobre">Bastidores</p>
           <h1 id="bt-titulo">Quem fez o Intermedi, e como</h1>
           <p className="bt-lead">
-            {PESSOAS.length} pessoas da Auvox, {REPOSITORIOS.length} repositórios e {TOTAL_COMMITS} commits, de 16 de junho a 25 de novembro de 2026.
+            {PESSOAS.length + EQUIPE_SLIDES.length} pessoas da Auvox, {REPOSITORIOS.length} repositórios e {TOTAL_COMMITS} commits, de 16 de junho a 25 de novembro de 2026.
           </p>
           <EntradaApresentacao />
           <GraficoCommits />
@@ -204,6 +204,18 @@ function Equipe({ escolhida, onEscolher }: { escolhida: PessoaId | null; onEscol
             </li>
           );
         })}
+        {EQUIPE_SLIDES.map((p) => (
+          <li key={p.nome}>
+            <div className={`bt-pessoa is-estatico${escolhida ? " is-apagada" : ""}`} style={{ "--cor": p.cor } as React.CSSProperties}>
+              <span className="bt-avatar" aria-hidden="true">{fotoDe(p.nome) ? <img src={fotoDe(p.nome)!} alt="" /> : p.nome.charAt(0)}</span>
+              <span className="bt-pessoa-texto">
+                <strong>{p.nome}</strong>
+                <span>{p.fez}</span>
+              </span>
+              <span className="bt-pessoa-numeros">Slides e apresentação</span>
+            </div>
+          </li>
+        ))}
       </ul>
     </section>
   );

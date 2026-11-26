@@ -705,3 +705,7 @@
 /* chip selecionado (fundo verde): o ícone fica branco para não sumir */
 .bt-tec-chips button.is-ativo .bt-tec-icone { fill: currentColor; }
 .bt-tec-chips button.is-ativo .bt-tec-icone.is-traco { fill: none; color: #fff; }
+
+/* Quem cuidou dos slides: mesmo cartão, sem toque */
+.bt-pessoa.is-estatico { cursor: default; }
+.bt-pessoa.is-estatico:active { transform: none; }

@@ -15,6 +15,15 @@ export const PESSOAS: { id: PessoaId; nome: string; cor: string; fez: string; co
   { id: "gabriel", nome: "Gabriel Ancelmo", cor: "#7a55d4", fez: "Painel do administrador", commits: 50 },
 ];
 
+/** Quem não fez commit: cuidou dos slides e da apresentação do TCC. */
+export const EQUIPE_SLIDES: { nome: string; cor: string; fez: string }[] = [
+  { nome: "Alexandre Santiago", cor: "#0f7d8c", fez: "Abertura: a Auvox e seus integrantes" },
+  { nome: "Beatriz", cor: "#c2417a", fez: "História e organização da Auvox" },
+  { nome: "Ana Julia", cor: "#b8860b", fez: "Identidade visual da Auvox" },
+  { nome: "Ariella", cor: "#5a6bd8", fez: "O problema e a justificativa do projeto" },
+  { nome: "Alexandre Rafael", cor: "#3d7a3a", fez: "Diagramas do sistema: MER, classes e casos de uso" },
+];
+
 export type Plataforma = "web" | "app" | "servidor";
 export const PLATAFORMAS: Record<Plataforma, { nome: string; repo: string }> = {
   web: { nome: "Plataforma das farmácias", repo: "intermedi-front-end" },
