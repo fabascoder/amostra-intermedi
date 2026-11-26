@@ -1,5 +1,6 @@
 // Fotos da equipe (usadas com autorização de cada pessoa). Quem não tem foto
 // continua com a inicial do nome no círculo colorido.
+import alexandreRafael from "../assets/equipe/alexandre-rafael.webp";
 import alexandreSantiago from "../assets/equipe/alexandre-santiago.webp";
 import ana from "../assets/equipe/ana.webp";
 import ariella from "../assets/equipe/ariella.webp";
@@ -10,7 +11,7 @@ import matheus from "../assets/equipe/matheus.webp";
 import miguel from "../assets/equipe/miguel.webp";
 
 // Nome completo quando há dois com o mesmo primeiro nome (Alexandre Santiago e Alexandre Rafael).
-const FOTOS: Record<string, string> = { "alexandre santiago": alexandreSantiago, ana, ariella, beatriz, eduardo, fabricio, matheus, miguel };
+const FOTOS: Record<string, string> = { "alexandre santiago": alexandreSantiago, "alexandre rafael": alexandreRafael, ana, ariella, beatriz, eduardo, fabricio, matheus, miguel };
 
 const normalizar = (texto: string) => texto.trim().normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ");
 

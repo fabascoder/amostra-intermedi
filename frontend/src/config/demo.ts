@@ -55,7 +55,7 @@ export const CONTACT: { whatsapp: string; email: string; phone: string; site: st
  * Vídeo da plataforma completa (como o Intermedi realmente é). Enquanto estiver
  * vazio, o botão "Ver vídeo da plataforma" avisa que o vídeo chega em breve.
  */
-export const VIDEO_PLATAFORMA_URL = "";
+export const VIDEO_PLATAFORMA_URL = "https://www.youtube.com/watch?v=jxfoUBurNJ8";
 
 /**
  * Auvox, a equipe por trás do Intermedi: site e Instagram usados nos convites
@@ -64,7 +64,7 @@ export const VIDEO_PLATAFORMA_URL = "";
  */
 export const AUVOX: { site: string; instagram: string } = {
   site: "https://auvox.vercel.app",
-  instagram: "",
+  instagram: "auvox.company",
 };
 
 /** Intervalo entre os convites depois das três experiências. */
