@@ -69,3 +69,11 @@ export const AUVOX: { site: string; instagram: string } = {
 
 /** Intervalo entre os convites depois das três experiências. */
 export const CONVITE_INTERVALO_MS = 2 * 60 * 1000;
+
+/**
+ * Lançamento da amostra (horário de Brasília, -03:00). Antes deste instante,
+ * qualquer endereço mostra só a contagem regressiva (pages/Contagem.tsx); no
+ * segundo exato o app abre sozinho, sem precisar de novo deploy.
+ * `null` desliga a contagem.
+ */
+export const LANCAMENTO: string | null = "2026-12-01T00:00:00-03:00";

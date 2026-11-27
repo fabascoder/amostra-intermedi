@@ -28,16 +28,16 @@ export function hashCodigo(texto: string): string {
 export const codigoValido = (codigo: string) => hashCodigo(codigo.trim().toLowerCase()) === HASH_DO_CODIGO;
 
 /** Tira o parâmetro do endereço (na busca ou depois do #, na prévia). Devolve o código, se havia. */
-function retirarParametro(): string | null {
+export function retirarParametro(nome: string = PARAMETRO): string | null {
   const url = new URL(window.location.href);
-  let codigo = url.searchParams.get(PARAMETRO);
-  if (codigo !== null) url.searchParams.delete(PARAMETRO);
+  let codigo = url.searchParams.get(nome);
+  if (codigo !== null) url.searchParams.delete(nome);
   const [rota, busca] = url.hash.split("?");
   if (busca !== undefined) {
     const params = new URLSearchParams(busca);
-    if (params.has(PARAMETRO)) {
-      codigo ??= params.get(PARAMETRO);
-      params.delete(PARAMETRO);
+    if (params.has(nome)) {
+      codigo ??= params.get(nome);
+      params.delete(nome);
       url.hash = params.size ? `${rota}?${params}` : rota;
     }
   }

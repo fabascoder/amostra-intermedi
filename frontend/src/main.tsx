@@ -3,11 +3,14 @@ import { createRoot } from "react-dom/client";
 import "@fontsource-variable/inter/index.css";
 import "./styles/base.css";
 import App from "./App";
+import { liberarPreviaPeloEndereco } from "./session/lancamento";
 import { reativarPeloEndereco } from "./session/reativacao";
 import { verificarSessao } from "./session/session";
 
-// Link de reativação da equipe (?reativar=CODIGO) e validade conferidos antes
-// do primeiro desenho (sessão vencida com a aba fechada).
+// Prévia da equipe antes do lançamento (?previa=CODIGO), link de reativação
+// (?reativar=CODIGO) e validade conferidos antes do primeiro desenho (sessão
+// vencida com a aba fechada).
+liberarPreviaPeloEndereco();
 reativarPeloEndereco();
 verificarSessao();
 

@@ -1,9 +1,10 @@
-import { Suspense, lazy, type ReactNode } from "react";
+import { Suspense, lazy, useCallback, useState, type ReactNode } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Central from "./pages/Central";
 import { LimiteDeFalha } from "./shared/Falha";
 import { useSituacaoSessao, useVigiaSessao } from "./session/hooks";
 import { ConvitesPosVisita } from "./shared/Convites";
+import { LANCAMENTO_MS, appLiberado } from "./session/lancamento";
 import type { ExperienciaId } from "./types";
 
 // Cada experiência é um pedaço separado do bundle: quem abre só o aplicativo
@@ -14,6 +15,8 @@ const Encerrada = lazy(() => import("./pages/Encerrada"));
 const Bastidores = lazy(() => import("./pages/Bastidores"));
 const Apresentacao = lazy(() => import("./pages/Apresentacao"));
 const NaoEncontrada = lazy(() => import("./pages/NaoEncontrada"));
+// Só baixada antes do lançamento; depois dele ninguém carrega este pedaço.
+const Contagem = lazy(() => import("./pages/Contagem"));
 
 function Carregando() {
   return (
@@ -60,6 +63,18 @@ function Rotas() {
 }
 
 export default function App() {
+  // Antes do lançamento (config/demo.ts), qualquer endereço mostra só a contagem.
+  const [liberado, setLiberado] = useState(() => appLiberado());
+  const lancar = useCallback(() => setLiberado(true), []);
+  if (!liberado && LANCAMENTO_MS !== null) {
+    return (
+      <LimiteDeFalha>
+        <Suspense fallback={null}>
+          <Contagem lancamentoMs={LANCAMENTO_MS} onLancar={lancar} />
+        </Suspense>
+      </LimiteDeFalha>
+    );
+  }
   return (
     <BrowserRouter>
       <LimiteDeFalha>

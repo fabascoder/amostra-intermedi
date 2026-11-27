@@ -183,6 +183,18 @@ O código fica em `src/session/reativacao.ts` só como hash (`HASH_DO_CODIGO`). 
 gere o hash do novo código (em minúsculas) com `hashCodigo()` desse arquivo e substitua o valor.
 Como não há backend, isso é uma barreira de interface, não uma senha de verdade.
 
+### Contagem até o lançamento
+
+Até `LANCAMENTO` (`src/config/demo.ts`, hoje terça-feira, 1º de dezembro, 0h de Brasília), qualquer
+endereço da amostra mostra só a contagem regressiva (`src/pages/Contagem.tsx`). No segundo exato,
+a página mostra "Chegou a hora!" e abre as boas-vindas sozinha, sem novo deploy. A hora vem do
+relógio do aparelho. Para tirar a contagem, use `LANCAMENTO = null`.
+
+- **Prévia da equipe:** abra o endereço com `?previa=CODIGO` (o mesmo código da reativação) para
+  ver o app antes do lançamento naquele navegador.
+- **Testar a virada (desenvolvimento):** `http://localhost:5180/?lancamento-em=10` simula o
+  lançamento daqui a 10 segundos.
+
 O contato oficial não foi encontrado nos projetos; `CONTACT` em `src/config/demo.ts` está vazio.
 Preencha e-mail, telefone ou site para que apareçam na tela de sessão encerrada.
 
