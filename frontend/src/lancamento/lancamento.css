@@ -1,0 +1,377 @@
+/* =====================================================================
+   Lançamento: contagem e abertura.
+   Palco: o verde profundo do aplicativo e da tela de fim (#0E6B50), com
+   branco e a menta da marca (#8FE0B5) só no que está vivo. Tipografia:
+   Inter Variable, a mesma da plataforma, fina e enorme nos números; a
+   Poppins só na palavra Intermedi, que é a letra do logotipo.
+   Só transform e opacidade animam (e atributos do SVG na abertura).
+   ===================================================================== */
+html.lc-ativo,
+html.lc-ativo body {
+  background: #0e6b50;
+  overflow: hidden;
+}
+
+.lc-contagem,
+.lc-abertura {
+  --lc-campo: #0e6b50;
+  --lc-nevoa: rgb(255 255 255 / 0.66);
+  --lc-menta: #8fe0b5;
+  --lc-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --lc-fonte: "Inter Variable", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--lc-campo);
+  color: #fff;
+  font-family: var(--lc-fonte);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Número grande, centrado na tela: o último segundo da contagem e o "0"
+   que a abertura transforma em ponto usam exatamente o mesmo desenho. */
+.lc-centro {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.lc-numeral {
+  grid-area: 1 / 1;
+  display: inline-block;
+  font-family: var(--lc-fonte);
+  font-size: min(46vmin, 420px);
+  font-weight: 200;
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+}
+
+/* ---------- Contagem ---------- */
+.lc-contagem {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding:
+    max(clamp(20px, 4vw, 52px), env(safe-area-inset-top))
+    max(clamp(20px, 5vw, 72px), env(safe-area-inset-right))
+    max(clamp(20px, 4vw, 52px), env(safe-area-inset-bottom))
+    max(clamp(20px, 5vw, 72px), env(safe-area-inset-left));
+  overflow: hidden;
+}
+.lc-topo {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.lc-marca {
+  width: clamp(92px, 8.4vw, 128px);
+  height: auto;
+  animation: lc-sobe 1s var(--lc-ease) 0.1s backwards;
+}
+.lc-som {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px 0 12px;
+  border: 1px solid rgb(255 255 255 / 0.22);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--lc-nevoa);
+  font: 500 14px/1 var(--lc-fonte);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  animation: lc-sobe 1s var(--lc-ease) 0.2s backwards;
+}
+.lc-som:hover {
+  color: #fff;
+  border-color: rgb(255 255 255 / 0.5);
+}
+.lc-som[aria-pressed="true"] {
+  color: #fff;
+  border-color: rgb(143 224 181 / 0.6);
+  background: rgb(143 224 181 / 0.1);
+}
+.lc-som:focus-visible,
+.lc-pular:focus-visible {
+  outline: 2px solid var(--lc-menta);
+  outline-offset: 3px;
+}
+
+/* Os números atravessam a tela de margem a margem: a contagem é a página. */
+.lc-relogio {
+  align-self: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: min(13.2vw, 30vh);
+}
+.lc-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.09em;
+}
+.lc-num {
+  display: flex;
+  font-weight: 200;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+/* janela de um dígito: altura do algarismo, com folga igual em cima e embaixo */
+.lc-digito {
+  position: relative;
+  display: inline-block;
+  height: 0.8em;
+  line-height: 0.8;
+  overflow: hidden;
+}
+.lc-digito > span {
+  display: block;
+}
+.lc-d-chega {
+  animation: lc-d-entra 1.2s var(--lc-ease) backwards;
+  animation-delay: calc(var(--ordem, 0) * 45ms + 180ms);
+}
+.lc-d-entra {
+  animation: lc-d-entra 0.75s var(--lc-ease) backwards;
+}
+.lc-d-sai {
+  position: absolute;
+  inset: 0;
+  animation: lc-d-sai 0.75s var(--lc-ease) forwards;
+}
+.lc-unidade {
+  padding-left: 0.12em;
+  font-size: clamp(13px, 1.1vw, 16px);
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--lc-nevoa);
+  animation: lc-aparece 1s ease 0.9s backwards;
+}
+
+.lc-pe {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+.lc-chamada {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12em;
+  max-width: 30ch;
+  font-size: clamp(20px, 2.3vw, 34px);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+}
+.lc-chamada span {
+  text-wrap: balance;
+  animation: lc-sobe 1.1s var(--lc-ease) 1s backwards;
+}
+.lc-chamada span + span {
+  color: var(--lc-nevoa);
+  font-weight: 400;
+  animation-delay: 1.12s;
+}
+.lc-data {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  font-size: 15px;
+  line-height: 1.3;
+  text-align: right;
+  animation: lc-sobe 1.1s var(--lc-ease) 1.24s backwards;
+}
+.lc-data span:first-child {
+  font-weight: 600;
+}
+.lc-data span + span {
+  color: var(--lc-nevoa);
+}
+
+/* Reta final: o resto recua e só os segundos ficam, no centro */
+.lc-relogio,
+.lc-pe,
+.lc-marca {
+  transition: opacity 0.9s var(--lc-ease), transform 1.3s var(--lc-ease);
+}
+.lc-contagem.is-final .lc-relogio {
+  opacity: 0;
+  transform: scale(0.94);
+}
+.lc-contagem.is-final .lc-pe,
+.lc-contagem.is-final .lc-marca {
+  opacity: 0;
+}
+.lc-f-entra {
+  animation: lc-f-entra 0.85s var(--lc-ease) backwards;
+}
+.lc-f-sai {
+  animation: lc-f-sai 0.6s var(--lc-ease) forwards;
+}
+
+/* Celular em pé e telas estreitas: números em dois andares */
+@media (max-aspect-ratio: 4/5), (max-width: 640px) {
+  .lc-relogio {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    justify-content: space-between;
+    row-gap: 0.16em;
+    font-size: min(28vw, 18vh);
+  }
+  .lc-pe {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+  .lc-data {
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+/* Celular deitado: pouca altura */
+@media (max-height: 480px) {
+  .lc-chamada {
+    font-size: 18px;
+  }
+  .lc-chamada span + span {
+    display: none;
+  }
+  .lc-unidade {
+    font-size: 12px;
+  }
+}
+
+/* ---------- Abertura ---------- */
+.lc-abertura {
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.lc-escura,
+.lc-clara {
+  position: absolute;
+  inset: 0;
+}
+.lc-clara {
+  background: #f5f5f7;
+}
+.lc-cena {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: visible;
+}
+.lc-logo-cor {
+  position: absolute;
+  max-width: none;
+}
+.lc-frase {
+  position: absolute;
+  left: 50%;
+  bottom: calc(50% + 0.42em);
+  width: min(92vw, 14em);
+  margin: 0;
+  transform: translateX(-50%);
+  font-size: clamp(34px, 5.6vw, 88px);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+  text-align: center;
+  text-wrap: balance;
+}
+.lc-bv {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0 16px;
+  font-size: clamp(18px, 1.9vw, 26px);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  text-align: center;
+  color: rgb(255 255 255 / 0.92);
+}
+/* cada palavra é uma janela; as letras sobem de dentro dela
+   (a folga embaixo é para o ç e o ã não serem cortados) */
+.lc-palavra {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  white-space: nowrap;
+  padding: 0.06em 0.02em 0.22em;
+  margin: -0.06em -0.02em -0.22em;
+}
+.lc-letra {
+  display: inline-block;
+}
+.lc-pular {
+  position: absolute;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  min-height: 40px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.08);
+  color: rgb(255 255 255 / 0.74);
+  font: 500 14px/1 var(--lc-fonte);
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+.lc-pular:hover {
+  color: #fff;
+  background: rgb(255 255 255 / 0.15);
+}
+
+/* Passagem para a tela de boas-vindas da plataforma: a logo que pousa é a
+   mesma imagem, no mesmo lugar, então a da plataforma não entra animada; e,
+   enquanto a abertura mede onde ela fica, a tela espera parada. */
+html.lc-continua .bvd-passo-marca > .bvd-marca,
+html.lc-continua .bvd-passo-marca > .bvd-marca img {
+  animation: none !important;
+}
+html.lc-preparo .bvd,
+html.lc-preparo .bvd * {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* ---------- Animações ---------- */
+@keyframes lc-sobe {
+  from { opacity: 0; transform: translateY(16px); }
+}
+@keyframes lc-aparece {
+  from { opacity: 0; }
+}
+@keyframes lc-d-entra {
+  from { transform: translateY(100%); }
+}
+@keyframes lc-d-sai {
+  to { transform: translateY(-100%); }
+}
+@keyframes lc-f-entra {
+  from { opacity: 0; transform: scale(1.14); }
+}
+@keyframes lc-f-sai {
+  to { opacity: 0; transform: scale(0.9); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lc-contagem,
+  .lc-contagem * {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+  }
+}
