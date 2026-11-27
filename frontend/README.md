@@ -167,6 +167,56 @@ a aplicação. Nada de catálogo é gravado — só o que muda.
 | `intermedi_demo_feedback` | avaliações registradas nesta sessão |
 | `intermedi_demo_patient` | nome, mascote, favoritos, rotina e notificações lidas do paciente |
 
+## Lançamento oficial (contagem e abertura)
+
+Uma camada por cima da plataforma, em `src/lancamento/`, que não altera nada da demonstração:
+
+| Quando | O que o visitante vê |
+| --- | --- |
+| Antes do lançamento | Só a contagem regressiva, em qualquer endereço (`/`, `/aplicativo`, `/bastidores`…) |
+| No zero | O "0" assenta e a abertura começa sozinha (cerca de 15 s) e termina na tela de boas-vindas |
+| Depois, na primeira visita | A abertura, uma vez, e a plataforma |
+| Depois, já tendo visto | A plataforma direto (a camada de lançamento nem é baixada) |
+
+**Data e hora:** `LANCAMENTO` em `src/lancamento/config.ts`, no formato `"2026-12-01T19:00:00-03:00"`
+(horário de Brasília). Os textos da contagem e da abertura ficam no mesmo arquivo. `null` desliga tudo.
+
+**Como funciona**
+
+- A contagem é a diferença entre agora e a data oficial, recalculada a cada segundo: recarregar não
+  muda nada. O horário é conferido uma vez pelo cabeçalho `Date` do próprio servidor (uma requisição
+  `HEAD`, sem backend), então um aparelho com o relógio errado ainda chega ao zero junto com os outros.
+- "Já vi a abertura" fica no `localStorage` (`intermedi_abertura_vista`), fora das chaves da sessão:
+  reativar a amostra não repete a abertura.
+- A abertura (`Abertura.tsx`) é uma linha do tempo do GSAP sobre SVG e HTML: o zero vira ponto, o
+  ponto vira a linha da frase, a linha vira a rede de farmácias, a rede vira a cruz do logotipo e a
+  luz se abre na logo em cores, que pousa no lugar exato da logo da tela de boas-vindas. A marca foi
+  reconstruída em vetor a partir de `wordmark-light.png` (medidas em `cena.ts`).
+- Tudo o que o zero usa é baixado durante a contagem; nos últimos segundos nada depende da rede. Se a
+  abertura não carregar, o zero leva direto à plataforma.
+- Aparelhos modestos (ou que travam durante a contagem) recebem um perfil leve, sem brilho, rotação
+  nem máscara circular. Com "reduzir movimento" ligado no sistema, a abertura vira um esmaecer curto.
+- "Pular abertura" (ou Esc) leva à plataforma em menos de um segundo.
+- Som: desligado por padrão. "Ligar som da abertura", na contagem, ativa um som gerado no próprio
+  navegador (`som.ts`, sem arquivos). No projetor da apresentação, ligue antes do zero.
+
+### Ensaio (testar sem esperar a data)
+
+Abra o endereço com `?ensaio=CODIGO` (o mesmo código da reativação; em desenvolvimento, `?ensaio`
+basta) e uma das opções:
+
+| Endereço | Simula |
+| --- | --- |
+| `?ensaio=CODIGO&fase=contagem&em=10` | Contagem de 10 s, o zero, a abertura e a passagem para a plataforma |
+| `?ensaio=CODIGO&fase=abertura` | Só a abertura (repete a cada vez que abrir) e a plataforma |
+| `?ensaio=CODIGO&fase=depois` | Visitante depois do lançamento: abertura na primeira vez; ao recarregar, a plataforma direto |
+| `&quadro=8.5` | Para a abertura nesse segundo, para revisar um quadro |
+| `&perfil=leve` | Força o perfil de aparelhos modestos |
+
+O ensaio vale só para aquela aba (`sessionStorage`), mostra um selo "Ensaio" com **Repetir** e
+**Sair**, e nunca grava a marcação real. Sem o código, o público não entra nele. A equipe também pode
+usar `&fase=depois` para navegar pela plataforma antes do lançamento.
+
 ## Limitações (segurança)
 
 Sem backend, **o bloqueio por tempo é só da interface**. Quem apagar o armazenamento do navegador
