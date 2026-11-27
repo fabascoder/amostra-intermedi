@@ -35,29 +35,24 @@ export const MARCA = {
 export const LOGO_COR = { w: 960, h: 540, caixa: { x: 59, y: 23, w: 806, h: 507 } } as const;
 
 /**
- * Onde cada ponto do contorno fica enquanto é rede: farmácias espalhadas pelo
- * palco (−1 a 1 nos dois eixos). A ordem é a da cruz, então a linha que liga
- * os pontos em sequência é, ao mesmo tempo, a rota da rede e o futuro contorno.
+ * Ligações do miolo da cruz (pares de pontos do contorno): o quadrado por onde
+ * a palavra vai passar. Aparecem fracas depois que o contorno se fecha e se
+ * recolhem quando a palavra sobe.
  */
-export const CONSTELACAO: readonly (readonly [number, number])[] = [
-  [0.8, -0.5], [0.36, -0.88], [-0.24, -0.6], [0.06, -0.1], [-0.74, -0.34],
-  [-0.88, 0.36], [-0.16, 0.3], [-0.44, 0.84], [0.34, 0.66], [0.9, 0.16],
-];
-
-/** Ligações extras da rede (pares de pontos), desenhadas depois da rota. */
 export const CORDAS: readonly (readonly [number, number])[] = [
-  [3, 6], [3, 9], [1, 3], [6, 8], [2, 4], [0, 9], [5, 7],
+  [3, 0], [0, 9], [9, 6], [6, 3],
 ];
 
-/** Remédios indo de uma farmácia a outra (de, para, nota do som). */
+/** Remédios cruzando o miolo, de uma farmácia (ponto) a outra (de, para, nota do som). */
 export const PULSOS: readonly { de: number; para: number; nota: number }[] = [
-  { de: 4, para: 3, nota: 0 },
-  { de: 8, para: 6, nota: 2 },
-  { de: 3, para: 9, nota: 4 },
-  { de: 2, para: 1, nota: 3 },
-  { de: 6, para: 3, nota: 5 },
-  { de: 9, para: 0, nota: 1 },
+  { de: 3, para: 0, nota: 1 },
+  { de: 6, para: 9, nota: 3 },
+  { de: 3, para: 6, nota: 4 },
+  { de: 0, para: 9, nota: 5 },
 ];
+
+/** Cantos externos da cruz: cada vez que o traço vira num deles, soa uma nota. */
+export const CANTOS_COM_NOTA = [1, 2, 4, 5, 7, 8] as const;
 
 /** Converte coordenadas da marca para a tela, com a marca centrada em (cx, cy). */
 export function mapaDaMarca(cx: number, cy: number, largura: number) {

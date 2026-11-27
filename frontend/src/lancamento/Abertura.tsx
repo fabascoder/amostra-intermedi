@@ -4,10 +4,11 @@
 //   zero ..... o "0" da contagem se condensa num ponto            (0–2,4 s)
 //   frase .... o ponto corre e vira linha; a frase nasce dela e a
 //              linha se recolhe sob "conexão."                     (2,4–5,7 s)
-//   rede ..... a linha se desdobra em rede: farmácias ligadas, com
-//              remédios passando de uma a outra                    (5,7–9,4 s)
-//   marca .... a rede se recolhe e vira a cruz do logotipo; a
-//              palavra sobe por dentro dela e a cápsula assenta    (9,4–12,9 s)
+//   rede ..... a linha se parte em pontos (farmácias) que voam para os
+//              cantos da cruz; um traço os liga um a um, e remédios
+//              cruzam o miolo                                      (5,7–9,5 s)
+//   marca .... o traço ganha a espessura e os cantos do logotipo; a
+//              palavra sobe por dentro da cruz e a cápsula assenta  (9,5–12,5 s)
 //   luz ...... a luz se abre a partir da cruz, a logo pousa onde fica
 //              na tela de boas-vindas e a plataforma se monta em volta
 //
@@ -19,7 +20,7 @@ import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import "@fontsource/poppins/latin-700.css";
 import logoCor from "../assets/brand/logo-intermedi.webp";
-import { CONSTELACAO, CORDAS, LOGO_COR, MARCA, PULSOS, caminho, mapaDaMarca, type Ponto } from "./cena";
+import { CANTOS_COM_NOTA, CORDAS, LOGO_COR, MARCA, PULSOS, caminho, mapaDaMarca, type Ponto } from "./cena";
 import { TEXTOS } from "./config";
 import type { Som } from "./som";
 
@@ -185,16 +186,13 @@ export default function Abertura({ doZero, reduzir, perfil, som, quadro, onMonta
     const dr = destaque.getBoundingClientRect();
     const corpoFrase = parseFloat(getComputedStyle(frase).fontSize) || 40;
     const meiaLinha = Math.min(W / 2 - 20, fr.width / 2 + corpoFrase * 0.5);
-    // na linha, cada ponto fica na ordem horizontal que terá na rede: ao se
-    // desdobrar, cada um sobe ou desce, sem cruzar com os outros
-    const ordem = CONSTELACAO.map((c, i) => ({ i, u: c[0] })).sort((a, b) => a.u - b.u);
+    // na linha, cada ponto fica na ordem horizontal que terá na cruz: ao se
+    // soltar, cada um sobe ou desce para o seu canto, sem cruzar com os outros
+    const ordem = MARCA.cruz.map(([u, v], i) => ({ i, u, v })).sort((a, b) => a.u - b.u || a.v - b.v);
     const posNaLinha = new Array<number>(n);
     ordem.forEach((o, rank) => (posNaLinha[o.i] = rank / (n - 1)));
     const linha = posNaLinha.map((t) => ({ x: cx - meiaLinha + t * meiaLinha * 2, y: cy }));
     const sublinha = posNaLinha.map((t) => ({ x: dr.left + t * dr.width, y: cy }));
-    const ax = Math.min(W * 0.4, 560);
-    const ay = Math.min(H * 0.32, 300);
-    const constelacao = CONSTELACAO.map(([u, v]) => ({ x: cx + u * ax, y: cy + v * ay }));
     const cruz = MARCA.cruz.map(([u, v]) => ({ x: m.x(u), y: m.y(v) }));
     const tracoMarca = MARCA.traco * m.k;
 
@@ -203,6 +201,10 @@ export default function Abertura({ doZero, reduzir, perfil, som, quadro, onMonta
       nos: Array.from({ length: n }, () => ({ x: cx, y: cy, r: 0 })) as No[],
       lw: 0,
       arred: 0,
+      /** quanto do traço está desenhado (0 a 1) e sua opacidade */
+      desenho: 1,
+      tracoA: 1,
+      ponta: { a: 0 },
       ponto: { r: 0 },
       halo: { r: 0, a: 0 },
       cordas: CORDAS.map(() => ({ p: 0 })),
@@ -211,9 +213,34 @@ export default function Abertura({ doZero, reduzir, perfil, som, quadro, onMonta
     };
     const raios = MARCA.raios.map((r) => r * m.k);
 
+    const pontaEl = sel<SVGCircleElement>(".lc-ponta");
+    const pontaBrilho = el.querySelector<SVGCircleElement>(".lc-ponta-brilho");
     const desenhar = () => {
       traco.setAttribute("d", caminho(E.nos, raios.map((r) => r * E.arred)));
       traco.setAttribute("stroke-width", String(E.lw));
+      // o traço que liga os pontos se desenha do primeiro ao último, com uma
+      // ponta de luz à frente
+      if (E.desenho < 0.999) {
+        let total = 0;
+        for (let i = 1; i < n; i++) total += Math.hypot(E.nos[i].x - E.nos[i - 1].x, E.nos[i].y - E.nos[i - 1].y);
+        traco.style.strokeDasharray = `${total} ${total}`;
+        traco.style.strokeDashoffset = String(total * (1 - E.desenho));
+        traco.style.opacity = E.desenho < 0.002 ? "0" : String(E.tracoA);
+        const ponta = E.desenho > 0.002 ? traco.getPointAtLength(total * E.desenho) : null;
+        for (const c of [pontaEl, pontaBrilho]) {
+          if (!c) continue;
+          if (ponta) {
+            c.setAttribute("cx", String(ponta.x));
+            c.setAttribute("cy", String(ponta.y));
+          }
+        }
+      } else {
+        traco.style.strokeDasharray = "";
+        traco.style.strokeDashoffset = "";
+        traco.style.opacity = String(E.tracoA);
+      }
+      pontaEl.style.opacity = String(E.ponta.a);
+      if (pontaBrilho) pontaBrilho.style.opacity = String(E.ponta.a * 0.35);
       E.nos.forEach((no, i) => {
         nosEl[i].setAttribute("cx", String(no.x));
         nosEl[i].setAttribute("cy", String(no.y));
@@ -305,40 +332,67 @@ export default function Abertura({ doZero, reduzir, perfil, som, quadro, onMonta
         // a linha se recolhe sob a última palavra
         .to(E.nos, { x: (i: number) => sublinha[i].x, duration: 0.75, ease: "expo.inOut" }, L + 2.2);
 
-      // ---------- rede ----------
+      // ---------- rede: os pontos viram a cruz ----------
       const R = L + 3.3;
+      const easeDesenho = gsap.parseEase("power1.inOut");
+      const desenhoDur = 1.35;
+      const tD = R + 1.75;
       tl.to(letrasFrase, { yPercent: -115, duration: 0.55, ease: "power3.in", stagger: 0.008 }, R)
-        .to(E.nos, { x: (i: number) => constelacao[i].x, y: (i: number) => constelacao[i].y, duration: 1.8, ease: "power3.inOut" }, R + 0.15)
-        .to(E.nos, { r: 4, duration: 0.5, ease: "back.out(2)", stagger: 0.04 }, R + 0.4)
-        .to(E.cam, { s: 1.07, rot: leve ? 0 : -1.6, duration: 3.9, ease: "sine.inOut" }, R)
-        .to(E.cordas, { p: 1, duration: 0.7, ease: "power2.inOut", stagger: 0.11 }, R + 1.35);
-      const pulsos = leve ? PULSOS.slice(0, 3) : PULSOS;
+        // a linha se parte em pontos: as farmácias
+        .to(E.nos, { r: 4, duration: 0.45, ease: "back.out(2.4)", stagger: 0.03 }, R + 0.08)
+        .to(E, { tracoA: 0, duration: 0.3, ease: "power1.in" }, R + 0.15)
+        .set(E, { desenho: 0, tracoA: 1 }, R + 0.5)
+        // cada ponto voa para o seu canto da cruz
+        .to(E.nos, { x: (i: number) => cruz[i].x, y: (i: number) => cruz[i].y, duration: 1.3, ease: "power3.inOut", stagger: 0.035 }, R + 0.42)
+        .to(E.cam, { s: 1.12, rot: leve ? 0 : -1.2, duration: 3.8, ease: "sine.inOut" }, R)
+        // e um traço os liga, um a um, do primeiro ao último
+        .to(E.ponta, { a: 1, duration: 0.15, ease: "none" }, tD)
+        .to(E, { desenho: 1, duration: desenhoDur, ease: "power1.inOut" }, tD)
+        .to(E.ponta, { a: 0, duration: 0.25, ease: "none" }, tD + desenhoDur - 0.1)
+        .call(() => som?.sopro(), [], tD)
+        .to(E.cordas, { p: 1, duration: 0.5, ease: "power2.inOut", stagger: 0.1 }, R + 2.75);
+      // uma nota em cada canto externo, quando o traço passa por ele
+      const comprimentos = [0];
+      for (let i = 1; i < n; i++) comprimentos.push(comprimentos[i - 1] + Math.hypot(cruz[i].x - cruz[i - 1].x, cruz[i].y - cruz[i - 1].y));
+      const total = comprimentos[n - 1];
+      const tempoNoTraco = (f: number) => {
+        let lo = 0;
+        let hi = 1;
+        for (let k = 0; k < 24; k++) {
+          const meio = (lo + hi) / 2;
+          if (easeDesenho(meio) < f) lo = meio;
+          else hi = meio;
+        }
+        return lo;
+      };
+      CANTOS_COM_NOTA.forEach((canto, j) => tl.call(() => som?.nota(j), [], tD + desenhoDur * tempoNoTraco(comprimentos[canto] / total)));
+      // remédios cruzando o miolo, de farmácia a farmácia
+      const pulsos = leve ? PULSOS.slice(0, 2) : PULSOS;
       pulsos.forEach((pulso, j) => {
-        const t0 = R + 1.9 + j * 0.27;
-        tl.fromTo(E.pulsos[j], { t: 0 }, { t: 1, duration: 0.8, ease: "power1.inOut" }, t0)
+        const t0 = R + 3.0 + j * 0.18;
+        tl.fromTo(E.pulsos[j], { t: 0 }, { t: 1, duration: 0.7, ease: "power1.inOut", immediateRender: false }, t0)
           .to(E.pulsos[j], { a: 1, duration: 0.12, ease: "none" }, t0)
-          .to(E.pulsos[j], { a: 0, duration: 0.2, ease: "none" }, t0 + 0.62)
-          .call(() => som?.nota(pulso.nota), [], t0);
+          .to(E.pulsos[j], { a: 0, duration: 0.2, ease: "none" }, t0 + 0.52)
+          .call(() => som?.nota(pulso.nota + 1), [], t0);
       });
 
       // ---------- marca ----------
-      const M = R + 3.7;
+      const M = R + 3.8;
       tl.to(E.cordas, { p: 0, duration: 0.45, ease: "power2.in", stagger: 0.03 }, M)
-        .to(E.nos, { x: (i: number) => cruz[i].x, y: (i: number) => cruz[i].y, duration: 1.3, ease: "expo.inOut" }, M + 0.1)
-        .to(E.cam, { s: 1, rot: 0, duration: 1.3, ease: "expo.inOut" }, M + 0.1)
-        .to(E.nos, { r: 0, duration: 0.3, ease: "power2.in" }, M + 1.15)
-        .to(E, { lw: tracoMarca, arred: 1, duration: 0.6, ease: "power3.out" }, M + 1.25)
-        .call(() => som?.acorde(), [], M + 1.25)
-        .to(letrasMarca, { y: 0, duration: 0.8, ease: "expo.out", stagger: 0.045 }, M + 1.5)
-        .set(capsula, { autoAlpha: 1 }, M + 2.1)
-        .to(capsula, { y: 0, rotation: 0, duration: 0.7, ease: "back.out(1.5)" }, M + 2.1)
-        .set(pingo, { autoAlpha: 1 }, M + 2.28)
-        .to(pingo, { y: 0, duration: 0.6, ease: "back.out(2.2)" }, M + 2.28)
-        .call(() => som?.toque(), [], M + 2.55)
-        .to(palavrasBv, { yPercent: 0, duration: 0.9, ease: "expo.out", stagger: 0.07 }, M + 2.75);
+        .to(E.cam, { s: 1, rot: 0, duration: 1.0, ease: "expo.inOut" }, M)
+        .to(E.nos, { r: 0, duration: 0.3, ease: "power2.in" }, M + 0.55)
+        .to(E, { lw: tracoMarca, arred: 1, duration: 0.6, ease: "power3.out" }, M + 0.7)
+        .call(() => som?.acorde(), [], M + 0.7)
+        .to(letrasMarca, { y: 0, duration: 0.8, ease: "expo.out", stagger: 0.045 }, M + 1.0)
+        .set(capsula, { autoAlpha: 1 }, M + 1.6)
+        .to(capsula, { y: 0, rotation: 0, duration: 0.7, ease: "back.out(1.5)" }, M + 1.6)
+        .set(pingo, { autoAlpha: 1 }, M + 1.78)
+        .to(pingo, { y: 0, duration: 0.6, ease: "back.out(2.2)" }, M + 1.78)
+        .call(() => som?.toque(), [], M + 2.05)
+        .to(palavrasBv, { yPercent: 0, duration: 0.9, ease: "expo.out", stagger: 0.07 }, M + 2.25);
 
       // ---------- luz ----------
-      const LZ = M + 3.5;
+      const LZ = M + 3.0;
       const raioLuz = Math.hypot(Math.max(centroCruz.x, W - centroCruz.x), Math.max(centroCruz.y, H - centroCruz.y)) + 4;
       tl.call(() => som?.luz(), [], LZ)
         .to(botaoPular, { autoAlpha: 0, duration: 0.3 }, LZ)
@@ -386,6 +440,8 @@ export default function Abertura({ doZero, reduzir, perfil, som, quadro, onMonta
             {PULSOS.map((_, i) => (
               <circle key={i} className="lc-pulso" fill={MENTA} r="3.4" style={{ opacity: 0 }} />
             ))}
+            {!leve && <circle className="lc-ponta-brilho" r="13" fill={MENTA} style={{ opacity: 0 }} />}
+            <circle className="lc-ponta" r="4.5" fill={MENTA} style={{ opacity: 0 }} />
             <circle className="lc-halo" cx={cx} cy={cy} r="0" fill="none" stroke="#fff" strokeWidth="1" />
             <circle className="lc-ponto" cx={cx} cy={cy} r="0" fill="#fff" />
           </g>

@@ -189,8 +189,8 @@ Uma camada por cima da plataforma, em `src/lancamento/`, que não altera nada da
 - "Já vi a abertura" fica no `localStorage` (`intermedi_abertura_vista`), fora das chaves da sessão:
   reativar a amostra não repete a abertura.
 - A abertura (`Abertura.tsx`) é uma linha do tempo do GSAP sobre SVG e HTML: o zero vira ponto, o
-  ponto vira a linha da frase, a linha vira a rede de farmácias, a rede vira a cruz do logotipo e a
-  luz se abre na logo em cores, que pousa no lugar exato da logo da tela de boas-vindas. A marca foi
+  ponto vira a linha da frase, a linha se parte em pontos (as farmácias) que formam a cruz do
+  logotipo e são ligados um a um, o traço ganha a forma da marca e a luz se abre na logo em cores, que pousa no lugar exato da logo da tela de boas-vindas. A marca foi
   reconstruída em vetor a partir de `wordmark-light.png` (medidas em `cena.ts`).
 - Tudo o que o zero usa é baixado durante a contagem; nos últimos segundos nada depende da rede. Se a
   abertura não carregar, o zero leva direto à plataforma.
